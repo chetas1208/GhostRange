@@ -25,22 +25,33 @@ from ghostrange_contracts.ghostdirector_m9 import (
 
 from .dedupe import dedupe_proposals, proposal_fingerprint
 from .generate import generate_candidates
+from .mechanics import ScenarioMechanics, default_mechanics
 from .portfolio import select_portfolio
 from .scheduler_bridge import build_execution_dag
-from .scenarios.auth_incident import simulate_observation
 from .stopping import should_stop
-from .surprise import detect_surprise, propose_hypothesis_from_surprise
 from .utility import acquisition_score
 from .validate import validate_proposal
 
 
 @dataclass
 class GhostDirectorSimulator:
-    """Replay benchmark scenarios without Vultr."""
+    """Replay benchmark scenarios without Vultr.
+
+    ``mechanics`` selects which incident's content (probes, hidden-mechanism reveal,
+    hypothesis-status updates) this simulator plays — see ``mechanics.py``. Leaving it unset
+    keeps the original auth-incident scenario (``true_mechanism="session_refresh_cache"``);
+    pass ``mechanics=TENANT_ESCALATION_MECHANICS`` (``scenarios/tenant_escalation.py``) together
+    with a matching ``true_mechanism`` to run the newer billing/gateway/identity scenario.
+    """
 
     true_mechanism: str = "session_refresh_cache"
     authorized_assets: set[str] = field(default_factory=lambda: {"asset/gw01"})
     trace: DirectorTraceV1 | None = None
+    mechanics: ScenarioMechanics | None = None
+
+    def __post_init__(self) -> None:
+        if self.mechanics is None:
+            self.mechanics = default_mechanics()
 
     def run_campaign(
         self,
@@ -70,7 +81,7 @@ class GhostDirectorSimulator:
                 campaign.state = CampaignState.STOPPED
                 break
 
-            raw = generate_candidates(knowledge)
+            raw = generate_candidates(knowledge, mechanics=self.mechanics)
             proposals = dedupe_proposals(raw)
             campaign.proposals.extend(proposals)
 
@@ -118,7 +129,7 @@ class GhostDirectorSimulator:
                 prop = next(p for p in proposals if p.id == pid)
                 op = prop.operators[0]
                 test_id = op.parameters.get("test_id", "unknown")
-                result = simulate_observation(test_id, true_mechanism=self.true_mechanism)
+                result = self.mechanics.simulate_observation(test_id, true_mechanism=self.true_mechanism)
                 obs = ExperimentObservationV1(
                     experiment_id=pid,
                     world_id=uuid4(),
@@ -130,18 +141,18 @@ class GhostDirectorSimulator:
                 experiments_run += 1
                 budget.spent_usd += prop.estimated_cost_usd
 
-                self._update_knowledge(knowledge, prop, result)
-                surprise = detect_surprise(
+                self.mechanics.update_knowledge(knowledge, prop, result)
+                surprise = self.mechanics.detect_surprise(
                     knowledge,
                     result,
                     observation_id=obs.id,
                     experiment_proposal_objective=prop.objective,
                 )
                 if surprise:
-                    h4 = propose_hypothesis_from_surprise(knowledge, surprise)
+                    h4 = self.mechanics.propose_hypothesis_from_surprise(knowledge, surprise)
                     h4.status = InvestigationHypothesisStatus.ACTIVE
                     knowledge.hypothesis_graph.hypotheses.append(h4)
-                    knowledge.remaining_questions.append("Session refresh interaction?")
+                    knowledge.remaining_questions.append(self.mechanics.surprise_followup_question)
                     self.trace.steps.append({"surprise": surprise.suggested_new_hypothesis})
 
             campaign.knowledge_state = knowledge
@@ -151,24 +162,6 @@ class GhostDirectorSimulator:
             campaign.stop_reason = should_stop(knowledge, budget, experiments_run=experiments_run, high_priority_unresolved=0)
         campaign.state = CampaignState.STOPPED
         return campaign
-
-    def _update_knowledge(self, knowledge: InvestigationKnowledgeStateV1, prop, result: dict) -> None:
-        if result.get("ordering_correct"):
-            for h in knowledge.hypothesis_graph.hypotheses:
-                if "middleware ordering" in h.statement.lower():
-                    h.status = InvestigationHypothesisStatus.REFUTED
-        if result.get("route_ok"):
-            for h in knowledge.hypothesis_graph.hypotheses:
-                if "gateway route" in h.statement.lower():
-                    h.status = InvestigationHypothesisStatus.WEAKENED
-        if result.get("session_refresh_bug"):
-            for h in knowledge.hypothesis_graph.hypotheses:
-                if "session refresh" in h.statement.lower():
-                    h.status = InvestigationHypothesisStatus.SUPPORTED
-        if result.get("ordering_correct") and result.get("route_ok"):
-            for h in knowledge.hypothesis_graph.hypotheses:
-                if "identity cache" in h.statement.lower() and h.status == InvestigationHypothesisStatus.ACTIVE:
-                    h.status = InvestigationHypothesisStatus.UNRESOLVED
 
 
 def run_campaign_step(*args, **kwargs) -> ExperimentCampaignV1:

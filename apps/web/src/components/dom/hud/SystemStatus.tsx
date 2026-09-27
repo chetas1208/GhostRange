@@ -2,6 +2,7 @@ import { selectConnectionStatus } from '../../../state/selectors';
 import { useGhostStore } from '../../../state/store';
 import { useTourStore } from '../../../tour/tourStore';
 import { CostIndicator } from './CostIndicator';
+import { IntelligenceBadge } from './IntelligenceBadge';
 import { WorkerCount } from './WorkerCount';
 
 export function SystemStatus() {
@@ -26,6 +27,7 @@ export function SystemStatus() {
       </span>
       <CostIndicator />
       <WorkerCount />
+      <IntelligenceBadge />
     </header>
   );
 }

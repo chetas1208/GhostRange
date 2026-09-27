@@ -556,6 +556,23 @@
   color: #a78bfa;
 }
 
+/* Optional model-assisted-inference provider badge (existing Vultr path, or the local
+   CPU-only Laya provider when INTELLIGENCE_PROVIDER=laya-local) — see IntelligenceBadge.tsx.
+   Absent entirely when no provider is configured; never a primary UI element. */
+.intelligence-badge {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.intelligence-ready {
+  color: #6ee7b7;
+}
+.intelligence-degraded {
+  color: #fbbf24;
+}
+.intelligence-offline {
+  color: #64748b;
+}
+
 .inspector-shell {
   position: absolute;
   z-index: 10;

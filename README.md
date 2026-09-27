@@ -14,6 +14,9 @@ GhostRange is a research prototype for investigating an authorized system withou
 
 GhostRange is not a generic pentesting agent, a vulnerability scanner, a SIEM, or a chatbot around security tools. Its core question is: **which explanation and remediation survive controlled testing, and what evidence supports that conclusion?**
 
+![GhostRange Multiverse UI](docs/images/multiverse-ui.png)
+*Multiverse tactical UI, illustrative multi-world state. The real infrastructure proof recorded so far (see the status table above) is a single real Vultr Compute worker end-to-end, not the 20-world count shown here — this image shows the UI's intended scale, not a claim about what has run live.*
+
 ## Table of contents
 
 - [The problem](#the-problem)

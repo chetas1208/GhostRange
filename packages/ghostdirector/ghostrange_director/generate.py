@@ -1,4 +1,12 @@
-"""Rule-based experiment candidates — not LLM-dependent."""
+"""Rule-based experiment candidates — not LLM-dependent.
+
+The discriminator probe, the per-hypothesis probe and the "hidden mechanism" probe are all
+scenario content, supplied via a :class:`~ghostrange_director.mechanics.ScenarioMechanics`
+(defaults to the original auth-incident scenario so existing callers are unaffected). Only the
+generic decoy experiment (expensive, unrepresentative, budget-wasting — used to exercise the
+acquisition scorer's cost penalty regardless of which incident is loaded) and the
+counterexample-search proposal stay scenario-agnostic here.
+"""
 
 from __future__ import annotations
 
@@ -15,8 +23,15 @@ from ghostrange_contracts.ghostdirector_m9 import (
     InvestigationKnowledgeStateV1,
 )
 
+from .mechanics import ScenarioMechanics, default_mechanics
 
-def generate_candidates(knowledge: InvestigationKnowledgeStateV1) -> list[ExperimentProposalV1]:
+
+def generate_candidates(
+    knowledge: InvestigationKnowledgeStateV1,
+    *,
+    mechanics: ScenarioMechanics | None = None,
+) -> list[ExperimentProposalV1]:
+    mechanics = mechanics or default_mechanics()
     inv = knowledge.investigation_id
     hyps = knowledge.hypothesis_graph.hypotheses
     active = [
@@ -33,46 +48,52 @@ def generate_candidates(knowledge: InvestigationKnowledgeStateV1) -> list[Experi
 
     if len(active) >= 2:
         h1, h2 = active[0], active[1]
+        dp = mechanics.discriminate_probe
         proposals.append(
             ExperimentProposalV1(
                 investigation_id=inv,
-                objective=f"Discriminate {h1.statement[:40]} vs {h2.statement[:40]}",
+                objective=dp.objective.format(h1=h1.statement[:40], h2=h2.statement[:40]),
                 hypotheses_tested=[h1.id, h2.id],
                 uncertainties_targeted=[u.id for u in knowledge.uncertainties[:1]],
                 operators=[
                     ExperimentOperatorV1(
-                        kind=ExperimentOperatorKind.COLLECT_OBSERVATION,
-                        parameters={"test_id": "middleware_order_probe"},
-                        target_asset_id="asset/gw01",
+                        kind=dp.operator_kind,
+                        parameters={"test_id": dp.test_id},
+                        target_asset_id=dp.target_asset_id,
                     )
                 ],
                 expected_outcomes=[
-                    ExpectedOutcomeV1(if_hypothesis_id=h1.id, observation_key="middleware_first", expected_value=True),
-                    ExpectedOutcomeV1(if_hypothesis_id=h2.id, observation_key="middleware_first", expected_value=False),
+                    ExpectedOutcomeV1(
+                        if_hypothesis_id=h1.id, observation_key=dp.discriminate_observation_key, expected_value=True
+                    ),
+                    ExpectedOutcomeV1(
+                        if_hypothesis_id=h2.id, observation_key=dp.discriminate_observation_key, expected_value=False
+                    ),
                 ],
-                discriminating_power=BeliefLevel.HIGH,
-                estimated_cost_usd=0.5,
-                estimated_runtime_sec=30,
+                discriminating_power=dp.discriminating_power,
+                estimated_cost_usd=dp.cost_usd,
+                estimated_runtime_sec=dp.runtime_sec,
                 origin=CandidateOrigin.RULE,
             )
         )
 
     for h in active:
+        php = mechanics.per_hypothesis_probe
         proposals.append(
             ExperimentProposalV1(
                 investigation_id=inv,
-                objective=f"Gateway routing probe for hypothesis {str(h.id)[:8]}",
+                objective=php.objective.format(hid=str(h.id)[:8]),
                 hypotheses_tested=[h.id],
                 operators=[
                     ExperimentOperatorV1(
-                        kind=ExperimentOperatorKind.COLLECT_OBSERVATION,
-                        parameters={"test_id": "gateway_route_probe"},
-                        target_asset_id="asset/gw01",
+                        kind=php.operator_kind,
+                        parameters={"test_id": php.test_id},
+                        target_asset_id=php.target_asset_id,
                     )
                 ],
-                discriminating_power=BeliefLevel.MEDIUM,
-                estimated_cost_usd=1.0,
-                estimated_runtime_sec=60,
+                discriminating_power=php.discriminating_power,
+                estimated_cost_usd=php.cost_usd,
+                estimated_runtime_sec=php.runtime_sec,
                 origin=CandidateOrigin.RULE,
             )
         )
@@ -96,22 +117,23 @@ def generate_candidates(knowledge: InvestigationKnowledgeStateV1) -> list[Experi
         )
     )
 
-    if any("session refresh" in h.statement.lower() for h in hyps):
+    hp = mechanics.hidden_probe
+    if hp and any(hp.matches(h) for h in hyps):
         proposals.append(
             ExperimentProposalV1(
                 investigation_id=inv,
-                objective="Session refresh + cache interaction probe",
-                hypotheses_tested=[h.id for h in hyps if "session refresh" in h.statement.lower()],
+                objective=hp.objective,
+                hypotheses_tested=[h.id for h in hyps if hp.matches(h)],
                 operators=[
                     ExperimentOperatorV1(
-                        kind=ExperimentOperatorKind.CHANGE_SYNTHETIC_IDENTITY_STATE,
-                        parameters={"test_id": "session_refresh_probe"},
-                        target_asset_id="asset/gw01",
+                        kind=hp.operator_kind,
+                        parameters={"test_id": hp.test_id},
+                        target_asset_id=hp.target_asset_id,
                     )
                 ],
-                discriminating_power=BeliefLevel.HIGH,
-                estimated_cost_usd=0.8,
-                estimated_runtime_sec=45,
+                discriminating_power=hp.discriminating_power,
+                estimated_cost_usd=hp.cost_usd,
+                estimated_runtime_sec=hp.runtime_sec,
                 origin=CandidateOrigin.RULE,
             )
         )

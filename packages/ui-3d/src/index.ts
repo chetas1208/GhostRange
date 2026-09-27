@@ -62,6 +62,7 @@ export * from './temporal/ReplayController';
 
 export * from './canvas/ReferenceGrid';
 export * from './canvas/PerformanceGovernor';
+export * from './canvas/AmbientField';
 
 export * from './shield/ActionGate';
 export * from './shield/ActionPermit';

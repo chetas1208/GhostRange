@@ -110,12 +110,22 @@ class Settings:
                 "https://api.vultrinference.com/v1",
             ),
             inference_model=os.environ.get("VULTR_INFERENCE_MODEL", "llama-3.1-8b-instruct"),
-            # Optional local, CPU-only "InferenceRouter" seam (see inference_providers.py /
+            # Local, CPU-only "InferenceRouter" seam (see inference_providers.py /
             # inference_router.py). Server-side env only — deliberately never a VITE_*/
             # NEXT_PUBLIC_* var, since MODEL_BASE_URL/MODEL_API_KEY must never reach the
-            # browser bundle. INTELLIGENCE_PROVIDER=laya-local is the only value that
-            # activates the local provider; anything else (unset included) keeps the
-            # pre-existing Vultr Serverless Inference path as the sole provider, unchanged.
+            # browser bundle. Two independent gates, because the real Laya model's
+            # capability line splits the same way:
+            #   - Free-text generation: INTELLIGENCE_PROVIDER=laya-local is the only value
+            #     that nominates Laya as primary — and even then it always defers to the
+            #     existing provider (real Laya cannot generate free text at all). Unset
+            #     (the default) keeps the pre-existing Vultr Serverless Inference path as
+            #     the sole provider for this, unchanged.
+            #   - Structured classification/extraction (`InferenceRouter.classify()`): the
+            #     one thing the real model genuinely does, and it is DEFAULT-ON — tried
+            #     first whenever MODEL_API_PROTOCOL=native (the default) and MODEL_BASE_URL
+            #     is reachable (defaults to the local laya-serve convention,
+            #     http://127.0.0.1:8791), no INTELLIGENCE_PROVIDER needed. Gracefully falls
+            #     back to the existing provider's own classification when unreachable.
             intelligence_provider=os.environ.get("INTELLIGENCE_PROVIDER", "").strip().lower(),
             model_name=os.environ.get("MODEL_NAME") or None,
             model_base_url=os.environ.get("MODEL_BASE_URL", "http://127.0.0.1:8791"),
@@ -195,10 +205,16 @@ class Settings:
 
     @property
     def laya_active(self) -> bool:
-        """True only when the operator explicitly opted into the local, CPU-only Laya
-        provider via INTELLIGENCE_PROVIDER=laya-local. Any other value (including unset,
-        or a typo) is deliberately NOT treated as "active" — GhostRange must keep working
-        against the pre-existing Vultr Serverless Inference provider by default."""
+        """Gates FREE-TEXT generation only (`generate()`/`structured_generate()`): true only
+        when the operator explicitly opted in via INTELLIGENCE_PROVIDER=laya-local. Any
+        other value (including unset, or a typo) keeps the pre-existing Vultr Serverless
+        Inference provider as the one used for generation, unchanged — real Laya cannot
+        generate free text regardless of this flag (see inference_providers.py), so this
+        never actually changes what serves a generation request either way.
+
+        Does NOT gate `classify()` — structured classification/extraction is the real
+        model's genuine capability and is used by default whenever reachable, independent
+        of this flag (see `inference_router.build_inference_router`)."""
         return self.intelligence_provider == "laya-local"
 
     # Hard, code-level ceiling on local-provider concurrency, independent of the Vultr

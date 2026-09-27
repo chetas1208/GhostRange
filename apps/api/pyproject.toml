@@ -37,6 +37,13 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "httpx>=0.27"]
 store = ["ghostrange-events[store]", "ghostrange-evidence[vultr]"]
+# Real local, CPU-only Laya runtime (see inference_providers.py / inference_router.py).
+# NOT a hard dependency of ghostrange-api: `InferenceRouter.classify()` is default-on
+# whenever this is installed and `laya-serve` is running at MODEL_BASE_URL, but gracefully
+# falls back to the existing Vultr provider's own classification when it isn't installed or
+# isn't running — GhostRange starts and works without this extra either way.
+# `pip install -e ".[laya]"` then `laya-serve` (bind LAYA_HOST=127.0.0.1 for local-only).
+laya = ["laya[serve]"]
 
 [project.scripts]
 ghostrange-api = "ghostrange_api.main:cli"

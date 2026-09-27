@@ -153,3 +153,98 @@ export function selectForkBranchProgress(world: WorldV1): number {
   if (world.status === 'REQUESTED') return 0.15;
   return 0.33;
 }
+
+// ---------------------------------------------------------------------------
+// Camera-fit node positions.
+//
+// CameraRig fits the overview camera (Multiverse/Execution/Evidence) to the
+// real node count/spread instead of a fixed preset distance (see
+// ui/canvas/cameraFraming.ts) — that's the mechanism that keeps 1-4 real
+// nodes from looking lost in a void sized for a busy demo. These selectors
+// mirror each scene's own layout math (MultiverseScene/ExecutionScene/
+// EvidenceScene) closely enough to give the camera an accurate bounding
+// volume, without importing R3F scene components into the state layer.
+//
+// They return a **flat `number[]`** (x0,y0,z0, x1,y1,z1, ...) rather than an
+// array of `[x,y,z]` tuples deliberately: `useShallow` (and React's
+// underlying `useSyncExternalStore`) compares the returned array one level
+// deep by reference. An array of freshly-allocated tuple objects is never
+// shallow-equal to the previous call's tuples even when every value is
+// identical, so the subscription never stabilizes — that starves React's
+// snapshot check and throws "Maximum update depth exceeded". A flat array of
+// primitives *is* correctly shallow-comparable, so unrelated store updates
+// don't force CameraRig to re-render. Callers chunk it back into Vec3s (see
+// `chunkVec3` in `ui/canvas/cameraFraming.ts`).
+// ---------------------------------------------------------------------------
+
+/** Mirrors ExecutionScene's `<group position={[0, 0, -8]}>` wrapper. */
+const EXECUTION_SCENE_OFFSET: [number, number, number] = [0, 0, -8];
+/** Mirrors EvidenceScene's `<group position={[0, 0, -15]}>` wrapper. */
+const EVIDENCE_SCENE_OFFSET: [number, number, number] = [0, 0, -15];
+
+/** World positions as actually laid out in MultiverseScene (roots + forked children), flattened. */
+export function selectMultiverseNodePositions(state: GhostState): number[] {
+  const worlds = Object.values(state.worlds).filter((w) => !w.destroyed || w.status === 'DESTROYING');
+  const roots = worlds.filter((w) => !w.parent_world_id);
+  const children = worlds.filter((w) => w.parent_world_id);
+
+  const positions: number[] = [];
+  roots.forEach(() => positions.push(0, 0.15, 0));
+
+  const byParent = new Map<Id, WorldV1[]>();
+  for (const child of children) {
+    const key = child.parent_world_id as Id;
+    const siblings = byParent.get(key) ?? [];
+    siblings.push(child);
+    byParent.set(key, siblings);
+  }
+  byParent.forEach((siblings) => {
+    siblings.forEach((child, idx) => positions.push(...selectWorldLayout(child, idx, siblings.length)));
+  });
+
+  return positions;
+}
+
+/** Worker + task positions as actually laid out in ExecutionScene, flattened. */
+export function selectExecutionNodePositions(state: GhostState): number[] {
+  const workers = selectMaterializedWorkers(state);
+  const tasks = selectTasks(state);
+  const positions: number[] = [];
+
+  workers.forEach((w) => {
+    positions.push(
+      -3 + (w.slot ?? 0) * 1.4 + EXECUTION_SCENE_OFFSET[0],
+      -1.2 + EXECUTION_SCENE_OFFSET[1],
+      EXECUTION_SCENE_OFFSET[2],
+    );
+  });
+  tasks.forEach((t) => {
+    positions.push(
+      (t.layout?.x ?? 0) + EXECUTION_SCENE_OFFSET[0],
+      (t.layout?.y ?? 0.8) + EXECUTION_SCENE_OFFSET[1],
+      (t.layout?.z ?? 0) + EXECUTION_SCENE_OFFSET[2],
+    );
+  });
+
+  return positions;
+}
+
+/** Claim + artifact positions as actually laid out in EvidenceScene, flattened. */
+export function selectEvidenceNodePositions(state: GhostState): number[] {
+  const claim = Object.values(state.claims)[0] ?? null;
+  const artifacts = Object.values(state.artifacts);
+  const positions: number[] = [];
+
+  if (claim) {
+    positions.push(EVIDENCE_SCENE_OFFSET[0], 0.5 + EVIDENCE_SCENE_OFFSET[1], EVIDENCE_SCENE_OFFSET[2]);
+  }
+  artifacts.forEach((a, i) => {
+    positions.push(
+      (a.layout?.x ?? 1.2 + i * 0.35) + EVIDENCE_SCENE_OFFSET[0],
+      (a.layout?.y ?? -0.5) + EVIDENCE_SCENE_OFFSET[1],
+      (a.layout?.z ?? 0.3) + EVIDENCE_SCENE_OFFSET[2],
+    );
+  });
+
+  return positions;
+}

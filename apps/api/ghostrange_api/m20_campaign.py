@@ -94,10 +94,23 @@ class M20CampaignOrchestrator:
         if golden.adversarial_report and golden.adversarial_report.counterexamples:
             refuted = len(golden.adversarial_report.counterexamples)
 
+        scenario_id = getattr(self._gp, "scenario", "tenant_escalation")
+        if scenario_id == "auth_incident":
+            incident_summary = "Controlled auth/session incident (auth-lab compose input)"
+            incident_provenance = "auth_incident_scenario"
+        else:
+            incident_summary = (
+                "Cross-tenant billing-export exposure via internal-role-header trust "
+                "boundary config drift (billing-service / api-gateway / identity-service "
+                "compose input) — shallow header-strip fix falsified, deep fix survived "
+                "adversarial search"
+            )
+            incident_provenance = "tenant_escalation_scenario"
+
         report = GhostCampaignReportV1(
             campaign_id=campaign.campaign_id,
             range_id=campaign.range_id,
-            incident_summary="Controlled auth/session incident (auth-lab compose input)",
+            incident_summary=incident_summary,
             hypothesis_count=3,
             hypotheses_refuted=max(0, refuted),
             experiments_run=golden.benchmark.experiments_run,
@@ -131,9 +144,33 @@ class M20CampaignOrchestrator:
                 {
                     "kind": "incident",
                     "statement": report.incident_summary,
-                    "provenance": "auth_incident_scenario",
+                    "provenance": incident_provenance,
                 }
-            ],
+            ]
+            + (
+                [
+                    {
+                        "kind": "remediation_rejected",
+                        "statement": (
+                            "Fix A (strip X-Internal-Role only) was falsified: adversarial "
+                            "header-mutation search reproduced privileged cross-tenant access "
+                            "via a second, independent legacy header (X-Debug-Auth)."
+                        ),
+                        "provenance": "billing_export_lab_scenario",
+                    },
+                    {
+                        "kind": "remediation_survived",
+                        "statement": (
+                            "Fix B (remove all header-based trust; enforce session-scoped "
+                            "tenant access) survived the same adversarial search with no "
+                            "confirmed counterexample."
+                        ),
+                        "provenance": "billing_export_lab_scenario",
+                    },
+                ]
+                if scenario_id != "auth_incident" and golden.shallow_fix_adversarial_report
+                else []
+            ),
             event_summary_digest=summary_digest,
             scheduler_decision_count=golden.benchmark.scheduler_decisions,
             verification_results={
@@ -155,7 +192,11 @@ class M20CampaignOrchestrator:
             ghostshield_mode=self._ghostshield_mode,
             inference_model=self._inference_model or "not_configured",
             nondeterministic_components=["model_inference", "provider_latency"],
-            seed_notes="Director simulator uses hidden true_mechanism=session_refresh_cache",
+            seed_notes=(
+                "Director simulator uses hidden true_mechanism=session_refresh_cache"
+                if scenario_id == "auth_incident"
+                else "Director simulator uses hidden true_mechanism=internal_role_header_trust"
+            ),
         )
 
         return M20CampaignResult(

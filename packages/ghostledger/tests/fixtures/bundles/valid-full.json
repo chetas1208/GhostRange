@@ -1,11 +1,11 @@
 {
   "bundle": {
     "schema_version": "1",
-    "bundle_id": "84a640b4-36a9-4035-ac25-b7f81369bb2b",
+    "bundle_id": "4784f1e8-0a42-4d8b-b15f-21409921b652",
     "mode": "FULL",
     "manifest": {
       "schema_version": "1",
-      "manifest_id": "ec2fd4a5-e32a-447a-8bea-8a4c3ee61c09",
+      "manifest_id": "270b32f1-b70e-4ac4-b863-52a9037f14d0",
       "experiment": {
         "schema_version": "1",
         "definition": {
@@ -14,17 +14,17 @@
           "title": "Auth remediation verification",
           "description": "M7 fixture experiment"
         },
-        "run_id": "c3ba6a90-1495-4a27-a044-d4095575cec7"
+        "run_id": "50677327-249e-4d02-8080-30cb2d130952"
       },
-      "source_revision_id": "ecc3de81-04a9-4e33-b647-1d9ee21d4700",
+      "source_revision_id": "86409885-435e-4bd5-b283-887614618028",
       "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "twin_revision_id": "d5b788ba-2c43-4dc7-a3d8-f2e88698519c",
+      "twin_revision_id": "f225bf18-a767-463a-aac9-49412dc56d77",
       "twin_fingerprint": "fp-auth-lab-1",
       "range_spec_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "range_spec_version": "2",
       "compiler_version": "range-compiler/v0.1",
       "compiler_policy_version": "sanitization/v1",
-      "fidelity_profile_id": "aa440b36-6bac-4464-911a-179ec43d4b2b",
+      "fidelity_profile_id": "5075a4eb-fd10-4846-8b3b-5f4029922a77",
       "fidelity_report_hash": null,
       "investigation_objective": "auth_remediation",
       "remediation_candidates": [],
@@ -40,36 +40,36 @@
       "tool_invocations": [],
       "infrastructure": null,
       "budget_max_usd": null,
-      "started_at": "2026-09-27T16:23:02.970995Z",
+      "started_at": "2026-09-27T17:44:17.137416Z",
       "initiator": "operator@ghostrange.local",
       "authorization_context_ref": null
     },
     "provenance_graph": {
       "schema_version": "1",
-      "id": "fbd4ddac-5dc3-470a-9624-8a5dd36f29d3",
-      "experiment_run_id": "c3ba6a90-1495-4a27-a044-d4095575cec7",
+      "id": "f06996de-8b80-4b5f-a06b-bfc1a9c69356",
+      "experiment_run_id": "50677327-249e-4d02-8080-30cb2d130952",
       "nodes": [
         {
           "schema_version": "1",
-          "id": "1219431f-d01d-4fbd-8aca-fd2ae952d889",
+          "id": "df71789e-7e2a-4611-bbab-feb951256ede",
           "kind": "SOURCE_REVISION",
-          "ref_id": "ecc3de81-04a9-4e33-b647-1d9ee21d4700",
+          "ref_id": "86409885-435e-4bd5-b283-887614618028",
           "digest": null,
           "label": "source"
         },
         {
           "schema_version": "1",
-          "id": "4727d30f-cbcc-4ac3-87d5-3ecc762eea8a",
+          "id": "9b7b6df6-a969-4593-a09b-68ed202b6bdc",
           "kind": "TWIN_REVISION",
-          "ref_id": "d5b788ba-2c43-4dc7-a3d8-f2e88698519c",
+          "ref_id": "f225bf18-a767-463a-aac9-49412dc56d77",
           "digest": null,
           "label": "twin"
         },
         {
           "schema_version": "1",
-          "id": "d69e9f57-f576-47a3-8ae8-9c64aa2bf439",
+          "id": "8ed990ad-002e-4e32-b17e-76d7cd913a50",
           "kind": "EXPERIMENT",
-          "ref_id": "c3ba6a90-1495-4a27-a044-d4095575cec7",
+          "ref_id": "50677327-249e-4d02-8080-30cb2d130952",
           "digest": null,
           "label": "experiment"
         }
@@ -77,53 +77,53 @@
       "edges": [
         {
           "schema_version": "1",
-          "from_node_id": "d69e9f57-f576-47a3-8ae8-9c64aa2bf439",
-          "to_node_id": "4727d30f-cbcc-4ac3-87d5-3ecc762eea8a",
+          "from_node_id": "8ed990ad-002e-4e32-b17e-76d7cd913a50",
+          "to_node_id": "9b7b6df6-a969-4593-a09b-68ed202b6bdc",
           "kind": "DERIVED_FROM"
         },
         {
           "schema_version": "1",
-          "from_node_id": "4727d30f-cbcc-4ac3-87d5-3ecc762eea8a",
-          "to_node_id": "1219431f-d01d-4fbd-8aca-fd2ae952d889",
+          "from_node_id": "9b7b6df6-a969-4593-a09b-68ed202b6bdc",
+          "to_node_id": "df71789e-7e2a-4611-bbab-feb951256ede",
           "kind": "DERIVED_FROM"
         }
       ],
-      "graph_digest": "sha256:9ff18ae35c0e02ca1d4556c358d4f787ae0cab82029f152985db40d99320443c"
+      "graph_digest": "sha256:9d057d2b06562629fa5d7ef6575dd08fac30bf8ee3f0075a24de451860345e1f"
     },
     "experiment_root": {
       "schema_version": "1",
-      "manifest_digest": "sha256:0c7d2e781dd6423d8792a269bd3defe09c736c01528726b86535209fab8b9fa6",
-      "provenance_graph_digest": "sha256:9ff18ae35c0e02ca1d4556c358d4f787ae0cab82029f152985db40d99320443c",
+      "manifest_digest": "sha256:15347967d08df1b2002935d381bbb17e0e16c7e327780ce3f799c4321d95ab97",
+      "provenance_graph_digest": "sha256:9d057d2b06562629fa5d7ef6575dd08fac30bf8ee3f0075a24de451860345e1f",
       "artifact_merkle_root": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
       "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
-      "root_digest": "sha256:073f8951ec911c61c5a446c67082cd10d2b0d7dac249468799e530c5280f998b"
+      "root_digest": "sha256:d35f97a56a63fe34f71f2945429f62c91e37eeab33fc476d787dcdf8373b4bb7"
     },
     "attestation": {
       "schema_version": "1",
-      "id": "89de0959-db56-4904-a99e-927249a764ff",
+      "id": "f0b9df4f-e2e8-4c52-9f6d-596ee87bf570",
       "envelope_type": "application/vnd.in-toto+json",
       "payload_type": "application/vnd.ghostrange.experimentpredicate+json",
-      "subject_digest": "sha256:073f8951ec911c61c5a446c67082cd10d2b0d7dac249468799e530c5280f998b",
+      "subject_digest": "sha256:d35f97a56a63fe34f71f2945429f62c91e37eeab33fc476d787dcdf8373b4bb7",
       "predicate": {
         "schema_version": "1",
         "predicate_type": "https://ghostrange.local/attestation/experiment/v1",
         "experiment_root": {
           "schema_version": "1",
-          "manifest_digest": "sha256:0c7d2e781dd6423d8792a269bd3defe09c736c01528726b86535209fab8b9fa6",
-          "provenance_graph_digest": "sha256:9ff18ae35c0e02ca1d4556c358d4f787ae0cab82029f152985db40d99320443c",
+          "manifest_digest": "sha256:15347967d08df1b2002935d381bbb17e0e16c7e327780ce3f799c4321d95ab97",
+          "provenance_graph_digest": "sha256:9d057d2b06562629fa5d7ef6575dd08fac30bf8ee3f0075a24de451860345e1f",
           "artifact_merkle_root": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
           "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
-          "root_digest": "sha256:073f8951ec911c61c5a446c67082cd10d2b0d7dac249468799e530c5280f998b"
+          "root_digest": "sha256:d35f97a56a63fe34f71f2945429f62c91e37eeab33fc476d787dcdf8373b4bb7"
         },
-        "manifest_id": "ec2fd4a5-e32a-447a-8bea-8a4c3ee61c09",
+        "manifest_id": "270b32f1-b70e-4ac4-b863-52a9037f14d0",
         "replay_level_available": "LEVEL_4"
       },
-      "signature_b64": "sRPq+0DQhJ47jK9U332wYi2jRwSslAFBa4BK9gTCbg+hpb89iqHb4Gyd5d7cVs3HFo2QOXqTzHoxb/Fmz8XkAQ==",
+      "signature_b64": "6jUpvZ7weRIV52lyanfdNj/nKXRjKnUjitkD7FCxvF1FqS+nl/kVnNvBy07Ko/UNVrx07BMjVpAYg/EhqZv2Ag==",
       "key_id": "ghostrange-dev",
       "signer_kind": "LOCAL_DEVELOPMENT",
-      "signed_at": "2026-09-27T16:23:02.971215Z"
+      "signed_at": "2026-09-27T17:44:17.137684Z"
     },
     "artifact_index": [
       {
@@ -149,9 +149,9 @@
       "redact_paths": [],
       "allow_hostname": false
     },
-    "bundle_digest": "sha256:c595f0feac500202166447b7be5bf58b4ab7c931a68806e94f23044cce17e9c1"
+    "bundle_digest": "sha256:381cb72ed9d064e36cf00537dc5dc8fae3f39d78fb844c1eeb500c936b98411f"
   },
   "trusted_public_keys": {
-    "ghostrange-dev": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAMJIHV3FCu6bO+LONHfmozC3WvtzNHzgta7r0vGJKsYg=\n-----END PUBLIC KEY-----\n"
+    "ghostrange-dev": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA9ndhC2PcFq646u+AJGUiihJEi8D4kQEOaJQB9NWpPEQ=\n-----END PUBLIC KEY-----\n"
   }
 }

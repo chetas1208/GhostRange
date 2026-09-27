@@ -39,6 +39,7 @@ from .worker_store import WorkerStore
 from .worker_routes import router as worker_router
 from .worker_orchestrator import RealWorkerOrchestrator
 from .inference_service import InferenceService
+from .inference_router import build_inference_router
 from .inference_worker_pool import InferenceWorkerPool
 from .inference_worker_routes import router as inference_worker_router
 from .investigation_routes import router as investigation_router
@@ -161,6 +162,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         # settings-parsing pass.
         app.state.netbird_client = build_netbird_client(settings)
         app.state.inference_worker_pool = _build_inference_worker_pool(settings)
+        # Optional local Laya provider seam (INTELLIGENCE_PROVIDER=laya-local) — see
+        # inference_router.py. Falls back to the pre-existing Vultr provider unchanged
+        # when Laya isn't configured/active; never touches the inference worker pool above,
+        # GhostExecutionGateway, or worker/cost accounting.
+        app.state.inference_router = build_inference_router(settings)
         app.state.artifact_registry = None
         app.state.worker_store = None
         app.state.worker_orchestrator = None
@@ -211,6 +217,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.postgres_store = None
     app.state.inference_worker_pool = _build_inference_worker_pool(settings)
+    app.state.inference_router = build_inference_router(settings)
 
     app.include_router(health_router)
     app.include_router(ops_router)

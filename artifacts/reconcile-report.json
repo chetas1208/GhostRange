@@ -1,6 +1,10 @@
 {
   "dry_run": true,
+  "checked_at": "2026-09-27T16:31:33.120129+00:00",
   "owned_resources": [],
   "orphans": [],
-  "note": "M2: wire to vultr-control list-by-tag when LIVE_PROVIDER=vultr"
+  "terminated": [],
+  "would_terminate": [],
+  "failed": [],
+  "still_present_after_reap": []
 }

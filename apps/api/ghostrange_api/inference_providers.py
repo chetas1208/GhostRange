@@ -5,9 +5,26 @@ Two concrete providers implement the same small `InferenceProvider` Protocol:
 
   - `ExistingProvider`  — the pre-existing Vultr Serverless Inference path (wraps
     `InferenceService`, unchanged in behavior/config from before this module existed).
-  - `LayaLocalProvider` — an OPTIONAL, local, CPU-only provider. Activated only by
-    `INTELLIGENCE_PROVIDER=laya-local` (see `Settings.laya_active`); GhostRange must keep
-    working with zero code-path changes when it is not.
+  - `LayaLocalProvider` — a local, CPU-only provider wrapping the real Laya model.
+
+Laya's role is split along a hard capability line, not a policy one (see "What Laya turned
+out to be" below):
+
+  - Free-text generation (`generate()`/`structured_generate()` — incident summarization,
+    hypothesis prose, remediation explanation) stays on `ExistingProvider` by architectural
+    necessity: the real Laya model cannot do this at all, full stop. `LayaLocalProvider`
+    raises `unsupported` immediately for both, regardless of configuration, so
+    `InferenceRouter` always falls through to `ExistingProvider` for these. Only
+    `INTELLIGENCE_PROVIDER=laya-local` makes Laya the *nominal* primary here (see
+    `Settings.laya_active`) — it changes nothing observable, since Laya always defers.
+  - Structured classification/extraction (`classify()`) is the one capability the real
+    model genuinely has, and it is the DEFAULT, preferred path for it — not opt-in.
+    Whenever a native-protocol local runtime is reachable (the out-of-the-box default:
+    `MODEL_BASE_URL=http://127.0.0.1:8791`, `MODEL_API_PROTOCOL=native`, no
+    `INTELLIGENCE_PROVIDER` needed), `InferenceRouter.classify()` tries it FIRST. GhostRange
+    still works with no code-path changes when it is unreachable: `ExistingProvider.classify()`
+    is the graceful fallback, asking the already-configured LLM to answer the same typed
+    questions instead.
 
 Neither provider (nor the `InferenceRouter` in `inference_router.py` that picks between
 them) ever calls Vultr Compute/Worker APIs, GhostExecutionGateway, or anything
@@ -41,6 +58,7 @@ cannot serve free-text generation at all.
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -194,6 +212,35 @@ class ExistingProvider:
         except (ValueError, KeyError, IndexError) as exc:
             raise ProviderError(str(exc), kind=ProviderErrorKind.MALFORMED, provider=self.name) from exc
 
+    async def classify(self, *, state: str, questions: dict[str, dict[str, Any]]) -> dict[str, Any]:
+        """Graceful-degradation classify(): the real Laya model's own `/v1/systemone` never
+        runs through this class, but when Laya is unreachable GhostRange still needs *a*
+        answer for whatever structured-classification call site invoked it. This asks the
+        already-configured LLM to answer the same typed choice/score/noul questions and
+        return them in the same `{"answers": {...}}` shape Laya itself would, via the same
+        `complete_json` path every other structured call in this codebase already uses — no
+        new call mechanism, just a different prompt."""
+        if not self.available:
+            raise ProviderError("inference not configured", kind=ProviderErrorKind.NOT_CONFIGURED, provider=self.name)
+        system = (
+            "You are a structured classification engine. You will be given a state (free "
+            "text) and a JSON object of typed questions (type: choice/score/noul). Answer "
+            'ONLY with JSON: {"answers": {"<question_id>": {"type": "<type>", ...}}}. For '
+            'type=choice, include "choice" (one of that question\'s criteria keys). For '
+            'type=score, include "score" (one of that question\'s criteria levels). For '
+            'type=noul, include "noul" (a number 0-1: the probability the answer is true). '
+            "Do not include any other top-level or per-answer keys."
+        )
+        user = json.dumps({"state": state, "questions": questions})
+        data = await self.structured_generate(system=system, user=user, max_tokens=512)
+        if not isinstance(data.get("answers"), dict):
+            raise ProviderError(
+                "fallback classification response missing 'answers'",
+                kind=ProviderErrorKind.MALFORMED,
+                provider=self.name,
+            )
+        return data
+
 
 # Laya checkpoint names laya-serve's own `/v1/systemone` route understands as an explicit
 # `model` field (see `laya/serve.py::_KNOWN_MODELS` in the real package). Anything else in
@@ -215,7 +262,7 @@ class LayaLocalProvider:
 
     name = "laya-local"
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, transport: httpx.BaseTransport | None = None) -> None:
         protocol = settings.model_api_protocol
         if protocol not in _KNOWN_PROTOCOLS:
             raise ValueError(
@@ -229,7 +276,9 @@ class LayaLocalProvider:
         self._timeout_s = settings.laya_request_timeout_s
         self._max_input_chars = settings.laya_max_input_chars
         self._max_output_tokens = settings.laya_max_output_tokens
-        import asyncio
+        # Test-only seam, same as InferenceService.__init__: production callers never pass
+        # this, so httpx makes a real network call to MODEL_BASE_URL exactly as configured.
+        self._transport = transport
 
         # Bounded concurrency: a single CPU box running Laya should never field more
         # forward passes at once than `Settings.laya_concurrency_cap` allows.
@@ -237,13 +286,38 @@ class LayaLocalProvider:
 
     @property
     def available(self) -> bool:
+        """Gates the free-text `generate()`/`structured_generate()` seam only — i.e.
+        whether Laya is treated as *the* active provider for those. Real Laya structurally
+        cannot fulfill either (see module docstring), so this remains an explicit opt-in
+        (`INTELLIGENCE_PROVIDER=laya-local`) and, even then, both methods immediately raise
+        `unsupported` so `InferenceRouter` falls back to the existing provider. It does NOT
+        gate `classify()` — see `classify_available`."""
         return self._settings.laya_active and bool(self._base_url)
+
+    @property
+    def classify_available(self) -> bool:
+        """`classify()` is the one capability the real model genuinely has (typed
+        choice/score/yes-no decisions in a single forward pass — see module docstring), and
+        it is used BY DEFAULT wherever GhostRange has a structured-classification use case,
+        the same way any other local health check would be: attempted whenever a native-
+        protocol local runtime is configured (which is the out-of-the-box default —
+        MODEL_BASE_URL defaults to http://127.0.0.1:8791, MODEL_API_PROTOCOL defaults to
+        "native"), with no INTELLIGENCE_PROVIDER opt-in required, and a graceful fallback
+        to the existing provider's own (LLM-prompted) classification when it is unreachable.
+        """
+        return self._protocol == _PROTOCOL_NATIVE and bool(self._base_url)
 
     def _headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self._api_key}"} if self._api_key else {}
 
     async def health(self) -> ProviderHealth:
-        if not self.available:
+        # Deliberately gated on "is a base_url configured at all" — NOT on `available`
+        # (which additionally requires INTELLIGENCE_PROVIDER=laya-local) and NOT on
+        # `classify_available` (which additionally requires native protocol): this is the
+        # general "is the local runtime reachable" probe, and it must report real
+        # OFFLINE/DEGRADED/READY status for the default-on classify() path (native protocol)
+        # AND for an explicit openai-compatible generation opt-in alike.
+        if not self._base_url:
             return ProviderHealth(
                 provider=self.name,
                 status=ProviderStatus.NOT_CONFIGURED,
@@ -251,31 +325,34 @@ class LayaLocalProvider:
                 model=self._model_name,
                 mode="LOCAL",
                 latency_ms=None,
-                detail="INTELLIGENCE_PROVIDER != laya-local, or MODEL_BASE_URL unset",
+                detail="MODEL_BASE_URL unset",
             )
         started = time.perf_counter()
         try:
-            async with httpx.AsyncClient(timeout=self._timeout_s) as client:
+            async with httpx.AsyncClient(timeout=self._timeout_s, transport=self._transport) as client:
                 if self._protocol == _PROTOCOL_NATIVE:
-                    resp = await client.get(f"{self._base_url}/health")
+                    resp = await asyncio.wait_for(client.get(f"{self._base_url}/health"), timeout=self._timeout_s)
                 else:
                     # No standardized health route for a generic OpenAI-compatible local
                     # server; a cheap 1-token completion is the closest honest proxy.
-                    resp = await client.post(
-                        f"{self._base_url}/chat/completions",
-                        json={
-                            "model": self._model_name or "local",
-                            "messages": [{"role": "user", "content": "ping"}],
-                            "max_tokens": 1,
-                        },
-                        headers=self._headers(),
+                    resp = await asyncio.wait_for(
+                        client.post(
+                            f"{self._base_url}/chat/completions",
+                            json={
+                                "model": self._model_name or "local",
+                                "messages": [{"role": "user", "content": "ping"}],
+                                "max_tokens": 1,
+                            },
+                            headers=self._headers(),
+                        ),
+                        timeout=self._timeout_s,
                     )
         except httpx.ConnectError as exc:
             return ProviderHealth(
                 provider=self.name, status=ProviderStatus.OFFLINE, device="UNKNOWN",
                 model=self._model_name, mode="LOCAL", latency_ms=None, detail=f"connection refused: {exc}",
             )
-        except httpx.TimeoutException as exc:
+        except (httpx.TimeoutException, asyncio.TimeoutError) as exc:
             return ProviderHealth(
                 provider=self.name, status=ProviderStatus.OFFLINE, device="UNKNOWN",
                 model=self._model_name, mode="LOCAL", latency_ms=None, detail=f"timeout: {exc}",
@@ -341,23 +418,26 @@ class LayaLocalProvider:
         started = time.perf_counter()
         try:
             async with self._sem:
-                async with httpx.AsyncClient(timeout=self._timeout_s) as client:
-                    resp = await client.post(
-                        f"{self._base_url}/chat/completions",
-                        json={
-                            "model": self._model_name or "local",
-                            "messages": [
-                                {"role": "system", "content": system},
-                                {"role": "user", "content": bounded_user},
-                            ],
-                            "max_tokens": bounded_max_tokens,
-                            "temperature": 0.2,
-                        },
-                        headers=self._headers(),
+                async with httpx.AsyncClient(timeout=self._timeout_s, transport=self._transport) as client:
+                    resp = await asyncio.wait_for(
+                        client.post(
+                            f"{self._base_url}/chat/completions",
+                            json={
+                                "model": self._model_name or "local",
+                                "messages": [
+                                    {"role": "system", "content": system},
+                                    {"role": "user", "content": bounded_user},
+                                ],
+                                "max_tokens": bounded_max_tokens,
+                                "temperature": 0.2,
+                            },
+                            headers=self._headers(),
+                        ),
+                        timeout=self._timeout_s,
                     )
         except httpx.ConnectError as exc:
             raise ProviderError(str(exc), kind=ProviderErrorKind.OFFLINE, provider=self.name) from exc
-        except httpx.TimeoutException as exc:
+        except (httpx.TimeoutException, asyncio.TimeoutError) as exc:
             raise ProviderError(str(exc), kind=ProviderErrorKind.TIMEOUT, provider=self.name) from exc
         if resp.status_code >= 400:
             raise ProviderError(f"HTTP {resp.status_code}: {resp.text[:200]}", kind=ProviderErrorKind.HTTP_ERROR, provider=self.name)
@@ -395,29 +475,31 @@ class LayaLocalProvider:
         Bounded input, bounded concurrency, timeout, and error normalization all apply, same
         as `generate()`.
         """
-        if self._protocol != _PROTOCOL_NATIVE:
-            raise ProviderError(
-                "classify() requires MODEL_API_PROTOCOL=native",
-                kind=ProviderErrorKind.UNSUPPORTED,
-                provider=self.name,
+        if not self.classify_available:
+            kind = (
+                ProviderErrorKind.UNSUPPORTED
+                if self._protocol != _PROTOCOL_NATIVE
+                else ProviderErrorKind.NOT_CONFIGURED
             )
-        if not self.available:
-            raise ProviderError("laya-local not configured/active", kind=ProviderErrorKind.NOT_CONFIGURED, provider=self.name)
+            raise ProviderError("laya-local classify() not available", kind=kind, provider=self.name)
         bounded_state = state[: self._max_input_chars]
         payload: dict[str, Any] = {"state": bounded_state, "questions": questions}
         if self._model_name and self._model_name in _LAYA_KNOWN_MODELS:
             payload["model"] = self._model_name
         try:
             async with self._sem:
-                async with httpx.AsyncClient(timeout=self._timeout_s) as client:
-                    resp = await client.post(
-                        f"{self._base_url}/v1/systemone",
-                        json=payload,
-                        headers=self._headers(),
+                async with httpx.AsyncClient(timeout=self._timeout_s, transport=self._transport) as client:
+                    resp = await asyncio.wait_for(
+                        client.post(
+                            f"{self._base_url}/v1/systemone",
+                            json=payload,
+                            headers=self._headers(),
+                        ),
+                        timeout=self._timeout_s,
                     )
         except httpx.ConnectError as exc:
             raise ProviderError(str(exc), kind=ProviderErrorKind.OFFLINE, provider=self.name) from exc
-        except httpx.TimeoutException as exc:
+        except (httpx.TimeoutException, asyncio.TimeoutError) as exc:
             raise ProviderError(str(exc), kind=ProviderErrorKind.TIMEOUT, provider=self.name) from exc
         if resp.status_code >= 400:
             raise ProviderError(f"HTTP {resp.status_code}: {resp.text[:200]}", kind=ProviderErrorKind.HTTP_ERROR, provider=self.name)

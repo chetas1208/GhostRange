@@ -77,6 +77,39 @@ async def health_ready(request: Request):
     else:
         checks["inference"] = "not_configured"
 
+    # Provider-agnostic model-assisted-inference surface: reflects whichever provider is
+    # actually active for EITHER seam (the pre-existing Vultr path by default for free-text
+    # generation, or the default-on local Laya classifier for structured
+    # classification/extraction — see inference_router.py). Never fails readiness: an
+    # offline/degraded intelligence provider is informational, same as the legacy
+    # `inference` check above — GhostRange's core paths do not depend on it.
+    inference_router = getattr(request.app.state, "inference_router", None)
+    if inference_router is None:
+        from .inference_router import build_inference_router
+
+        inference_router = build_inference_router(settings)
+    if inference_router.available or inference_router.classification_available:
+        health = await inference_router.health()
+        checks["intelligence"] = {
+            "provider": health.provider,
+            "status": health.status.value,
+            "device": health.device,
+            "model": health.model,
+            "latency_ms": health.latency_ms,
+            "mode": health.mode,
+        }
+        if health.detail:
+            checks["intelligence"]["detail"] = health.detail
+    else:
+        checks["intelligence"] = {
+            "provider": "not_configured",
+            "status": "NOT_CONFIGURED",
+            "device": None,
+            "model": None,
+            "latency_ms": None,
+            "mode": None,
+        }
+
     body = {"ok": ok, "checks": checks, "deploy_sha": settings.deploy_sha}
     if not ok:
         return JSONResponse(status_code=503, content=body)

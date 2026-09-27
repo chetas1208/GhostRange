@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
-import { PerformanceGovernor, ReferenceGrid, colors } from '@ghostrange/ui-3d';
+import { AmbientField, PerformanceGovernor, ReferenceGrid, colors } from '@ghostrange/ui-3d';
 import { CameraRig } from './CameraRig';
 import { InteractionManager } from './InteractionManager';
 import { LightingRig } from './LightingRig';
@@ -55,6 +55,7 @@ export function GhostCanvas() {
       <LightingRig />
       <DepthFog />
       <ReferenceGrid />
+      <AmbientField />
       <SceneRoot />
       <CameraRig />
       <InteractionManager />

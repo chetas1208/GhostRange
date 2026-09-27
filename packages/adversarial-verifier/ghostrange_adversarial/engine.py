@@ -51,10 +51,15 @@ def run_adversarial_search(
     authorized = set(plan.authorized_asset_ids)
     budget = plan.budget
 
+    # entry_points[0] is the plan's real target path (e.g. "/billing/export"); falling back to
+    # generate_candidates' own default ("/admin") keeps auth_admin_lab (whose entry point *is*
+    # "/admin") byte-identical. Without this, every scenario's mutation candidates silently
+    # targeted "/admin" regardless of what the plan declared.
+    base_path = plan.entry_points[0] if plan.entry_points else "/admin"
     pool = list(
         candidate_stream(plan.authorized_asset_ids[0], plan.enabled_arms)
         if candidate_stream
-        else generate_candidates(world_asset_id=plan.authorized_asset_ids[0], arms=plan.enabled_arms)
+        else generate_candidates(world_asset_id=plan.authorized_asset_ids[0], arms=plan.enabled_arms, base_path=base_path)
     )
     rr_idx = [0]
     attempts = 0
@@ -143,7 +148,11 @@ def run_adversarial_search(
         break
 
     runtime = time.perf_counter() - t0
-    if not counterexamples and stop == SearchStopReason.BUDGET_EXHAUSTED:
+    if not counterexamples:
+        # Any stop reason other than a confirmed counterexample (budget exhausted, or the
+        # candidate pool itself running out — STRATEGIES_EXHAUSTED, common for small fixed
+        # candidate universes like the scenarios under scenarios/) means the search
+        # completed without falsifying the claim.
         phase = AdversarialClaimPhase.SURVIVED_BUDGET
 
     return AdversarialVerificationReportV1(

@@ -12,8 +12,12 @@ from .config import Settings
 
 
 class InferenceService:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, transport: httpx.BaseTransport | None = None) -> None:
         self._settings = settings
+        # Test-only seam: production callers never pass this, so `httpx.AsyncClient` makes
+        # a real network call exactly as before. Tests pass `httpx.MockTransport` instead of
+        # monkeypatching `httpx.AsyncClient` globally.
+        self._transport = transport
 
     @property
     def available(self) -> bool:
@@ -39,7 +43,7 @@ class InferenceService:
             "max_tokens": max_tokens,
             "temperature": 0.2,
         }
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=60.0, transport=self._transport) as client:
             resp = await client.post(url, json=payload, headers=headers)
         resp.raise_for_status()
         body = resp.json()

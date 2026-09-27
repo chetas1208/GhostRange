@@ -1,9 +1,20 @@
-"""M10 canonical golden path — chains M5–M9 without new subsystems."""
+"""M10 canonical golden path — chains M5–M9 without new subsystems.
+
+Default scenario is ``tenant_escalation`` (cross-tenant billing-export exposure via
+config-drift header trust — see ``ghostrange_director.scenarios.tenant_escalation`` and
+``ghostrange_adversarial.scenarios.billing_export_lab``): a stronger replacement for the
+original ``auth_incident`` scenario (3 hypotheses that were all auth/cache flavors of one
+mechanism, single remediation candidate). The original scenario is kept fully intact and
+independently tested (``packages/ghostdirector/tests/test_director.py``,
+``packages/adversarial-verifier/tests/test_adversarial.py``) — pass
+``scenario="auth_incident"`` to run it here too.
+"""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import random
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -17,16 +28,32 @@ from ghostrange_contracts.scheduler_v3 import SchedulingContextV3
 
 from ghostrange_contracts.adversarial_m8 import AdversarialVerificationReportV1
 
-from ghostrange_adversarial.scenarios.auth_admin_lab import AuthAdminLabScenario, build_auth_lab_plan
+from ghostrange_adversarial.differential import interpret_differential
 from ghostrange_adversarial.engine import run_adversarial_search
+from ghostrange_adversarial.mutations import candidate_fingerprint
+from ghostrange_adversarial.remediation_revision import propose_revision
+from ghostrange_adversarial.scenarios.auth_admin_lab import AuthAdminLabScenario, build_auth_lab_plan
+from ghostrange_adversarial.scenarios.billing_export_lab import (
+    FIX_A_SHALLOW,
+    FIX_B_DEEP,
+    BillingTenantExportScenario,
+    build_billing_export_lab_plan,
+)
+from ghostrange_adversarial.suite_evolution import promote_counterexample_to_regression
 from ghostrange_director.director import GhostDirectorSimulator
 from ghostrange_director.scenarios.auth_incident import build_auth_incident_knowledge
+from ghostrange_director.scenarios.tenant_escalation import (
+    TENANT_ESCALATION_MECHANICS,
+    TRUE_MECHANISM as TENANT_ESCALATION_TRUE_MECHANISM,
+    build_tenant_escalation_knowledge,
+)
 from ghostrange_director.scheduler_bridge import build_execution_dag
 from ghostrange_ghostledger.seal import _minimal_manifest, seal_experiment
 from ghostrange_ghostledger.signing import DevSigner
 from ghostrange_ghostledger.verify import verify_bundle
 
 ProviderMode = Literal["mock", "live", "not_run"]
+GoldenScenarioId = Literal["tenant_escalation", "auth_incident"]
 
 
 @dataclass
@@ -62,6 +89,10 @@ class GoldenPathResult:
     remediation_id: uuid.UUID | None = None
     source_revision_id: uuid.UUID | None = None
     twin_revision_id: uuid.UUID | None = None
+    # tenant_escalation only: the shallow-fix candidate's own search report, kept alongside
+    # `adversarial_report` (which holds the *shipped* candidate's report — the deep fix) so
+    # both halves of the remediation comparison survive the run. None for auth_incident.
+    shallow_fix_adversarial_report: AdversarialVerificationReportV1 | None = None
 
 
 class GoldenPathOrchestrator:
@@ -73,7 +104,9 @@ class GoldenPathOrchestrator:
         repo_root: Path,
         compose_path: Path | None = None,
         live: bool = False,
+        scenario: GoldenScenarioId = "tenant_escalation",
     ) -> None:
+        self.scenario = scenario
         self.repo_root = repo_root
         self.compose_path = compose_path or (
             repo_root / "ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml"
@@ -105,13 +138,24 @@ class GoldenPathOrchestrator:
 
         # 2 — Director campaign
         t = time.perf_counter()
-        knowledge = build_auth_incident_knowledge()
+        if self.scenario == "auth_incident":
+            knowledge = build_auth_incident_knowledge()
+            director = GhostDirectorSimulator(true_mechanism="session_refresh_cache")
+        else:
+            knowledge = build_tenant_escalation_knowledge()
+            director = GhostDirectorSimulator(
+                true_mechanism=TENANT_ESCALATION_TRUE_MECHANISM,
+                mechanics=TENANT_ESCALATION_MECHANICS,
+                # Three real assets, not one shared "asset/gw01": billing-service,
+                # api-gateway and (implicitly, never directly probed — see
+                # tenant_escalation.py) identity-service all appear as distinct hypotheses.
+                authorized_assets={"asset/gw01", "asset/billing01"},
+            )
         knowledge.investigation_id = investigation_id
-        director = GhostDirectorSimulator(true_mechanism="session_refresh_cache")
         campaign = director.run_campaign(
             knowledge,
             policy=DirectorPolicyId.GHOSTDIRECTOR_V1,
-            budget=ExperimentCampaignBudgetV1(max_experiments=8, max_compute_usd=10),
+            budget=ExperimentCampaignBudgetV1(max_experiments=10, max_compute_usd=12),
             max_rounds=2,
         )
         bench.director_ms = int((time.perf_counter() - t) * 1000)
@@ -140,15 +184,68 @@ class GoldenPathOrchestrator:
         bench.scheduler_decisions = 1
         result.phases.append(f"scheduler:{sched_note}")
 
-        # 4 — Adversarial verification (M8)
+        # 4 — Adversarial verification (M8): try to break the fix.
         t = time.perf_counter()
-        plan = build_auth_lab_plan()
-        adv = run_adversarial_search(plan, AuthAdminLabScenario(remediated=True))
+        if self.scenario == "auth_incident":
+            plan = build_auth_lab_plan()
+            adv = run_adversarial_search(plan, AuthAdminLabScenario(remediated=True))
+            bench.counterexamples_confirmed = len(adv.counterexamples)
+            result.adversarial_report = adv
+            result.phases.append(f"adversarial:{adv.phase.value}")
+            result.remediation_id = uuid.uuid5(campaign_id, "fix-b.2")
+        else:
+            # Fix A (shallow): strips the config-drift header everyone found first
+            # (X-Internal-Role) but nobody knew about the second, unrelated legacy
+            # debug-bypass header — deterministic mutation search (mock mode: fixed
+            # rng seed) rediscovers it. Fix A is FALSIFIED.
+            plan_shallow = build_billing_export_lab_plan()
+            adv_shallow = run_adversarial_search(
+                plan_shallow, BillingTenantExportScenario(fix=FIX_A_SHALLOW), rng=random.Random(7)
+            )
+            result.phases.append(f"adversarial:shallow_fix={adv_shallow.phase.value}")
+            result.shallow_fix_adversarial_report = adv_shallow
+
+            # Fix B (deep): removes all header-based trust; the same search, run fresh
+            # against this candidate, finds nothing before exhausting its strategies.
+            # Fix B SURVIVES.
+            plan_deep = build_billing_export_lab_plan(claim_id=plan_shallow.claim_id)
+            adv_deep = run_adversarial_search(
+                plan_deep, BillingTenantExportScenario(fix=FIX_B_DEEP), rng=random.Random(7)
+            )
+            result.phases.append(f"adversarial:deep_fix={adv_deep.phase.value}")
+
+            bench.counterexamples_confirmed = len(adv_shallow.counterexamples) + len(adv_deep.counterexamples)
+            # The candidate actually promoted downstream (GhostGate) is the one that
+            # survived, not the falsified one.
+            result.adversarial_report = adv_deep
+
+            if adv_shallow.counterexamples:
+                ce = adv_shallow.counterexamples[0]
+                fp = candidate_fingerprint({"sequence": ce.action_sequence})
+                diff = interpret_differential(
+                    fingerprint=fp,
+                    baseline_world_id=plan_shallow.world_id,
+                    remediated_world_id=plan_deep.world_id,
+                    baseline_satisfied=True,
+                    remediated_satisfied=bool(adv_deep.counterexamples),
+                )
+                result.phases.append(f"differential:{diff.interpretation}")
+
+                rev = propose_revision(
+                    parent_remediation_id=uuid.uuid5(campaign_id, "fix-a-shallow"),
+                    counterexample=ce,
+                    parent_label="Fix A",
+                )
+                result.phases.append(f"remediation_revision:{rev.child_label}")
+                result.remediation_id = uuid.uuid5(
+                    campaign_id, rev.child_label.lower().replace(" ", "-").replace(".", "-")
+                )
+
+                suite_rev = promote_counterexample_to_regression(ce)
+                result.phases.append(f"regression_suite:promoted={suite_rev.suite_id}")
+            else:
+                result.remediation_id = uuid.uuid5(campaign_id, "fix-b-deep")
         bench.adversarial_ms = int((time.perf_counter() - t) * 1000)
-        bench.counterexamples_confirmed = len(adv.counterexamples)
-        result.adversarial_report = adv
-        result.phases.append(f"adversarial:{adv.phase.value}")
-        result.remediation_id = uuid.uuid5(campaign_id, "fix-b.2")
         if self.compose_path.is_file():
             compose_hash = hashlib.sha256(self.compose_path.read_bytes()).hexdigest()[:32]
             result.source_revision_id = uuid.uuid5(uuid.NAMESPACE_URL, f"source:{compose_hash}")

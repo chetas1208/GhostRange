@@ -1,9 +1,9 @@
 {
-  "provisioning_ms": 25,
-  "boot_ms": 25,
+  "provisioning_ms": 53,
+  "boot_ms": 53,
   "execution_ms": 0,
   "verification_ms": 0,
-  "teardown_ms": 50,
+  "teardown_ms": 106,
   "total_ms": 0,
   "estimated_cost_usd": 0.024,
   "event_count": 31,
