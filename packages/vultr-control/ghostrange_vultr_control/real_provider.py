@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import base64
 import time
+from datetime import datetime
 from typing import Any, Optional
 
 from .errors import VultrControlError, VultrNotFoundError, VultrTimeoutError
@@ -28,6 +29,7 @@ from .models import (
     ComputeRecord,
     CreateComputeRequest,
     CreateWorldRequest,
+    utc_now,
     GhostRangeTags,
     ProviderKind,
     ResourceStatus,
@@ -44,6 +46,25 @@ def _map_instance_status(status: Optional[str]) -> ResourceStatus:
     if status == "active":
         return ResourceStatus.ACTIVE
     return ResourceStatus.PENDING
+
+
+def _parse_vultr_datetime(raw: Optional[str]) -> datetime:
+    """Parse Vultr's ``date_created`` (ISO 8601, e.g. "2020-10-10T01:56:20+00:00").
+
+    Falls back to ``utc_now()`` only when the field is missing/unparseable —
+    never crashes a list call over a formatting surprise, but this must
+    never be relied on as "the real creation time" when it happens: an
+    orphan-reaper comparing this to a TTL needs the REAL timestamp, and a
+    silent fallback to "now" would make every instance look freshly created
+    forever. Callers should treat an unparseable date_created as worth
+    investigating, not routine.
+    """
+    if not raw:
+        return utc_now()
+    try:
+        return datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return utc_now()
 
 
 class RealVultrProvider(VultrControlProvider):
@@ -297,6 +318,7 @@ class RealVultrProvider(VultrControlProvider):
             vultr_power_status=instance.get("power_status"),
             vultr_server_status=instance.get("server_status"),
             tags=tags,
+            created_at=_parse_vultr_datetime(instance.get("date_created")),
             raw={"instance": instance},
         )
 

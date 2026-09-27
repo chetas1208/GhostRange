@@ -47,6 +47,14 @@ class WorkerScheduler:
                 row = await cur.fetchone()
         return int(row[0]) if row else 0
 
+    async def assert_can_start_live_worker(self) -> None:
+        """Public entry point for call sites outside this module (e.g.
+        campaign_routes.py) that need the real MAX_ACTIVE_COMPUTE_WORKERS
+        cap enforced before creating a real billable Vultr VM directly
+        through RealWorkerOrchestrator, bypassing run_benchmark_job()'s own
+        internal call to _assert_budget(). Raises BudgetExceededError."""
+        await self._assert_budget(live=True)
+
     async def _assert_budget(self, *, live: bool = False) -> None:
         # Real Vultr Compute VMs are billable infrastructure — use the dedicated compute
         # cap (default 1), never the inference-pool cap. Do not merge these two knobs.

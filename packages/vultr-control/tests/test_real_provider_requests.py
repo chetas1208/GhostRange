@@ -272,6 +272,23 @@ class TestListFiltersByRangeId:
         filtered = provider.list_computes(range_id="range-1")
         assert [c.provider_compute_id for c in filtered] == [c1.provider_compute_id]
 
+    def test_list_computes_parses_real_date_created_not_now(self, provider, fake_server):
+        # A TTL-based orphan reaper compares created_at + ttl_seconds to now;
+        # if created_at silently defaulted to "now" on every list call, every
+        # instance would always look freshly created and no orphan would
+        # ever be detected. Prove the real provider parses date_created
+        # instead of falling back to the ComputeRecord field default.
+        import datetime as _dt
+
+        world_id = _make_world(provider)
+        created = provider.create_compute(
+            CreateComputeRequest(world_ref=world_id, region="ewr", plan="vc2-1c-1gb", tags=GhostRangeTags(range_id="range-1"), os_id=387)
+        )
+        fake_server.instances[created.provider_compute_id]["date_created"] = "2020-01-01T00:00:00+00:00"
+        [record] = provider.list_computes(range_id="range-1")
+        assert record.created_at == _dt.datetime(2020, 1, 1, tzinfo=_dt.timezone.utc)
+        assert (_dt.datetime.now(_dt.timezone.utc) - record.created_at).days > 300
+
 
 class TestAuthHeaderNeverLeaks:
     def test_every_request_uses_bearer_auth_and_key_not_in_any_response(self, provider, fake_server):

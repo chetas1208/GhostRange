@@ -129,3 +129,40 @@ def test_terminate_worker_allows_owned_instance(monkeypatch):
     # the inner destroy effect runs exactly once.
     shield.terminate_worker(owned_handle)
     assert inner.terminate_calls == ["owned-instance-1"]
+
+
+class FakeSingleCapProvider(FakeMixedOwnershipProvider):
+    """Same as above, plus a real create_worker so create_worker's own cap
+    check (via _auth_ctx) can be exercised, not just terminate_worker's."""
+
+    def create_worker(self, **kwargs):
+        new_id = f"new-instance-{len(self._owned_ids)}"
+        self._owned_ids.add(new_id)
+        return self._handle(new_id)
+
+
+def test_create_worker_cap_is_global_not_scoped_to_the_calling_range_id(monkeypatch):
+    """Real incident, 2026-09-27: campaign_routes.py mints a FRESH range_id
+    on every call to POST /v1/campaigns/golden. _auth_ctx() used to count
+    list_owned_workers(range_id=<that fresh id>), which is always 0 for a
+    brand-new range regardless of how many real VMs already exist
+    account-wide - so MAX_ACTIVE_COMPUTE_WORKERS never actually gated this
+    call path, and 4 real orphaned Vultr VMs got created before anyone
+    noticed. This proves the fix: the cap must be checked against ALL
+    globally-owned workers, not the specific range_id of the current call.
+    """
+    monkeypatch.setenv("GHOSTSHIELD_MODE", "ENFORCE")
+    monkeypatch.setenv("MAX_ACTIVE_COMPUTE_WORKERS", "1")
+    # One worker already exists, owned by a DIFFERENT, already-finished range.
+    inner = FakeSingleCapProvider(owned_ids={"already-running-instance"}, foreign_ids=set())
+    shield = _shielded(inner)
+
+    # A brand-new range_id, exactly like campaign_routes.py's uuid.uuid4() per call.
+    fresh_range_id = uuid.uuid4()
+
+    with pytest.raises(GatewayError, match="P2_MAX_ACTIVE_WORKERS|MAX_ACTIVE"):
+        shield.create_worker(range_id=fresh_range_id, experiment_id=None)
+
+    # No second VM was created - the cap held even though this range_id had
+    # never itself created anything before.
+    assert len(inner._owned_ids) == 1

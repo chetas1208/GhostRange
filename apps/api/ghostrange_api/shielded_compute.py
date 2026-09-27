@@ -44,7 +44,14 @@ class ShieldedComputeProvider:
         return self._inner.list_owned_workers(range_id=None)
 
     def _auth_ctx(self, range_id: uuid.UUID, *, resource_owned: bool = True) -> AuthorizationContextV1:
-        active = len(self._inner.list_owned_workers(range_id=range_id))
+        # MAX_ACTIVE_COMPUTE_WORKERS is a GLOBAL cap on real billable Vultr VMs,
+        # not a per-range one. Counting list_owned_workers(range_id=range_id) here
+        # was a real bug: campaign_routes.py mints a fresh range_id per call, so
+        # that count was always 0 regardless of how many real VMs already existed
+        # account-wide - the cap never actually applied to that call path. Count
+        # globally-owned workers instead; range_id is still used below for the
+        # resource_owned/ownership checks, which are correctly per-resource.
+        active = len(self._inner.list_owned_workers(range_id=None))
         return AuthorizationContextV1(
             campaign_id=range_id,
             runtime_revision=self._runtime_revision,
