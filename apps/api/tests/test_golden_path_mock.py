@@ -86,3 +86,15 @@ def test_live_guard_without_flag():
     finally:
         if old:
             os.environ["GHOSTRANGE_LIVE"] = old
+
+
+def test_live_m20_path_delegates_teardown_without_false_failure():
+    root = Settings.from_env().repo_root
+    result = GoldenPathOrchestrator(
+        repo_root=root,
+        live=True,
+        coordinated_live_teardown=True,
+    ).run()
+
+    assert "teardown:delegated_to_m20_live_worker" in result.phases
+    assert "live teardown must use coordinated lease + vultr-control" not in result.errors

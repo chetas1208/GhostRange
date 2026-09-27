@@ -118,6 +118,7 @@ class GoldenPathOrchestrator:
         repo_root: Path,
         compose_path: Path | None = None,
         live: bool = False,
+        coordinated_live_teardown: bool = False,
         scenario: GoldenScenarioId = "tenant_escalation",
     ) -> None:
         self.scenario = scenario
@@ -126,6 +127,7 @@ class GoldenPathOrchestrator:
             repo_root / "ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml"
         )
         self.live = live
+        self.coordinated_live_teardown = coordinated_live_teardown
 
     def run(self, range_id: uuid.UUID | None = None) -> GoldenPathResult:
         t0 = time.perf_counter()
@@ -298,8 +300,11 @@ class GoldenPathOrchestrator:
 
         # 6 — Teardown (mock unless live)
         if self.live:
-            result.phases.append("teardown:LIVE_NOT_IMPLEMENTED_IN_M10_SLICE")
-            result.errors.append("live teardown must use coordinated lease + vultr-control")
+            if self.coordinated_live_teardown:
+                result.phases.append("teardown:delegated_to_m20_live_worker")
+            else:
+                result.phases.append("teardown:LIVE_NOT_IMPLEMENTED_IN_M10_SLICE")
+                result.errors.append("live teardown must use coordinated lease + vultr-control")
         else:
             result.phases.append("teardown:mock_confirmed")
 

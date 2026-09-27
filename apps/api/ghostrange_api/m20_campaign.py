@@ -57,6 +57,7 @@ class M20CampaignOrchestrator:
             repo_root=repo_root,
             compose_path=compose_path,
             live=live,
+            coordinated_live_teardown=live,
             scenario=scenario,
         )
         self._live = live
