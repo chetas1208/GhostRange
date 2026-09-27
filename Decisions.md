@@ -60,6 +60,39 @@ These are locked now so 20 parallel workstreams don't diverge. Subagents record 
 15. **`EvidenceV1.content_hash` stays caller-supplied, not a contract-enforced Merkle root over `observation_ids`/`artifact_ids`.**
     Why: out of scope for `packages/evidence`'s M2 implementation without a contracts change (frozen for wave 1 per M2_COORDINATION.md's contract-change protocol), and no consumer currently needs "the bundle hash changes iff its members change" as an *enforced* invariant rather than a convention — deferring rather than silently deciding a contracts-layer question. Flagged here as still open for whichever agent next touches `packages/contracts/evidence.py`, not closed.
 
+## 2026-09-27 — VKE control-plane deploy path built (real manifests, real cluster deferred)
+
+16. **VKE orchestration/control-plane candidate (Decisions.md #11, ADR-006, VULTR.md §6's DEFER) is now a
+    real, locally-validated Kubernetes manifest set for `api`/`web`/`valkey`/`caddy` at `deploy/k8s/`
+    (Kustomize base + `vke`/`local-kind` overlays). Postgres and Object Storage stay external (Vultr
+    Managed Postgres, Vultr Object Storage) — nothing stateful moves in-cluster.**
+    Why: Decisions.md #6 already rejected self-managing Postgres; moving it into VKE would re-adopt exactly
+    that operational burden for a database with a working managed replacement already wired via
+    `POSTGRES_DSN`. Object Storage is already the evidence-durability tier (#14) with no requirement
+    pulling an in-cluster replacement (e.g. MinIO) in. Valkey *does* move in-cluster, but only because it
+    already carries no persistence in `docker-compose.prod.yml` (`--save "" --appendonly no`) — a plain
+    Deployment, not a Bitnami/official Helm subchart, since this repo has zero Helm usage anywhere and a
+    single ephemeral-cache container doesn't justify introducing one. Public ingress reuses the existing
+    `deploy/caddy/Caddyfile` routing rules verbatim as a Deployment behind a `Service type=LoadBalancer`
+    (Vultr's Cloud Controller Manager provisions a real Load Balancer for it) rather than installing a
+    separate ingress-nginx controller — VKE does not ship one by default, and duplicating the same three
+    routing rules in a second format (Ingress YAML) alongside the Caddyfile that already encodes them
+    would be a second source of truth for no behavioral gain.
+    Validated: `kustomize build` renders all three variants cleanly (11 resources each); `kubeconform
+    -strict` validates all three against the real Kubernetes 1.30 OpenAPI schema (`Valid: 11, Invalid: 0`
+    for each). A real local cluster (`kind`, then `k3d`) was attempted as stronger proof and blocked by a
+    genuine sandbox limitation (rootless Docker, no systemd user session, so neither tool can get the
+    cgroup delegation they require) — documented, not glossed over, in `docs/deployment/VKE_DEPLOY.md`.
+    **No real VKE cluster was created.** That is a new billable cloud resource, explicitly held for the
+    user's go-ahead per this session's standing rule for live-spend decisions (same as the M20 live
+    campaign trigger and API key rotation). Full runbook with exact `vultr-cli`/OpenTofu/`kubectl` commands
+    for when that go-ahead is given: `docs/deployment/VKE_DEPLOY.md`.
+    Alternatives rejected: Helm (Bitnami Valkey subchart) — see above, no persistence to justify it, no
+    existing Helm usage in this repo to build on. In-cluster Postgres/object storage — see above, re-adopts
+    burden Decisions.md #6/#14 already rejected. Separate ingress-nginx controller — duplicates
+    `deploy/caddy/Caddyfile`'s routing logic in a second config format with no behavioral gain, and VKE
+    doesn't provide one by default the way it provides CCM/CSI.
+
 ## Open / not yet decided (owned by subagents, see Progress.md)
 - Whether `EvidenceV1.content_hash` should be a contract-enforced Merkle root over its members (see #15 above) — still open, owned by whoever next revisits `packages/contracts/evidence.py`.
 - Exact stopping-function choice among the three candidates in ADAPTIVE_COMPUTE.md (A: VoI-ratio-with-floor recommended default, B: diminishing-returns slope, C: budget-conditioned dependency veto) — packages/scheduler implementer to finalize, likely A as default with C as an override layer.

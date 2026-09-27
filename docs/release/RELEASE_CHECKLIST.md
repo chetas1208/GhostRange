@@ -1,5 +1,6 @@
 # GhostRange Release Checklist
 
+**Update (2026-09-27, later same day):** the external-gate items "Run one authorized, bounded CPU worker lifecycle from an ACL-allowed origin" and "Verify provider absence and `owned_workers == []`" below have since been completed (see `docs/milestones/M2_CHECKPOINT_2026-09-27.md`, `docs/milestones/M20_FINAL.md`) — checkboxes not retro-edited below to preserve the point-in-time record, but treat those two as DONE. The golden-campaign-triggered live worker (one integrated run) still has not completed, so the release rule and `RESEARCH_PROTOTYPE` / `NO-SHIP` label below still apply.
 ## Local gates
 
 - [x] `make demo`

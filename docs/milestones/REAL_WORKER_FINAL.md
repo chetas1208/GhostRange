@@ -1,5 +1,15 @@
 # Real worker milestone — final report
 
+**Update (2026-09-27, later same day):** the "live proof" gaps this file originally recorded as NO-GO
+were closed the same day. A real Vultr Compute VM was created, bootstrapped, ran a real CPU benchmark
+(2,000,000 iterations, 436ms) with the result stored as a real Postgres artifact row, torn down, and its
+deletion confirmed via a direct per-resource Vultr GET returning 404. See
+`docs/milestones/M2_CHECKPOINT_2026-09-27.md` ("Real infrastructure proof") and the current
+`docs/milestones/M20_FINAL.md` for the authoritative status. The table below is preserved as the
+point-in-time record that preceded that proof; it no longer reflects current reality. Note this remains a
+**single directly-triggered worker lifecycle**, not a golden-campaign-triggered live worker — that
+integrated run still has not completed (see `docs/milestones/M20_FINAL.md`).
+
 ## What was built
 
 - Worker API (`/v1/workers/*`), bootstrap agent download, Postgres worker/task/lease tables.

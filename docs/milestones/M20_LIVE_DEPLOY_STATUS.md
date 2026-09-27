@@ -1,3 +1,5 @@
+**Superseded (2026-09-27, later same day):** the Vultr Compute worker findings below (section 4 and the "Bottom line" table) reflect the state as of ~06:20 UTC, before a real end-to-end single-worker lifecycle was proven later the same day (`docs/milestones/M2_CHECKPOINT_2026-09-27.md`) and before the inference worker pool was verified live (`docs/release/M20_REALITY_MATRIX.md`). Kept verbatim below as the point-in-time negative-result record it was; do not read it as current status. Current status: `docs/milestones/M20_FINAL.md`.
+
 # M20 Live Deploy Status — independent verification (2026-09-27, ~06:20 UTC)
 
 **Method:** not a claims review of the four parallel agents' own reports. Every line below was

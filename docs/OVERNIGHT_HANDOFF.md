@@ -1,5 +1,6 @@
 # GhostRange Overnight Handoff
 
+**Update (2026-09-27, later same day):** blocker #2 below (Vultr Compute ACL rejecting this runner) was worked around by running from the control VM itself — a real end-to-end single-worker lifecycle (create/bootstrap/benchmark/teardown/confirmed-destroyed) has since been proven; see `docs/milestones/M2_CHECKPOINT_2026-09-27.md` and `docs/milestones/M20_FINAL.md`. The golden-campaign-triggered live worker (as one integrated run) still has not completed — that remains the real, current gap.
 **Date:** 2026-09-27  
 **Recommendation:** `NO-SHIP` for production; public repository publication complete.
 

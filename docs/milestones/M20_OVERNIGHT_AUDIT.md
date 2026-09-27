@@ -1,5 +1,7 @@
 # M20 Overnight Audit
 
+**Superseded in part (2026-09-27, later same day):** the P0 "No verified live Vultr Compute lifecycle" row and the "Vultr Compute worker lifecycle: NOT_RUN" classification below predate a real end-to-end single-worker lifecycle proven later the same day — see `docs/milestones/M2_CHECKPOINT_2026-09-27.md` and the current `docs/milestones/M20_FINAL.md`. The golden-campaign-triggered live worker (as one integrated run) still has not completed; that gap is real and current.
+
 **Date:** 2026-09-27  
 **Verdict:** `NO-SHIP` — local integration is testable; live deployment and several M20 release gates remain incomplete.
 

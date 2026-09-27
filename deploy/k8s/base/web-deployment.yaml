@@ -1,0 +1,52 @@
+# Kubernetes equivalent of docker-compose.prod.yml's `web` service: static
+# frontend built by deploy/docker/Dockerfile.web (Vite build -> nginx:1.27-alpine
+# serving on :8080). Build-time VITE_* args are baked into the image at build
+# time (same as compose) — they are NOT runtime env vars here, matching the
+# Dockerfile.web ARG/ENV split already in this repo.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+    app.kubernetes.io/part-of: ghostrange
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: ghostrange-web:local # overridden by overlay (real registry tag)
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi

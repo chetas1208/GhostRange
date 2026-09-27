@@ -1,0 +1,50 @@
+# Real-VKE overlay. Layers on top of ../../base:
+#   - real registry image references (edit the two `newName` values below, or
+#     run `kustomize edit set image` from this directory, before applying)
+#   - cluster-specific ConfigMap values that base leaves as placeholders
+#     (S3 bucket name, worker VPC id/region, public URL, deploy SHA)
+#   - 2 replicas for api/web once a 2-node pool exists (see VKE_DEPLOY.md) —
+#     base stays at 1 replica so it also works on a 1-node pool / kind cluster.
+#
+# Still NOT applied by this overlay: the ghostrange-api-secrets Secret (create
+# it separately per base/api-secret.example.yaml's header) and the Caddyfile's
+# TLS block (patched in after the LB IP is known, see VKE_DEPLOY.md step 5).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+images:
+  - name: ghostrange-api:local
+    newName: REPLACE_WITH_REGISTRY/ghostrange-api
+    newTag: REPLACE_WITH_DEPLOY_SHA
+  - name: ghostrange-web:local
+    newName: REPLACE_WITH_REGISTRY/ghostrange-web
+    newTag: REPLACE_WITH_DEPLOY_SHA
+
+configMapGenerator:
+  - name: ghostrange-api-config
+    behavior: merge
+    literals:
+      - GHOSTRANGE_DEPLOY_SHA=REPLACE_WITH_DEPLOY_SHA
+      - GHOSTRANGE_PUBLIC_URL=https://REPLACE_WITH_LB_IP.sslip.io
+      - S3_BUCKET=REPLACE_WITH_REAL_BUCKET_NAME
+      - GHOSTRANGE_WORKER_VPC_ID=REPLACE_WITH_REAL_VPC_ID
+      - VULTR_WORKER_REGION=REPLACE_WITH_REAL_REGION
+
+patches:
+  - target:
+      kind: Deployment
+      name: api
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+  - target:
+      kind: Deployment
+      name: web
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

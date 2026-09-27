@@ -29,6 +29,15 @@ class Settings:
     inference_api_key: str | None
     inference_base_url: str
     inference_model: str
+    intelligence_provider: str
+    model_name: str | None
+    model_base_url: str
+    model_api_protocol: str
+    model_api_key: str | None
+    laya_request_timeout_s: float
+    laya_max_concurrency: int
+    laya_max_input_chars: int
+    laya_max_output_tokens: int
     trusted_proxy: bool
     require_durable: bool
     app_env: str
@@ -55,6 +64,8 @@ class Settings:
     netbird_worker_group: str
     netbird_api_base_url: str
     netbird_enroll_timeout_s: float
+    orphan_reaper_enabled: bool
+    orphan_reaper_interval_s: float
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -99,6 +110,21 @@ class Settings:
                 "https://api.vultrinference.com/v1",
             ),
             inference_model=os.environ.get("VULTR_INFERENCE_MODEL", "llama-3.1-8b-instruct"),
+            # Optional local, CPU-only "InferenceRouter" seam (see inference_providers.py /
+            # inference_router.py). Server-side env only — deliberately never a VITE_*/
+            # NEXT_PUBLIC_* var, since MODEL_BASE_URL/MODEL_API_KEY must never reach the
+            # browser bundle. INTELLIGENCE_PROVIDER=laya-local is the only value that
+            # activates the local provider; anything else (unset included) keeps the
+            # pre-existing Vultr Serverless Inference path as the sole provider, unchanged.
+            intelligence_provider=os.environ.get("INTELLIGENCE_PROVIDER", "").strip().lower(),
+            model_name=os.environ.get("MODEL_NAME") or None,
+            model_base_url=os.environ.get("MODEL_BASE_URL", "http://127.0.0.1:8791"),
+            model_api_protocol=os.environ.get("MODEL_API_PROTOCOL", "native").strip().lower(),
+            model_api_key=os.environ.get("MODEL_API_KEY") or None,
+            laya_request_timeout_s=float(os.environ.get("LAYA_REQUEST_TIMEOUT_S", "20")),
+            laya_max_concurrency=int(os.environ.get("LAYA_MAX_CONCURRENCY", "2")),
+            laya_max_input_chars=int(os.environ.get("LAYA_MAX_INPUT_CHARS", "8000")),
+            laya_max_output_tokens=int(os.environ.get("LAYA_MAX_OUTPUT_TOKENS", "512")),
             trusted_proxy=os.environ.get("GHOSTRANGE_TRUSTED_PROXY", "").lower() in ("1", "true", "yes"),
             require_durable=os.environ.get("GHOSTRANGE_REQUIRE_DURABLE", "").lower() in ("1", "true", "yes"),
             app_env=os.environ.get("APP_ENV", "development"),
@@ -141,6 +167,16 @@ class Settings:
             netbird_worker_group=os.environ.get("NETBIRD_WORKER_GROUP", "ghostrange-workers"),
             netbird_api_base_url=os.environ.get("NETBIRD_API_BASE_URL", "https://api.netbird.io"),
             netbird_enroll_timeout_s=float(os.environ.get("NETBIRD_ENROLL_TIMEOUT_S", "120")),
+            # General-purpose TTL orphan-reaper sweep (see orphan_reaper.py): periodically
+            # terminates any GhostRange-owned Vultr Compute VM that has outlived its
+            # ttl_seconds tag, regardless of which code path created it. On by default —
+            # this is a safety net against exactly the "4 real VMs with no teardown" class
+            # of incident, and it only ever acts through the shielded provider's ownership
+            # + policy checks, so it is safe to leave on. Never disable this in a real
+            # deployment without an equivalent safeguard in place.
+            orphan_reaper_enabled=os.environ.get("GHOSTRANGE_ORPHAN_REAPER_ENABLED", "true").lower()
+            in ("1", "true", "yes"),
+            orphan_reaper_interval_s=float(os.environ.get("GHOSTRANGE_ORPHAN_REAPER_INTERVAL_S", "300")),
         )
 
     @property
@@ -156,6 +192,23 @@ class Settings:
     @property
     def inference_configured(self) -> bool:
         return bool(self.inference_api_key)
+
+    @property
+    def laya_active(self) -> bool:
+        """True only when the operator explicitly opted into the local, CPU-only Laya
+        provider via INTELLIGENCE_PROVIDER=laya-local. Any other value (including unset,
+        or a typo) is deliberately NOT treated as "active" — GhostRange must keep working
+        against the pre-existing Vultr Serverless Inference provider by default."""
+        return self.intelligence_provider == "laya-local"
+
+    # Hard, code-level ceiling on local-provider concurrency, independent of the Vultr
+    # inference worker pool's own cap — a single CPU box running Laya has no business
+    # fielding more than a handful of concurrent forward passes.
+    LAYA_CONCURRENCY_HARD_CEILING: int = 8
+
+    @property
+    def laya_concurrency_cap(self) -> int:
+        return max(1, min(self.laya_max_concurrency, self.LAYA_CONCURRENCY_HARD_CEILING))
 
     @property
     def netbird_configured(self) -> bool:

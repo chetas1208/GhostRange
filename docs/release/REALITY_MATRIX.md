@@ -1,5 +1,6 @@
 # GhostRange Release Reality Matrix
 
+**Update (2026-09-27, later same day):** the "Vultr Compute workers" row below ("Not completed" / "API token ACL blocks runner; no create attempted") is superseded — a real end-to-end single-worker lifecycle has since been proven live from the control VM; see `docs/milestones/M2_CHECKPOINT_2026-09-27.md` and the authoritative `docs/milestones/M20_FINAL.md`. This was a directly-triggered single worker, not a golden-campaign-triggered one — that integrated run still has not completed.
 This is the compact release-facing matrix. The detailed M20 evidence remains in [M20_REALITY_MATRIX.md](M20_REALITY_MATRIX.md).
 
 | Subsystem | Implemented | Tested | Live | Simulated / replay | Limitation | Evidence |
@@ -21,4 +22,5 @@ This is the compact release-facing matrix. The detailed M20 evidence remains in 
 | Tactical UI | Yes | Yes | Reachable | Fixture/replay | Human visual/tour sign-off pending | frontend tests/spec |
 | Cost accounting | Yes | Yes | Conditional | Local/mock | Provider invoice reconciliation unavailable | cost tests/docs |
 | Timing history | Yes | Partial | Conditional | Local/mock | Database-backed restart acceptance pending | timing store/routes |
+| VKE control-plane deploy | Yes (manifests) | Yes (kustomize build + kubeconform -strict vs real k8s 1.30 schema, 11/11 valid x3 variants) | No | N/A | Real kind/k3d cluster blocked (sandbox: rootless Docker, no systemd session for cgroup delegation); real VKE cluster creation NOT_RUN, held for approval (new billable resource) | `deploy/k8s/`, `docs/deployment/VKE_DEPLOY.md`, `docs/research/VULTR.md` §6 |
 

@@ -1,5 +1,11 @@
 # Real worker coordination (24 agents)
 
+**Update (2026-09-27, later same day):** agent 24's live-proof blocker (row below) is closed — a real
+Vultr Compute worker lifecycle completed and was independently verified. See
+`docs/milestones/M2_CHECKPOINT_2026-09-27.md` and `docs/milestones/M20_FINAL.md`. This was a single
+directly-triggered worker; a golden-campaign-triggered live worker as one integrated run still has not
+completed.
+
 | agent_id | mission | owned_paths | status | integration |
 |----------|---------|-------------|--------|-------------|
 | 01 | Audit existing path | `docs/deployment/REAL_WORKER_AUDIT.md` | done | pass |
@@ -25,6 +31,6 @@
 | 21 | Execution UI | `apps/web` | deferred | stub |
 | 22 | Live E2E script | `scripts/real-worker-e2e.sh` | done | pass mock |
 | 23 | Red team | manual | pending | not run |
-| 24 | Final reviewer | `REAL_WORKER_FINAL.md` | **NO-GO** | live proof pending |
+| 24 | Final reviewer | `REAL_WORKER_FINAL.md` | **GO (single worker, 2026-09-27)** | live proof done; golden-campaign integration still pending |
 
-Blockers: production deploy of new API image; `VULTR_API_KEY`; `GHOSTRANGE_WORKER_VPC_ID`; `GHOSTSCHEDULER_LIVE=true`; `GHOSTRANGE_PUBLIC_URL`.
+Blockers (resolved 2026-09-27 for the single-worker path): production deploy of new API image; `VULTR_API_KEY`; `GHOSTRANGE_WORKER_VPC_ID`; `GHOSTSCHEDULER_LIVE=true`; `GHOSTRANGE_PUBLIC_URL`. Remaining blocker: the golden campaign (`POST /v1/campaigns/golden`) still does not successfully trigger a live worker as part of one integrated run.

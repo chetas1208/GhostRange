@@ -1,0 +1,67 @@
+# Kubernetes equivalent of docker-compose.prod.yml's `api` service.
+# Image is built from deploy/docker/Dockerfile.api (unchanged) and pushed to a
+# registry the cluster can pull from — VKE itself does not build images.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+    app.kubernetes.io/part-of: ghostrange
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: ghostrange-api:local # overridden by overlay (real registry tag)
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: ghostrange-api-config
+            - secretRef:
+                name: ghostrange-api-secrets
+          env:
+            # Explicit overrides that docker-compose.prod.yml's `environment:` block
+            # applies on top of the .env.production `env_file:` — same precedence
+            # here: an `env:` entry wins over the same key from `envFrom`.
+            - name: REDIS_URL
+              value: "redis://valkey:6379/0"
+            - name: GHOSTRANGE_TRUSTED_PROXY
+              value: "true"
+            - name: GHOSTRANGE_REQUIRE_DURABLE
+              value: "true"
+            - name: GHOSTRANGE_REPO_ROOT
+              value: "/app"
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 768Mi

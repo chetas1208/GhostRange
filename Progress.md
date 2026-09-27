@@ -1,5 +1,6 @@
 # Progress — GhostRange (M1–M20)
 
+**Update (2026-09-27, later same day):** "live Compute proof is ACL-blocked" below is superseded — a real end-to-end single-worker Vultr Compute lifecycle has since been proven live from the control VM; see `docs/milestones/M2_CHECKPOINT_2026-09-27.md` and the authoritative `docs/milestones/M20_FINAL.md`. `NO-SHIP` still stands because the golden-campaign-triggered live worker (as one integrated run) has never completed.
 **Updated:** 2026-09-27 (tactical UI + cost accounting Phase 2)
 
 **Overnight campaign snapshot:** see [docs/OVERNIGHT_STATE.md](docs/OVERNIGHT_STATE.md), [M20 overnight audit](docs/milestones/M20_OVERNIGHT_AUDIT.md), and [release reality matrix](docs/release/REALITY_MATRIX.md). Local release gates pass; final recommendation remains `NO-SHIP` because the public deployment is stale, live Compute proof is ACL-blocked, and publication/UI human gates remain open.

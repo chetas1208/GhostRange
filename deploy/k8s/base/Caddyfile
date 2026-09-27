@@ -1,0 +1,44 @@
+# Kubernetes-cluster variant of deploy/caddy/Caddyfile — same routing rules,
+# same upstream role names (api:8000, web:8080 resolve as plain Kubernetes
+# Service DNS names within the ghostrange namespace, same as they resolved as
+# docker-compose service names on the Compute VM).
+#
+# DIFFERENCE FROM deploy/caddy/Caddyfile: the Compute-VM Caddyfile hardcodes the
+# VM's known-in-advance public IP (45.76.248.45.nip.io / .sslip.io) as the site
+# address so Caddy can request a Let's Encrypt cert for it immediately. On VKE,
+# the public IP is a Vultr Load Balancer IP that is NOT known until after this
+# Service is created (see docs/deployment/VKE_DEPLOY.md step 5). This base
+# Caddyfile therefore serves plain HTTP on any Host (`:80` catch-all, no TLS)
+# so it deploys and routes correctly from minute one; the runbook's post-deploy
+# step swaps this ConfigMap to the real `<lb-ip>.sslip.io, :443 { tls ... }`
+# form once the LB IP exists, then rolls the caddy Deployment — the same
+# one-time "insert the real IP" edit this repo already does today for the
+# Compute VM, not new complexity.
+{
+	admin off
+}
+
+:80 {
+	encode gzip
+
+	handle /api/* {
+		uri strip_prefix /api
+		reverse_proxy api:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle /v1/* {
+		reverse_proxy api:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle /health* {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:8080
+	}
+}

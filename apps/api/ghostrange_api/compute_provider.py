@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Protocol
 
 from ghostrange_vultr_control import MockVultrProvider, RealVultrProvider
 from ghostrange_vultr_control.models import CreateComputeRequest, CreateWorldRequest, GhostRangeTags
 
 from .config import Settings
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,6 +26,15 @@ class WorkerHandle:
     region: str
     plan: str
     main_ip: str | None
+    # Real creation timestamp and advisory TTL, carried through from the
+    # underlying ComputeRecord/GhostRangeTags so a general-purpose orphan
+    # reaper (see orphan_reaper.py) can compare age-vs-TTL without a second
+    # round trip to the provider. created_at defaults to "now" only for
+    # backward-compat construction sites (e.g. hand-rolled test doubles)
+    # that predate this field and don't carry a real timestamp — every
+    # production construction site below passes the real value explicitly.
+    created_at: datetime = field(default_factory=_utc_now)
+    ttl_seconds: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,6 +105,8 @@ class MockComputeProvider:
             region=compute.region,
             plan=compute.plan,
             main_ip=compute.main_ip,
+            created_at=compute.created_at,
+            ttl_seconds=tags.ttl_seconds,
         )
         self._handles[handle.provider_compute_id] = handle
         return handle
@@ -121,6 +137,8 @@ class MockComputeProvider:
                     region=rec.region,
                     plan=rec.plan,
                     main_ip=rec.main_ip,
+                    created_at=rec.created_at,
+                    ttl_seconds=rec.tags.ttl_seconds if rec.tags else None,
                 )
             )
         return out
@@ -178,6 +196,8 @@ class VultrComputeProvider:
             region=compute.region,
             plan=compute.plan,
             main_ip=compute.main_ip,
+            created_at=compute.created_at,
+            ttl_seconds=tags.ttl_seconds,
         )
 
     def wait_ready(self, handle: WorkerHandle, *, timeout_s: float = 300.0) -> WorkerHandle:
@@ -190,6 +210,8 @@ class VultrComputeProvider:
             region=refreshed.region,
             plan=refreshed.plan,
             main_ip=refreshed.main_ip,
+            created_at=refreshed.created_at,
+            ttl_seconds=refreshed.tags.ttl_seconds if refreshed.tags else handle.ttl_seconds,
         )
 
     def run_benchmark(self, handle: WorkerHandle) -> BenchmarkResult:
@@ -215,6 +237,8 @@ class VultrComputeProvider:
                 region=rec.region,
                 plan=rec.plan,
                 main_ip=rec.main_ip,
+                created_at=rec.created_at,
+                ttl_seconds=rec.tags.ttl_seconds if rec.tags else None,
             )
             for rec in self._vultr.list_computes(range_id=rid)
         ]

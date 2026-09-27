@@ -1,0 +1,35 @@
+# Base manifest set for GhostRange's control plane (api, web, valkey, caddy).
+# Mirrors docker-compose.prod.yml's service topology 1:1 — see
+# docs/deployment/VKE_DEPLOY.md for what's different in a real VKE deploy
+# (image registry, secrets, LB IP -> TLS) and docs/research/VULTR.md's VKE
+# section for why this exists at all.
+#
+# NOTE: api-secret.example.yaml is intentionally NOT listed here. Create the
+# real ghostrange-api-secrets Secret separately (see that file's header
+# comment) before applying this kustomization, or `api` will CrashLoop on a
+# missing Secret — that failure mode is intentional: it is cheaper to fail
+# loudly at pod-start than to silently run without POSTGRES_DSN/S3 credentials.
+namespace: ghostrange
+
+resources:
+  - namespace.yaml
+  - valkey-deployment.yaml
+  - valkey-service.yaml
+  - api-configmap.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - web-deployment.yaml
+  - web-service.yaml
+  - caddy-deployment.yaml
+  - caddy-service.yaml
+
+configMapGenerator:
+  - name: caddy-config-file
+    files:
+      - Caddyfile
+
+labels:
+  - includeSelectors: false
+    pairs:
+      app.kubernetes.io/part-of: ghostrange
+      app.kubernetes.io/managed-by: kustomize

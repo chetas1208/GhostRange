@@ -19,13 +19,13 @@ class InferenceService:
     def available(self) -> bool:
         return self._settings.inference_configured
 
-    async def complete_json(
+    async def complete_text(
         self,
         *,
         system: str,
         user: str,
         max_tokens: int = 512,
-    ) -> dict[str, Any]:
+    ) -> str:
         if not self.available:
             raise RuntimeError("inference not configured")
         url = self._settings.inference_base_url.rstrip("/") + "/chat/completions"
@@ -43,8 +43,25 @@ class InferenceService:
             resp = await client.post(url, json=payload, headers=headers)
         resp.raise_for_status()
         body = resp.json()
-        text = body["choices"][0]["message"]["content"]
+        return body["choices"][0]["message"]["content"]
+
+    async def complete_json(
+        self,
+        *,
+        system: str,
+        user: str,
+        max_tokens: int = 512,
+    ) -> dict[str, Any]:
+        text = await self.complete_text(system=system, user=user, max_tokens=max_tokens)
         return _extract_json_object(text)
+
+
+def extract_json_object(text: str) -> dict[str, Any]:
+    """Public alias of `_extract_json_object` — reused by inference_providers.py so the
+    "pull a JSON object out of a chat-completion-style text reply" logic has exactly one
+    implementation, shared by the existing Vultr provider and any local OpenAI-compatible
+    Laya runtime."""
+    return _extract_json_object(text)
 
 
 def _extract_json_object(text: str) -> dict[str, Any]:

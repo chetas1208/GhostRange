@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, Request
 from ghostrange_contracts.scheduler_v3 import SchedulingContextV3
 from ghostrange_scheduler.v3.plan import plan
 
+from .orphan_reaper import reap_orphans
 from .worker_scheduler import BudgetExceededError
 
 router = APIRouter(prefix="/v1/scheduler", tags=["scheduler"])
@@ -193,6 +194,30 @@ async def live_worker_test(
     if owned_after:
         raise HTTPException(500, f"teardown failed: {len(owned_after)} owned workers remain")
     return result
+
+
+@router.post("/reap-orphans")
+async def reap_orphans_now(request: Request, dry_run: bool = True):
+    """Manual on-demand trigger for the same general-purpose TTL orphan-reaper
+    sweep that also runs automatically in the background (see main.py's
+    lifespan / orphan_reaper.py) — terminates any GhostRange-owned Vultr
+    Compute VM whose ttl_seconds tag has elapsed, regardless of which code
+    path created it.
+
+    Gated the same way ``/compute-dry-check`` and ``/live-worker-test`` are:
+    no separate admin auth layer exists in this router (there is none to
+    match — every sensitive action here is gated by an explicit request
+    parameter plus Settings, not a bearer token), so the safety gate is
+    ``dry_run`` itself: it defaults to ``true`` — a bare POST here never
+    destroys anything — and the caller must explicitly pass
+    ``dry_run=false`` to actually terminate found orphans. Always goes
+    through ``request.app.state.compute_provider`` (the shielded provider
+    built by ``build_compute_provider``), so GhostShield's ownership/policy
+    checks gate every termination exactly as they do for every other
+    teardown path in this API.
+    """
+    provider = request.app.state.compute_provider
+    return reap_orphans(provider, dry_run=dry_run)
 
 
 @router.get("/workers")

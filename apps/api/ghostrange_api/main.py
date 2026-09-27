@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import json
+import logging
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -10,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from .config import Settings
+from .orphan_reaper import reap_orphans
 from .event_gateway_factory import build_event_gateway
 from .memory_events import MemoryEventGateway
 from .health_routes import router as health_router
@@ -46,6 +50,51 @@ from .worlds_routes import router as worlds_router
 from .timing_routes import router as timing_router
 from ghostrange_cost.ledger import GhostCostLedger
 from ghostrange_cost.money import usd_to_micros
+
+logger = logging.getLogger("ghostrange.main")
+
+
+async def _orphan_reaper_loop(app: FastAPI, settings: Settings) -> None:
+    """Background safety-net sweep: periodically terminates any GhostRange-owned
+    Vultr Compute VM that has outlived its ``ttl_seconds`` tag, regardless of
+    which code path created it (see ``orphan_reaper.py``). This is the general
+    fix for the class of incident where a worker VM is created but a crashed
+    process / missed code path / manual test never tears it down again.
+
+    Runs an immediate sweep at startup (catches anything already orphaned
+    across a restart), then every ``settings.orphan_reaper_interval_s``.
+
+    Resilient by construction at two layers: ``reap_orphans`` itself never
+    raises for a single instance's termination failure (captured in its
+    report's ``failed`` list instead), and this loop additionally wraps each
+    *entire* sweep in a try/except so an unexpected error — e.g. the Vultr
+    API being unreachable, or a bug in the reaper itself — is logged and the
+    loop simply waits for the next interval, rather than dying silently and
+    leaving GhostRange with no safety net until the next process restart.
+    Blocking provider calls run in a worker thread via ``asyncio.to_thread``
+    so a slow/real Vultr API call never stalls the event loop.
+    """
+    interval_s = max(30.0, settings.orphan_reaper_interval_s)
+    logger.info("orphan-reaper: background sweep started (interval=%.0fs)", interval_s)
+    while True:
+        try:
+            report = await asyncio.to_thread(reap_orphans, app.state.compute_provider, dry_run=False)
+            if report["orphans_found"]:
+                logger.info(
+                    "orphan-reaper: sweep complete found=%d terminated=%d failed=%d still_present_after_reap=%d",
+                    len(report["orphans_found"]),
+                    len(report["terminated"]),
+                    len(report["failed"]),
+                    len(report["still_present_after_reap"]),
+                )
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 - one bad sweep must never end the loop
+            logger.exception("orphan-reaper: sweep raised an unexpected error, retrying next interval")
+        try:
+            await asyncio.sleep(interval_s)
+        except asyncio.CancelledError:
+            raise
 
 
 def _build_inference_worker_pool(settings: Settings) -> InferenceWorkerPool:
@@ -100,6 +149,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.cost_persistence = cost_persistence
         app.state.timing_store = timing_store
         app.state.compute_provider = build_compute_provider(settings)
+        app.state.orphan_reaper_task = None
+        if settings.orphan_reaper_enabled:
+            app.state.orphan_reaper_task = asyncio.create_task(
+                _orphan_reaper_loop(app, settings), name="orphan-reaper-sweep"
+            )
         # NetBird mesh client — None unless NETBIRD_ENABLED=true (current default: false,
         # fully inert). Not yet consumed by RealWorkerOrchestrator (see netbird_gate.py's
         # module docstring for the exact wiring still needed there); constructed here so
@@ -132,6 +186,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             yield
         finally:
+            reaper_task = app.state.orphan_reaper_task
+            if reaper_task is not None:
+                reaper_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await reaper_task
             if pg_store is not None:
                 await pg_store.close()
 

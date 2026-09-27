@@ -6,8 +6,9 @@ GhostRange is a research prototype for investigating an authorized system withou
 
 | Try it | Status |
 | --- | --- |
-| [Live tactical UI](https://45.76.248.45.sslip.io/) | Reachable deployment; the deployed API is stale relative to this checkout, so use it for UI inspection rather than as proof of the current campaign API. |
+| [Live tactical UI](https://45.76.248.45.sslip.io/) (also [https://45-76-248-45.nip.io/](https://45-76-248-45.nip.io/) and plain [http://45.76.248.45/](http://45.76.248.45/)) | Reachable now; the two domain forms carry trusted HTTPS certificates. The deployed API is stale relative to this checkout, so use it for UI inspection rather than as proof of the current campaign API. |
 | Reproducible local demo | `POST /v1/campaigns/golden` with the mock provider; verified campaign path, no billable workers. |
+| Real infrastructure proof (this checkout, 2026-09-27) | A full Vultr Compute worker lifecycle (create → bootstrap → real CPU benchmark → Postgres artifact → teardown → confirmed-destroyed via direct Vultr GET) and 10 real concurrent Vultr Serverless Inference calls. See [M20 final status](docs/milestones/M20_FINAL.md). The golden campaign has not yet triggered a live worker as one integrated run — see the same doc for the single biggest remaining gap. |
 | Source | [GitHub repository](https://github.com/chetas1208/GhostRange) |
 | Maturity | `RESEARCH_PROTOTYPE` · M20 `NO-SHIP` |
 
@@ -251,14 +252,15 @@ The frontend intentionally labels `LIVE`, `SIMULATED`, and `HISTORY` states. Fix
 | Range Compiler | Turns range descriptions into reproducible runtime inputs | Compose pipeline and local range compilation. |
 | GhostRuntime | Wraps longer-running execution and worker processes | Package/API pieces exist; not fully orchestrated in one M20 HTTP call. |
 | GhostCausal | SCM, intervention, counterfactual, and transport queries | Simulator and API transport; M20 status is simulated / NO-GO. |
-| GhostShield | Authorizes consequential actions and provider calls | Policy enforcement and bypass tests; not yet live-worker end-to-end verified. |
+| GhostShield | Authorizes consequential actions and provider calls | Policy enforcement and bypass tests; two separate real bypass gaps found and closed 2026-09-27 (an orchestrator path with zero gateway mediation, and an ownership-check no-op in `list_computes`) — see [the bypass analysis](docs/security/GHOSTSHIELD_BYPASS_ANALYSIS.md); not yet exercised against a golden-campaign-triggered live worker end-to-end. |
 | GhostGate | Promotion contracts and approval boundary | API and contracts; production promotion is not a shipped capability. |
 | GhostWatch | Rollout observation and conformance | Simulator and API; UI explicitly labels simulated rollout. |
 | GhostLedger | Seals and verifies evidence bundles | Implemented seal/verification path and content-addressed evidence model. |
 | GhostMesh | Federated evidence/knowledge harness | Five-node logical harness and API; live mesh is not run. |
 | GhostEvolve | Experience and candidate promotion flow | Implemented gate-oriented package; NO-GO for production promotion. |
 | GhostArena | Independent evaluation substrate | Hidden-scenario simulator and release report; not a live certification authority. |
-| Inference worker pool | Concurrent Serverless Inference calls under caps | Real HTTP path and hard caps are covered by the M20 reality matrix; separate from live Vultr Compute workers. |
+| Inference worker pool | Concurrent Serverless Inference calls under caps | 10 real concurrent Vultr Serverless Inference calls verified 2026-09-27 (distinct request IDs, `max_observed_concurrency=10`, hard-capped at `MAX_ACTIVE_INFERENCE_WORKERS<=10` / `INFERENCE_WORKER_MAX_USD<=$25`); separate from live Vultr Compute workers, which have their own cap (`MAX_ACTIVE_COMPUTE_WORKERS<=1`). See the M20 reality matrix. |
+| GitHub-repo-as-investigation-input | Derives a candidate system model from a public repository before anything is provisioned | Real heuristic scanner (docker-compose/Dockerfile/K8s/Terraform/OpenAPI detection) and intake screen exist and are tested; not yet wired into the live provisioning/campaign pipeline. |
 
 ## Cost and infrastructure
 
@@ -266,11 +268,11 @@ The control plane can use local services for development and Vultr services when
 
 | Service | Role | Default / current evidence |
 | --- | --- | --- |
-| Vultr Cloud Compute | Control VM and optional ephemeral workers | Control VM reachable; live worker campaign blocked by API ACL and stale deployment. |
+| Vultr Cloud Compute | Control VM and optional ephemeral workers | Control VM reachable; one full single-worker lifecycle (create/bootstrap/benchmark/artifact/teardown/confirmed-destroyed) proven live from the control VM 2026-09-27; a golden-campaign-triggered live worker as part of one integrated run is not yet proven (still blocked/failing — see the M20 reality matrix). |
 | Managed PostgreSQL | Durable event and worker state | Controlled-live integration; local fallback is available. |
 | Vultr Object Storage | Artifact bytes | Controlled-live integration; local store is available. |
 | Serverless Inference | Optional model/inference calls | Smoke and concurrent worker-pool calls recorded as real-live in the M20 matrix when credentials are present. |
-| NetBird | Optional worker mesh enrollment and segmentation | Feature-flagged adapter; no live mesh claim. |
+| NetBird | Optional worker mesh enrollment and segmentation | Wired into the live worker orchestrator behind `NETBIRD_ENABLED` (real code, tested); `NETBIRD_ENABLED=false` in production, so it has never enrolled a real peer. No live mesh claim. |
 
 Cost controls are explicit settings and contracts, including maximum active workers, compute workers, worlds, experiment cost, campaign cost, worker lifetime, and inference-worker spend. Mock campaigns cost `$0` by design. Live compute can create billable resources and must be treated as an operator-controlled action.
 
@@ -401,7 +403,7 @@ make prod-status
 make prod-smoke
 ```
 
-The current public deployment was verified reachable on 2026-09-27 at [45.76.248.45.sslip.io](https://45.76.248.45.sslip.io/). The M20 reality matrix also records that its deployed API is stale compared with this source tree: current campaign, scheduler preview, promotion, GhostWatch, GhostMesh, causal, and Director routes were not present there. Therefore the public URL is a UI/deployment reference, not evidence that this checkout's live campaign is complete.
+The current public deployment was verified reachable on 2026-09-27 at [45.76.248.45.sslip.io](https://45.76.248.45.sslip.io/), [45-76-248-45.nip.io](https://45-76-248-45.nip.io/) (both with trusted Let's Encrypt HTTPS certificates), and plain [http://45.76.248.45/](http://45.76.248.45/). The M20 reality matrix also records that its deployed API is stale compared with this source tree: current campaign, scheduler preview, promotion, GhostWatch, GhostMesh, causal, and Director routes were not present there. Therefore the public URL is a UI/deployment reference, not evidence that this checkout's live campaign is complete. Separately, a real single-worker Vultr Compute lifecycle (create/bootstrap/benchmark/teardown/confirmed-destroyed) has been proven from the control VM — see [M20 final status](docs/milestones/M20_FINAL.md) — but the golden campaign itself has not yet triggered a live worker as one integrated run.
 
 Do not run live worker commands casually. They may allocate billable Vultr Compute. The live campaign also requires provider ACL access, a worker VPC, durable services, explicit flags, and a current deployment.
 
@@ -428,13 +430,14 @@ The authoritative release decision is `RESEARCH_PROTOTYPE` / `NO-SHIP`. In parti
 
 - the default golden campaign is mock and simulated in important stages;
 - the current public deployment is stale relative to this source tree;
-- a live Vultr Compute worker campaign has not completed end-to-end;
+- a single real Vultr Compute worker lifecycle has been proven end-to-end (see [M20 final status](docs/milestones/M20_FINAL.md)), but the golden campaign triggering a live worker as part of one integrated run has never completed — this is the single biggest remaining gap;
 - GhostCausal, GhostWatch, GhostMesh, GhostArena, and GhostEvolve include simulator or harness paths that must not be presented as production integrations;
-- GhostShield has policy-level enforcement and bypass tests but is not live-worker end-to-end certified;
+- GhostShield has policy-level enforcement and bypass tests (two real bypass gaps found and closed 2026-09-27) but is not live-worker end-to-end certified against a golden-campaign run;
+- NetBird worker-mesh enrollment and the GitHub-repo-as-investigation-input feature are real, tested code that is either disabled by flag (NetBird) or not yet wired into the live provisioning pipeline (repo input);
 - multi-tenant isolation, enterprise identity, production backup/restore drills, and full operational hardening remain future work;
-- the frontend has fixture replay and live-data code paths, but a rendered tactical screen is not proof of backend execution.
+- the frontend has fixture replay and live-data code paths, but a rendered tactical screen is not proof of backend execution — the tactical screenshots currently on disk were captured from a failed/non-live run (`backend_cost_micros=0`), not a live golden campaign.
 
-See [Progress.md](Progress.md), [M20 final review](docs/milestones/M20_FINAL.md), and the [reality matrix](docs/release/M20_REALITY_MATRIX.md) for the detailed audit.
+See [Progress.md](Progress.md), [M20 final review](docs/milestones/M20_FINAL.md) (the single top-level status document — read its "Update" section first), and the [reality matrix](docs/release/M20_REALITY_MATRIX.md) for the detailed audit.
 
 ## Contributing
 

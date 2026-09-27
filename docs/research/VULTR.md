@@ -340,9 +340,39 @@ N/A for M1 — no VKE code path exists yet. When adopted, test via a standard k8
 manifest correctness without live Vultr spend).
 ```
 
-**Verdict: DEFER for the orchestration fleet (real candidate, not needed yet), REJECT for cyber-world
-assets specifically** (wrong primitive for the fidelity requirement — Cloud Compute + snapshots/cloud-init
-is correct there, see §4). This directly resolves the Decisions.md open question.
+**Verdict at time of original research: DEFER for the orchestration fleet (real candidate, not needed
+yet), REJECT for cyber-world assets specifically** (wrong primitive for the fidelity requirement — Cloud
+Compute + snapshots/cloud-init is correct there, see §4).
+
+### 2026-09-27 update — DEFER promoted to ADOPT (design), real cluster still not created
+
+The "M1's does the repo boot bar is cleared" condition this section originally deferred behind has now
+passed for the control-plane services specifically (`api`, `web`, `valkey`, the `caddy` reverse proxy —
+all four already run in production today per `docker-compose.prod.yml` on a single Compute VM). This
+update **does not** relitigate the range-asset REJECT above — that stands unchanged, verified again against
+ADR-006 and Decisions.md #11 before starting this work. It narrows and acts on the orchestration-fleet
+DEFER only.
+
+**What changed:** a full, real Kubernetes manifest set for the control plane now exists at `deploy/k8s/`
+(Kustomize base + `vke`/`local-kind` overlays — plain manifests, not Helm, since this repo has zero Helm
+usage anywhere and Valkey's config has no persistence to justify a StatefulSet/Bitnami subchart). Full
+reasoning for every design choice (Postgres/Object Storage staying external, Valkey as a plain Deployment,
+Caddy as the ingress instead of installing ingress-nginx) is in `docs/deployment/VKE_DEPLOY.md`, which is
+also the exact-command runbook for actually creating a cluster and deploying to it.
+
+**What was validated, and how (real commands, not claimed):** `kustomize build` rendered all three
+variants (base, vke overlay, local-kind overlay) with no errors, 11 resources each; `kubeconform -strict`
+validated all three renders against the real Kubernetes 1.30 OpenAPI schema — `Valid: 11, Invalid: 0,
+Errors: 0` for every variant. A real local cluster (`kind`, then `k3d`) was attempted as the strongest
+possible proof (actual pod scheduling, not just schema validity) and both failed for the same underlying
+reason: this sandbox's Docker is rootless with no systemd user session, so neither tool can get the cgroup
+delegation they require. That is a sandbox limitation, not a manifest defect — see
+`docs/deployment/VKE_DEPLOY.md`'s "Local validation performed" section for the exact error output and root
+cause. **No real VKE cluster was created** — that is a new billable resource explicitly held for the user's
+go-ahead, consistent with how this session has treated every other live-spend decision today.
+
+**Verdict, updated: ADOPT for the orchestration/control-plane fleet at the design/manifest level; REAL
+CLUSTER CREATION deliberately NOT_RUN pending approval.** REJECT for cyber-world assets is unchanged. This directly resolves the Decisions.md open question.
 
 ---
 
@@ -661,7 +691,7 @@ docs say isn't real-time.
 | Serverless Inference | DEFER | Optional alternative to self-hosted GPU inference |
 | Instance templates/snapshots/cloud-init/startup scripts | **ADOPT** | Core RangeSpec compilation target (ADR-006) |
 | VPC 2.0 + Firewall Groups | **ADOPT** | Per-world network isolation, safety boundary at network layer |
-| VKE | DEFER (orchestration fleet only) / REJECT (range assets) | Not in M1; candidate for M2+ worker scaling |
+| VKE | ADOPT (design, 2026-09-27) for control-plane manifests; real cluster NOT_RUN pending approval / REJECT (range assets, unchanged) | `deploy/k8s/` (Kustomize base+overlays), `docs/deployment/VKE_DEPLOY.md` |
 | Object Storage | **ADOPT** | Evidence/artifact persistence beyond world lifetime |
 | Managed Postgres (+ pgvector) | **ADOPT** (pgvector: DEFER) | Contracts/schema store; pgvector optional for future retrieval |
 | Managed Valkey | **ADOPT** (already locked, now confirmed) | Event transport (Decisions.md #4) |

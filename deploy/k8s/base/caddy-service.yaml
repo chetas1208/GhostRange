@@ -1,0 +1,21 @@
+# type: LoadBalancer is the whole point of putting this on VKE: Vultr's Cloud
+# Controller Manager watches for Services of this type and automatically
+# provisions a real Vultr Load Balancer pointed at this Service's endpoints
+# (see docs/research/VULTR.md's VKE section and docs/deployment/VKE_DEPLOY.md).
+apiVersion: v1
+kind: Service
+metadata:
+  name: caddy
+  labels:
+    app: caddy
+spec:
+  type: LoadBalancer
+  selector:
+    app: caddy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443

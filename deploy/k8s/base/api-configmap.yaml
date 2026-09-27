@@ -1,0 +1,40 @@
+# Non-secret env vars for apps/api, sourced 1:1 from .env.production.example.
+# Real per-cluster values (GHOSTRANGE_DEPLOY_SHA, GHOSTRANGE_PUBLIC_URL, S3_BUCKET,
+# GHOSTRANGE_WORKER_VPC_ID, VULTR_WORKER_REGION) are set by the overlay
+# (deploy/k8s/overlays/vke) via configMapGenerator + patch, not hand-edited here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghostrange-api-config
+data:
+  APP_ENV: "production"
+  GHOSTRANGE_DEPLOY_SHA: "unknown" # overridden by overlay at deploy time
+  GHOSTRANGE_REQUIRE_DURABLE: "true"
+  GHOSTRANGE_TRUSTED_PROXY: "true"
+  GHOSTRANGE_LIVE_PROVIDER: "vultr"
+  GHOSTRANGE_LIVE: "true"
+  GHOSTSHIELD_MODE: "ENFORCE"
+  GHOSTRANGE_CORS_ORIGINS: ""
+  OBJECT_STORAGE_PROVIDER: "vultr"
+  S3_ENDPOINT: "https://ewr1.vultrobjects.com"
+  S3_BUCKET: "ghostrange-artifacts-CHANGE_ME" # overridden by overlay
+  S3_REGION: "ewr1"
+  S3_KEY_PREFIX: "artifacts/"
+  VULTR_INFERENCE_BASE_URL: "https://api.vultrinference.com/v1"
+  VULTR_INFERENCE_MODEL: "llama-3.1-8b-instruct"
+  GHOSTSCHEDULER_LIVE: "true"
+  GHOSTRANGE_WORKER_VPC_ID: "" # overridden by overlay (real Vultr VPC id, not secret, but account-specific)
+  VULTR_WORKER_REGION: "lax"
+  VULTR_WORKER_PLAN: "vc2-1c-1gb"
+  VULTR_WORKER_OS_ID: "1743"
+  GHOSTRANGE_PUBLIC_URL: "https://your-control-host" # overridden by overlay to the real LB DNS/sslip.io name
+  GHOSTRANGE_LOCAL_CONTROL_URL: "http://127.0.0.1:8000" # loopback inside the api pod; unchanged from compose
+  MAX_ACTIVE_WORKERS: "10"
+  MAX_ACTIVE_COMPUTE_WORKERS: "1"
+  MAX_ACTIVE_INFERENCE_WORKERS: "10"
+  MAX_ACTIVE_WORLDS: "1"
+  MAX_EXPERIMENT_COST_USD: "5"
+  MAX_CAMPAIGN_COST_USD: "25"
+  MAX_WORKER_LIFETIME_MINUTES: "45"
+  INFERENCE_WORKER_MAX_USD: "25"
+  NETBIRD_ENABLED: "false"

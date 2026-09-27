@@ -1,0 +1,37 @@
+# Local validation overlay: for a kind/k3d/minikube cluster with LOCALLY BUILT
+# images (`docker build -f deploy/docker/Dockerfile.api -t ghostrange-api:local .`
+# etc.) loaded into the cluster (`kind load docker-image ...`). Does not talk to
+# any real Vultr API or use real secrets — see docs/deployment/VKE_DEPLOY.md's
+# "Local validation" section for exact commands and this environment's actual
+# result (kind/k3d cluster creation itself is blocked in the sandbox this was
+# built in — rootless Docker without systemd cgroup delegation; documented
+# there rather than glossed over).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+images:
+  - name: ghostrange-api:local
+    newName: ghostrange-api
+    newTag: local
+  - name: ghostrange-web:local
+    newName: ghostrange-web
+    newTag: local
+
+patches:
+  - target:
+      kind: Deployment
+      name: api
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: Never
+  - target:
+      kind: Deployment
+      name: web
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: Never
