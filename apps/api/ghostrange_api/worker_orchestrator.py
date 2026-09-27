@@ -83,7 +83,11 @@ class RealWorkerOrchestrator:
             if not live:
                 asyncio.create_task(self._mock_worker_agent(local_url, bootstrap))
 
-            handle = provider.create_worker(
+            # Compute-provider calls are synchronous HTTP/polling operations.
+            # Keep them off the event loop: a live worker must be able to call
+            # /v1/workers/register while Vultr's readiness poll is in flight.
+            handle = await asyncio.to_thread(
+                provider.create_worker,
                 range_id=range_id,
                 experiment_id=experiment_id,
                 worker_id=worker_id,
@@ -92,7 +96,7 @@ class RealWorkerOrchestrator:
             )
             await self._store.attach_provider_id(worker_id, handle.provider_compute_id, provider_name)
             await self._store.set_run_status(run_id, WorkerLifecycle.PROVISIONING.value)
-            handle = provider.wait_ready(handle, timeout_s=300.0)
+            handle = await asyncio.to_thread(provider.wait_ready, handle, timeout_s=300.0)
 
             await self._store.wait_worker_registered(worker_id, timeout_s=120.0)
             if live:
@@ -159,13 +163,13 @@ class RealWorkerOrchestrator:
                 # we just authoritatively confirmed gone. Exclude it explicitly rather than
                 # trusting the stale list for it.
                 try:
-                    provider.terminate_worker(handle)
+                    await asyncio.to_thread(provider.terminate_worker, handle)
                 finally:
                     if live:
                         revoke_worker_peer(self._settings, self._netbird_client, peer_hostname)
             await self._store.set_run_status(run_id, WorkerLifecycle.TERMINATED.value)
             await self._store.mark_worker_terminated(worker_id)
-            owned = provider.list_all_ghostrange_workers()
+            owned = await asyncio.to_thread(provider.list_all_ghostrange_workers)
             if handle is not None:
                 owned = [w for w in owned if w.provider_compute_id != handle.provider_compute_id]
             if owned:
