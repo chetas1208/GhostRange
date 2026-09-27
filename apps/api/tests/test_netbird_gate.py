@@ -122,6 +122,11 @@ class TestMisconfiguration:
         with pytest.raises(RuntimeError, match="NETBIRD_API_TOKEN"):
             build_netbird_client(settings)
 
+    def test_build_netbird_client_raises_when_enabled_without_setup_key(self, monkeypatch):
+        settings = _settings(monkeypatch, NETBIRD_ENABLED="true", NETBIRD_API_TOKEN="x")
+        with pytest.raises(RuntimeError, match="NETBIRD_WORKER_SETUP_KEY"):
+            build_netbird_client(settings)
+
     async def test_ensure_worker_mesh_ready_raises_when_enabled_without_client(self, monkeypatch):
         settings = _settings(monkeypatch, NETBIRD_ENABLED="true", NETBIRD_API_TOKEN="x")
         store = FakeWorkerStore()

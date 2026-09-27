@@ -120,6 +120,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 app.state.worker_store,
                 app.state.compute_provider,
                 app.state.artifact_registry,
+                app.state.netbird_client,
             )
             app.state.worker_scheduler = WorkerScheduler(
                 settings,

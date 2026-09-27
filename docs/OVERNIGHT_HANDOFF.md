@@ -21,7 +21,7 @@ GhostDirector and GhostScheduler remain separate. Provider effects remain contro
 
 ## Test results
 
-- Python: 491 passed, 9 skipped in the release matrix.
+- Python: 492 passed, 9 skipped in the release matrix.
 - Frontend: 26 passed.
 - TypeScript: passed.
 - Mock M20 campaign: passed.
@@ -90,4 +90,4 @@ git diff --cached --binary | rg -n '(BEGIN .*PRIVATE KEY|VULTR_API_KEY=.{8,}|NET
 
 ## Git status
 
-The checkout is connected to `https://github.com/chetas1208/GhostRange.git`; `main` is published at commit `ab4d40e`. Ignored credentials and generated artifacts remain outside Git's candidate set. Two post-push local changes from validation tooling remain to be reviewed before a follow-up commit.
+The checkout is connected to `https://github.com/chetas1208/GhostRange.git`; the reviewed baseline and follow-up validation commits are published on `main`. Ignored credentials and generated artifacts remain outside Git's candidate set. Generated benchmark/fixture rewrites from the latest test run are intentionally not release changes.

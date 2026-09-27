@@ -4,7 +4,7 @@
 
 - [x] `make demo`
 - [x] `bash scripts/m20-release-check.sh`
-- [x] Python test matrix: 491 passed, 9 skipped
+- [x] Python test matrix: 492 passed, 9 skipped
 - [x] Frontend tests: 26 passed
 - [x] Frontend typecheck
 - [x] M20 mock campaign

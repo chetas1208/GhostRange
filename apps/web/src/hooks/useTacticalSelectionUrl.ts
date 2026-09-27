@@ -19,6 +19,10 @@ function applyParamsToStore() {
     useGhostStore.getState().focusWorld(world);
     useGhostStore.getState().setSelection({ kind: 'world', id: world });
   }
+  const rangeId = p.get('rangeId');
+  if (rangeId) {
+    useGhostStore.setState({ streamRangeId: rangeId });
+  }
   const claim = p.get('claim');
   if (claim) {
     useGhostStore.getState().setMode('evidence');

@@ -11,6 +11,7 @@ export function useM20CampaignBootstrap() {
 
   useEffect(() => {
     if (!enabled || dataSource !== 'live') return;
+    if (new URLSearchParams(window.location.search).get('rangeId')) return;
     startM20CampaignAndStream(API_BASE).catch(() => {
       /* CommandSurface / error banner */
     });

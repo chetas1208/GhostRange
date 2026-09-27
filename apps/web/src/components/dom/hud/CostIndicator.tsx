@@ -18,7 +18,7 @@ export function CostIndicator() {
     const unknown = cost?.unknown_components?.length ?? cost?.display?.unknown_components?.length ?? 0;
     if (known) {
       return (
-        <span className="cost-indicator" title={error ?? 'Canonical backend cost'}>
+        <span className="cost-indicator" data-testid="cost-indicator" title={error ?? 'Canonical backend cost'}>
           {label.replace(/_/g, ' ')} {known}
           {unknown > 0 ? ' · PARTIAL' : ''}
         </span>
@@ -26,20 +26,20 @@ export function CostIndicator() {
     }
     if (error) {
       return (
-        <span className="cost-indicator" title={error}>
+        <span className="cost-indicator" data-testid="cost-indicator" title={error}>
           COST UNKNOWN
         </span>
       );
     }
     return (
-      <span className="cost-indicator" title="Waiting for backend cost snapshot">
+      <span className="cost-indicator" data-testid="cost-indicator" title="Waiting for backend cost snapshot">
         ACCRUED EST. —
       </span>
     );
   }
 
   return (
-    <span className="cost-indicator" title="Fixture replay — not provider-billed">
+    <span className="cost-indicator" data-testid="cost-indicator" title="Fixture replay — not provider-billed">
       {fixtureCostLabel(fixtureUsd)}
     </span>
   );

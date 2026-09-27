@@ -3,13 +3,17 @@ import { API_BASE } from '../config/apiBase';
 import { connectCampaignStream } from '../events/campaignStream';
 import { useGhostStore } from '../state/store';
 
-const RANGE_ID = import.meta.env.VITE_RANGE_ID ?? '';
+function resolveRangeId(): string {
+  const fromUrl = new URLSearchParams(window.location.search).get('rangeId');
+  return (import.meta.env.VITE_RANGE_ID as string | undefined) ?? fromUrl ?? '';
+}
 
 /** Live mode: snapshot + native EventSource (after=seq). */
 export function useLiveBootstrap(enabled = false) {
   useEffect(() => {
     if (!enabled) return;
 
+    const RANGE_ID = resolveRangeId();
     if (!RANGE_ID) {
       useGhostStore.setState({
         dataSource: 'live',

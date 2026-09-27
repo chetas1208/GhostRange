@@ -32,7 +32,7 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 
 | Workstream | Result |
 | --- | --- |
-| Repository / milestones | M20 is explicitly `RESEARCH_PROTOTYPE` / `NO-SHIP`; the GitHub repository now exists and the initial commit is pending review. |
+| Repository / milestones | M20 is explicitly `RESEARCH_PROTOTYPE` / `NO-SHIP`; the public GitHub repository and follow-up baseline are published. |
 | Backend / API / events | Local campaign, cost, timing, worker, SSE, Shield, Director, Scheduler, Ledger, and evidence routes exist; current M20 campaign is mock-first and several routes are absent from the deployed build. |
 | Frontend / 3D UI | Three modes are implemented; live/replay/fixture semantics are explicit; timing/cost/evidence panels exist; screenshot acceptance is still UI-NO-GO pending human review and capture environment. |
 | Infrastructure / deployment | HTTPS UI and `/health/ready` are reachable; deployed API is stale; no new billable resource was created. |
@@ -42,7 +42,7 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 ## Current verified test status
 
 - `make demo`: 6 passed.
-- `bash scripts/m20-release-check.sh`: 491 Python tests passed, 9 skipped; 21 M16–M19 package tests passed; 26 frontend tests passed; typecheck passed; mock campaign passed; Arena simulator qualified.
+- `bash scripts/m20-release-check.sh`: 492 Python tests passed, 9 skipped; 21 M16–M19 package tests passed; 26 frontend tests passed; typecheck passed; mock campaign passed; Arena simulator qualified.
 - `pytest -q apps/api/tests/test_netbird_gate.py`: 13 passed.
 - README internal links: 23 checked, none missing; Mermaid blocks: 7.
 - Public HTTPS deployment: HTTP 200; `/health` and `/health/ready` return 200.
@@ -51,7 +51,7 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 
 1. Public deployment is stale relative to this checkout; current campaign and newer subsystem routes return 404 there.
 2. Vultr Compute API ACL rejects this runner's egress IP; no live worker was created.
-3. NetBird client construction exists, but the real worker orchestrator does not yet consume the client for live enrollment/revocation.
+3. NetBird enrollment/readiness/revocation is now wired into the live worker orchestrator behind `NETBIRD_ENABLED`; it remains unverified against a real account.
 4. Screenshot/tour acceptance requires a compatible browser runtime and human review; the prior capture attempt lacked `libasound.so.2`.
 5. The repository contains an ignored local `.env` with configured credentials and an ignored `vultr` OpenSSH private key. Neither is tracked, but neither may enter a public commit.
 
@@ -67,10 +67,9 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 
 1. Deploy the current checkout to the control VM through the approved deployment path, then re-run health and route checks.
 2. From the ACL-allowed control VM, run exactly one bounded CPU worker lifecycle only if human authorization remains valid; prove `owned_workers == []`.
-3. Wire NetBird enrollment/revocation into the real worker orchestrator, or document it as optional/unconsumed until implemented.
-4. Add a durable restart test against local PostgreSQL for campaign cost and timing state.
-5. Run screenshot capture in a supported container/browser environment and complete the existing 24-frame human acceptance.
-6. Review the published repository, then address the remaining external release gates.
+3. Run a durable restart test against local PostgreSQL for campaign cost and timing state.
+4. Run screenshot capture in a supported container/browser environment and complete the existing 24-frame human acceptance.
+5. Review the published repository, then address the remaining external release gates.
 
 ## Human action required
 

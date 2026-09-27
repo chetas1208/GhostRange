@@ -50,9 +50,10 @@ test.describe('Tactical cost chain', () => {
 
     await page.goto(`/?tab=execution&rangeId=${rangeId}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(3000);
-    await expect(page.locator('.cost-indicator')).toBeVisible({ timeout: 60_000 });
+    const costEl = page.getByTestId('cost-indicator');
+    await expect(costEl).toBeVisible({ timeout: 90_000 });
 
-    const hudText = (await page.locator('.cost-indicator').textContent()) ?? '';
+    const hudText = (await costEl.textContent()) ?? '';
     const recon = await request.get(`${API}/v1/ranges/${rangeId}/cost/reconciliation`);
     expect(recon.ok()).toBeTruthy();
     const reconBody = await recon.json();

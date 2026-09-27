@@ -11,8 +11,10 @@ from .artifact_registry import ArtifactRegistry
 from .cloud_init import worker_cloud_init
 from .compute_provider import ComputeProvider, MockComputeProvider, WorkerHandle
 from .config import Settings
+from .netbird_gate import ensure_worker_mesh_ready, revoke_worker_peer
 from .worker_models import WorkerLifecycle
 from .worker_store import WorkerStore
+from ghostrange_netbird_control import NetBirdClient
 
 
 class RealWorkerOrchestrator:
@@ -22,11 +24,13 @@ class RealWorkerOrchestrator:
         store: WorkerStore,
         provider: ComputeProvider,
         artifacts: ArtifactRegistry | None,
+        netbird_client: NetBirdClient | None = None,
     ) -> None:
         self._settings = settings
         self._store = store
         self._provider = provider
         self._artifacts = artifacts
+        self._netbird_client = netbird_client
 
     async def run_cpu_benchmark_test(
         self,
@@ -63,8 +67,16 @@ class RealWorkerOrchestrator:
         public_url = self._settings.public_control_url
         local_url = self._settings.local_control_url
         user_data = None
+        peer_hostname = f"gr-worker-{str(worker_id)[:8]}"
         if live:
-            user_data = worker_cloud_init(control_url=public_url, bootstrap_token=bootstrap)
+            user_data = worker_cloud_init(
+                control_url=public_url,
+                bootstrap_token=bootstrap,
+                netbird_setup_key=(
+                    self._settings.netbird_worker_setup_key if self._settings.netbird_enabled else None
+                ),
+                netbird_peer_hostname=peer_hostname if self._settings.netbird_enabled else None,
+            )
 
         handle: WorkerHandle | None = None
         try:
@@ -83,6 +95,14 @@ class RealWorkerOrchestrator:
             handle = provider.wait_ready(handle, timeout_s=300.0)
 
             await self._store.wait_worker_registered(worker_id, timeout_s=120.0)
+            if live:
+                await ensure_worker_mesh_ready(
+                    settings=self._settings,
+                    store=self._store,
+                    client=self._netbird_client,
+                    worker_id=worker_id,
+                    peer_hostname=peer_hostname,
+                )
             task = await self._store.wait_task_completed(run_id, timeout_s=180.0)
             worker = await self._store.get_worker(worker_id)
             run = await self._store.get_run(run_id)
@@ -127,7 +147,11 @@ class RealWorkerOrchestrator:
                 # from list_all_ghostrange_workers() below is racy against the very instance
                 # we just authoritatively confirmed gone. Exclude it explicitly rather than
                 # trusting the stale list for it.
-                provider.terminate_worker(handle)
+                try:
+                    provider.terminate_worker(handle)
+                finally:
+                    if live:
+                        revoke_worker_peer(self._settings, self._netbird_client, peer_hostname)
             await self._store.set_run_status(run_id, WorkerLifecycle.TERMINATED.value)
             await self._store.mark_worker_terminated(worker_id)
             owned = provider.list_all_ghostrange_workers()

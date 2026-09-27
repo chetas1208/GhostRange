@@ -21,7 +21,7 @@
 | P2 | Screenshot acceptance remains incomplete | Existing capture scripts and 24-frame specification exist; browser dependency prevented capture. |
 | P2 | Interactive tour is TOUR-NO-GO pending human review | Use controlled replay; do not create billable resources for the tour. |
 | P2 | No production telemetry claim | UI shows unavailable/derived data where backend does not expose real CPU/RAM/GPU metrics. |
-| P2 | Baseline publication | Initial reviewed baseline commit exists as `ab4d40e` on public `main`. |
+| P2 | Baseline publication | Reviewed baseline and follow-up validation commits exist on public `main`. |
 | P2 | Some older architecture docs still describe persistence as planned | Update stale wording where it conflicts with current wiring; preserve remaining limitations. |
 | P3 | Minor visual polish and animation improvements | Defer until evidence, deployment, and acceptance gates close. |
 | P3 | Broader benchmark corpus and multi-seed live Arena | Optional research work, not a reason to overstate M20 maturity. |

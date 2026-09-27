@@ -10,12 +10,9 @@ NetBird management server and (b) a member of ``NETBIRD_WORKER_GROUP``
 (default ``ghostrange-workers``) — connectivity alone is not enough, because
 micro-segmentation policy only applies to peers actually in the right group.
 
-Integration point (NOT wired in by this change — see the note below)
+Integration point
 ----------------------------------------------------------------------
-``apps/api/ghostrange_api/worker_orchestrator.py`` is owned by another agent
-right now (a security fix to the ownership-check path), so this module is
-deliberately self-contained and does not import or modify it. Wiring this
-gate into the live provisioning flow needs exactly this, in
+The live provisioning flow calls this module from
 ``RealWorkerOrchestrator.run_cpu_benchmark_test``:
 
 1. Construct a client once (e.g. in ``main.py``'s lifespan — already done,
@@ -58,8 +55,8 @@ gate into the live provisioning flow needs exactly this, in
    so a destroyed worker's mesh identity doesn't linger between the VM being
    gone and NetBird's own stale-peer cleanup.
 
-This module does not perform that wiring itself, per the constraint that
-``worker_orchestrator.py`` is off-limits while the other agent owns it.
+The integration is live-only. Mock workers continue to use the existing
+in-process agent and are not expected to enroll in an external mesh.
 """
 
 from __future__ import annotations
@@ -92,6 +89,8 @@ def build_netbird_client(settings: Settings) -> NetBirdClient | None:
         return None
     if not settings.netbird_api_token:
         raise RuntimeError("NETBIRD_ENABLED=true requires NETBIRD_API_TOKEN to be set")
+    if not settings.netbird_worker_setup_key:
+        raise RuntimeError("NETBIRD_ENABLED=true requires NETBIRD_WORKER_SETUP_KEY to be set")
     return NetBirdClient(api_token=settings.netbird_api_token, base_url=settings.netbird_api_base_url)
 
 
