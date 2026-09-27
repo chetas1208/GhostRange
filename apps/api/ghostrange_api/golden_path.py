@@ -442,7 +442,11 @@ class GoldenPathOrchestrator:
                 worker_cap = max(1, int(os.environ.get("MAX_ACTIVE_COMPUTE_WORKERS", "1")))
             except ValueError:
                 worker_cap = 1
-            worker_count = min(worker_cap, min(3, len(ready) or len(tasks))) if tasks else 0
+            # Scale the planned worker slots with the real, operator-configured
+            # cap (MAX_ACTIVE_COMPUTE_WORKERS) and how much of the task graph is
+            # actually parallelizable right now - never hardcode a lower ceiling
+            # than the real cap allows, and never exceed the real work available.
+            worker_count = min(worker_cap, len(ready) or len(tasks)) if tasks else 0
             workers = [
                 WorkerResourceProfileV2(
                     worker_id=uuid.uuid5(range_id, f"golden-worker-{index}"),

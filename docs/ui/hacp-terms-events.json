@@ -1,0 +1,14 @@
+{
+  "inputs": ["docs/ui/EVENTS_CONTRACT.md", "packages/contracts/ghostrange_contracts"],
+  "outputs": ["packages/events/pyproject.toml", "packages/events/ghostrange_events/catalog.py", "apps/web/src/fixtures/demo-auth-incident-031.jsonl"],
+  "acceptance": [
+    "npm run build -w apps/web",
+    "test -f packages/events/ghostrange_events/catalog.py",
+    "python -c \"from ghostrange_events.catalog import all_event_names; assert len(all_event_names()) >= 20\""
+  ],
+  "requirements": {
+    "transport": "GET /v1/ranges/{id}/snapshot and GET /v1/ranges/{id}/stream (SSE)",
+    "envelope": "id, sequence, type, occurred_at, payload",
+    "golden_fixture": "apps/web/src/fixtures/demo-auth-incident-031.jsonl"
+  }
+}

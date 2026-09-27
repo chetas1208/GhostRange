@@ -22,12 +22,12 @@ GhostRange is not a generic pentesting agent, a vulnerability scanner, a SIEM, o
 The control plane plans and verifies work; the disposable execution plane performs only scoped experiments. Dashed boundaries and links mark isolated or optional paths, including the currently opt-in NetBird worker overlay.
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph CONTROL["Control plane"]
         API["GhostRange API"] --> DIRECTOR["GhostDirector"]
         DIRECTOR --> SCHEDULER["GhostScheduler"]
         SCHEDULER --> SHIELD["GhostShield policy gate"]
-        API --> EVIDENCE[("Ledger + evidence")]
+        API --> EVIDENCE["Ledger and evidence"]
     end
 
     subgraph EXECUTION["Disposable execution plane"]
@@ -35,13 +35,10 @@ flowchart LR
         WORKER --> EXPERIMENT["Scoped experiment"]
     end
 
-    SHIELD -. "authorized provisioning" .-> TWIN
-    WORKER -. "optional NetBird overlay" .-> WORKER_MESH["Private worker mesh"]
-    EXPERIMENT -. "results + artifacts" .-> EVIDENCE
-    API -. "human approval boundary" .-> PRODUCTION["Production"]
-
-    style CONTROL stroke:#718096,stroke-width:2px,stroke-dasharray:7 5
-    style EXECUTION stroke:#718096,stroke-width:2px,stroke-dasharray:7 5
+    SHIELD -.->|"authorized provisioning"| TWIN
+    WORKER -.->|"optional NetBird overlay"| MESH["Private worker mesh"]
+    EXPERIMENT -.->|"results and artifacts"| EVIDENCE
+    API -.->|"human approval boundary"| PRODUCTION["Production"]
 ```
 
 ## Table of contents
@@ -89,21 +86,18 @@ Agents should not directly change production merely because an answer sounds con
 
 ```mermaid
 flowchart TD
-    A[Authorized repository + incident + evidence]
-    B[Living cyber twin]
-    C[Competing hypotheses]
-    D[Controlled experiment portfolio]
-    E[Adaptive scheduler]
-    F[Disposable worlds]
-    G[Evidence + causal observations]
-    H[Counterexample search]
-    I[Remediation verification]
-    J[Human-controlled action boundary]
-    K[Provenance + teardown]
-
-    A --> B --> C --> D --> E --> F --> G --> H --> I --> J --> K
-    G -. informs .-> C
-    H -. challenges .-> I
+    A["Authorized repository, incident, and evidence"] --> B["Living cyber twin"]
+    B --> C["Competing hypotheses"]
+    C --> D["Controlled experiment portfolio"]
+    D --> E["Adaptive scheduler"]
+    E --> F["Disposable worlds"]
+    F --> G["Evidence and causal observations"]
+    G --> H["Counterexample search"]
+    H --> I["Remediation verification"]
+    I --> J["Human-controlled action boundary"]
+    J --> K["Provenance and teardown"]
+    G -.->|"informs"| C
+    H -.->|"challenges"| I
 ```
 
 ## How GhostRange works
@@ -111,18 +105,18 @@ flowchart TD
 The current canonical M20 campaign is implemented as a mock-first chain:
 
 ```mermaid
-flowchart LR
-    S[Compose range input] --> RC[Range compiler]
-    RC --> T[Living-twin / range representation]
-    T --> D[GhostDirector simulator]
-    D --> H[Three cross-service hypotheses: billing / gateway / identity]
-    H --> P[GhostScheduler V3 plan]
-    P --> V[Adversarial verification: shallow fix falsified, deep fix survives]
-    V --> L[GhostLedger seal + verification]
-    L --> A[GhostArena simulated release report]
-    A --> R[Campaign report + evidence bundle]
-    R --> X[Optional live-worker step]
-    X --> Q[Teardown / owned-worker reconciliation]
+flowchart TD
+    S["Compose range input"] --> RC["Range compiler"]
+    RC --> T["Living twin and range representation"]
+    T --> D["GhostDirector simulator"]
+    D --> H["Hypotheses: billing, gateway, identity"]
+    H --> P["GhostScheduler V3 plan"]
+    P --> V["Shallow fix falsified. Deep fix survives."]
+    V --> L["GhostLedger seal and verification"]
+    L --> A["GhostArena simulated release report"]
+    A --> R["Campaign report and evidence bundle"]
+    R --> X["Optional live-worker step"]
+    X --> Q["Teardown and owned-worker reconciliation"]
 ```
 
 The mock path is the default and is the reproducible path used by the release checks. The live-worker branch is provider- and policy-gated; the current M20 evidence records it as not completed end-to-end.
@@ -155,57 +149,47 @@ The output is not a universal production safety certificate. A successful experi
 ### System architecture
 
 ```mermaid
-flowchart TB
-    U[Operator / browser]
-    W[React + Vite + React Three Fiber tactical UI]
-    API[FastAPI control plane]
-    CAM[Campaign runtime]
-    DIR[GhostDirector]
-    SCH[GhostScheduler V3]
-    SH[GhostShield + policy check]
-    RC[Range compiler / IaC]
-    WORK[Disposable range workers / worlds]
-    INF[Vultr Serverless Inference]
-    PG[(Managed PostgreSQL or local store)]
-    OBJ[(Vultr Object Storage or local store)]
-    LED[GhostLedger / evidence registry]
-    ARENA[GhostArena simulator]
-
-    U --> W --> API
-    API --> CAM
-    CAM --> DIR --> SCH
-    SCH --> SH --> RC --> WORK
-    DIR -. optional inference .-> INF
-    CAM --> LED --> OBJ
-    CAM --> PG
-    CAM --> ARENA
-    WORK -->|scoped task results| API
-    WORK -. evidence upload .-> OBJ
+flowchart TD
+    U["Operator"] --> W["Tactical UI"]
+    W --> API["FastAPI control plane"]
+    API --> CAM["Campaign runtime"]
+    CAM --> DIR["GhostDirector"]
+    DIR --> SCH["GhostScheduler V3"]
+    SCH --> SH["GhostShield policy check"]
+    SH --> RC["Range compiler"]
+    RC --> WORK["Disposable workers and worlds"]
+    DIR -.->|"optional inference"| INF["Serverless Inference"]
+    CAM --> LED["GhostLedger"]
+    LED --> OBJ["Object Storage or local store"]
+    CAM --> PG["PostgreSQL or local store"]
+    CAM --> ARENA["GhostArena simulator"]
+    WORK --> EXP["Scoped task results and evidence"]
+    EXP --> OBJ
 ```
 
 ### Control plane vs experimental data plane
 
 ```mermaid
-flowchart LR
-    subgraph CP[Control plane]
-        API[FastAPI]
-        SCH[GhostScheduler]
-        SH[GhostShield]
-        VAPI[Vultr provider boundary]
-        STORE[Postgres / Object Storage]
+flowchart TD
+    subgraph CP["Control plane"]
+        API["FastAPI"] --> SCH["GhostScheduler"]
+        SCH --> SH["GhostShield"]
+        SH --> VAPI["Vultr provider boundary"]
+        STORE["Postgres and Object Storage"]
     end
 
-    subgraph DP[Disposable experimental plane]
-        WORLD[Range world]
-        WORKER[Ephemeral worker]
-        TASK[Scoped experiment]
+    subgraph DP["Disposable experimental plane"]
+        WORLD["Range world"] --> WORKER["Ephemeral worker"]
+        WORKER --> TASK["Scoped experiment"]
     end
 
-    API --> SCH --> SH --> VAPI --> WORLD
-    WORLD --> WORKER --> TASK
-    TASK -->|results and evidence| API
-    TASK -->|artifact bytes| STORE
-    WORKER -.->|bootstrap token only; no main Vultr API token| API
+    VAPI --> WORLD
+    TASK --> RESULTS["Results and evidence returned to the API"]
+    TASK --> BYTES["Artifact bytes stored durably"]
+    WORKER --> TOKEN["Bootstrap token only, not the Vultr API token"]
+    BYTES --> STORE
+    RESULTS --> API
+    TOKEN --> API
 ```
 
 The worker boundary is designed so a worker receives scoped bootstrap credentials rather than the control plane's main Vultr API token. The policy and provider adapters are tested locally; live compute execution remains gated and is not represented as complete in the current release.
@@ -241,25 +225,25 @@ stateDiagram-v2
 GhostDirector answers **what should be tested**. GhostScheduler answers **how approved work should use compute**. Keeping those responsibilities separate makes decisions inspectable and lets scheduling remain deterministic even when inference is configured.
 
 ```mermaid
-flowchart LR
-    T[Twin + evidence] --> C[Hypothesis candidates]
-    C --> E[Experiment candidates]
-    E --> U[Value / uncertainty / cost assessment]
-    U --> PORT[Selected experiment portfolio]
-    PORT --> S[GhostScheduler]
-    S --> DAG[Execution DAG + placement + stopping policy]
+flowchart TD
+    T["Twin and evidence"] --> C["Hypothesis candidates"]
+    C --> E["Experiment candidates"]
+    E --> U["Value, uncertainty, and cost"]
+    U --> PORT["Selected experiment portfolio"]
+    PORT --> S["GhostScheduler"]
+    S --> DAG["Execution DAG, placement, and stopping policy"]
 ```
 
 ```mermaid
 flowchart TD
-    DAG[Execution DAG] --> READY[Dependency readiness]
-    READY --> CAP[Existing capacity]
-    CAP --> PROFILE[Resource profile + startup time]
-    PROFILE --> COST[Budget and expected cost]
-    COST --> DEC[Placement / parallelism / stop decision]
-    DEC --> RUN[Run or defer task]
-    RUN --> OBS[Evidence and progress]
-    OBS --> DAG
+    DAG["Execution DAG"] --> READY["Dependency readiness"]
+    READY --> CAP["Existing capacity"]
+    CAP --> PROFILE["Resource profile and startup time"]
+    PROFILE --> COST["Budget and expected cost"]
+    COST --> DEC["Placement, parallelism, or stop"]
+    DEC --> RUN["Run or defer task"]
+    RUN --> OBS["Evidence and progress"]
+    OBS -.->|"feeds the next decision"| DAG
 ```
 
 ## The three interfaces

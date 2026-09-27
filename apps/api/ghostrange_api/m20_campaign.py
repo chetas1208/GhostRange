@@ -37,6 +37,9 @@ class M20CampaignResult:
     owned_workers_after: list[str] = field(default_factory=list)
     live_worker_outcome: LiveOutcome = "not_attempted"
     errors: list[str] = field(default_factory=list)
+    worker_results: dict[str, int] = field(
+        default_factory=lambda: {"requested": 0, "succeeded": 0, "failed": 0}
+    )
 
 
 class M20CampaignOrchestrator:
@@ -273,6 +276,7 @@ def m20_response_payload(result: M20CampaignResult) -> dict[str, Any]:
         "arena_recommendation": result.arena_recommendation.value,
         "owned_workers": result.owned_workers_after,
         "live_worker_outcome": result.live_worker_outcome,
+        "worker_results": result.worker_results,
         "errors": result.errors,
         "release_maturity": "RESEARCH_PROTOTYPE",
     }

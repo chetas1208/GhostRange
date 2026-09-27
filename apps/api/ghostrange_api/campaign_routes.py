@@ -8,6 +8,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Request
 
 from .golden_path import GoldenScenarioId, assert_live_allowed
+from .live_worker_fanout import compute_fan_out_count, run_worker_fan_out
 from .m20_campaign import M20CampaignOrchestrator, m20_response_payload
 from .worker_scheduler import BudgetExceededError
 
@@ -73,21 +74,40 @@ async def start_m20_golden_campaign(
                     await request.app.state.worker_scheduler.assert_can_start_live_worker()
                 except BudgetExceededError as exc:
                     raise HTTPException(429, str(exc)) from exc
-            try:
-                bench = await request.app.state.worker_orchestrator.run_cpu_benchmark_test(
+
+            # Real parallel-worker fan-out. See live_worker_fanout.py for the
+            # (directly unit-tested) reservation + isolation logic.
+            cap = request.app.state.settings.compute_worker_concurrency_cap
+            currently_owned = len(provider.list_all_ghostrange_workers())
+            planned = result.golden.benchmark.worker_slots_planned or 1
+            worker_fan_out = compute_fan_out_count(
+                cap=cap, currently_owned=currently_owned, planned=planned
+            )
+
+            async def _one_worker() -> object:
+                return await request.app.state.worker_orchestrator.run_cpu_benchmark_test(
                     range_id=result.golden.range_id,
                     live=True,
                 )
-            except Exception as exc:
+
+            fan_out = await run_worker_fan_out(worker_fn=_one_worker, count=worker_fan_out)
+            for exc in fan_out.failures:
                 # A failed real-VM teardown must not be swallowed into a cosmetic
-                # error string on an HTTP 200 - that's exactly how today's 4 real
-                # orphaned VMs went unnoticed. Surface it loudly.
+                # error string with no other signal - that's exactly how today's
+                # 4 real orphaned VMs went unnoticed. Every failure is recorded,
+                # not just the first.
                 result.errors.append(f"worker_benchmark:{exc.__class__.__name__}: {exc}")
+            if fan_out.successes:
+                bench = fan_out.successes[0]  # legacy single-bench field, kept for compat
+            result.worker_results = fan_out.to_summary()
+            if fan_out.requested and not fan_out.successes and fan_out.failures:
+                first = fan_out.failures[0]
                 raise HTTPException(
                     500,
-                    f"live worker step failed: {exc.__class__.__name__}: {exc} "
-                    "- a real Vultr VM may be left running; check /v1/scheduler/compute-dry-check",
-                ) from exc
+                    f"all {fan_out.failed} live worker attempt(s) failed - a real Vultr VM may "
+                    "be left running; check /v1/scheduler/compute-dry-check. First error: "
+                    f"{first.__class__.__name__}: {first}",
+                ) from first
         result = orch.attach_live_worker_result(result, owned_workers=owned, worker_benchmark=bench)
         owned_after = provider.list_owned_workers(range_id=result.golden.range_id)
         result = orch.attach_live_worker_result(result, owned_workers=owned_after, worker_benchmark=bench)
