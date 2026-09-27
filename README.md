@@ -185,11 +185,9 @@ flowchart TD
 
     VAPI --> WORLD
     TASK --> RESULTS["Results and evidence returned to the API"]
-    TASK --> BYTES["Artifact bytes stored durably"]
+    TASK --> BYTES["Artifact bytes written to storage"]
     WORKER --> TOKEN["Bootstrap token only, not the Vultr API token"]
     BYTES --> STORE
-    RESULTS --> API
-    TOKEN --> API
 ```
 
 The worker boundary is designed so a worker receives scoped bootstrap credentials rather than the control plane's main Vultr API token. The policy and provider adapters are tested locally; live compute execution remains gated and is not represented as complete in the current release.
