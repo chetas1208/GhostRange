@@ -4,9 +4,8 @@ import { startM20CampaignAndStream } from '../events/campaignStream';
 
 /** Production / live: auto-start real M20 campaign (no fixture reducer). */
 export function useM20CampaignBootstrap() {
-  const enabled =
-    import.meta.env.VITE_BOOTSTRAP_M20 === 'true' ||
-    (import.meta.env.PROD && import.meta.env.VITE_DATA_SOURCE === 'live');
+  // Only auto-start when explicitly enabled at build time (prod compose sets false).
+  const enabled = import.meta.env.VITE_BOOTSTRAP_M20 === 'true';
   const dataSource = import.meta.env.VITE_DATA_SOURCE ?? 'fixture';
 
   useEffect(() => {

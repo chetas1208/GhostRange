@@ -43,7 +43,7 @@ services:
       dockerfile: deploy/docker/Dockerfile.web
       args:
         VITE_DATA_SOURCE: live
-        VITE_BOOTSTRAP_M20: "true"
+        VITE_BOOTSTRAP_M20: "false"
         VITE_ENABLE_TOUR: "false"
         VITE_API_BASE: ""
     image: ghostrange-web:${GHOSTRANGE_DEPLOY_SHA:-local}

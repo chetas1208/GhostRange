@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import { useGhostStore } from '../../state/store';
 
 const MAX = 8;
 
 export function EventTicker() {
-  const entries = useGhostStore((s) => s.eventLog.slice(-MAX));
+  const eventLog = useGhostStore((s) => s.eventLog);
+  const entries = useMemo(() => eventLog.slice(-MAX), [eventLog]);
 
   if (entries.length === 0) return null;
 

@@ -20,7 +20,7 @@ function applyParamsToStore() {
     useGhostStore.getState().setSelection({ kind: 'world', id: world });
   }
   const rangeId = p.get('rangeId');
-  if (rangeId) {
+  if (rangeId && useGhostStore.getState().streamRangeId !== rangeId) {
     useGhostStore.setState({ streamRangeId: rangeId });
   }
   const claim = p.get('claim');
@@ -32,8 +32,10 @@ function applyParamsToStore() {
 
 function writeParamsFromStore() {
   const s = useGhostStore.getState();
-  const p = new URLSearchParams();
+  const p = new URLSearchParams(window.location.search);
   p.set('tab', s.mode);
+  const existingRange = p.get('rangeId') ?? s.streamRangeId;
+  if (existingRange) p.set('rangeId', existingRange);
   if (s.selection?.kind === 'world') p.set('world', s.selection.id);
   else if (s.focusedWorldId) p.set('world', s.focusedWorldId);
   if (s.selection?.kind === 'claim') p.set('claim', s.selection.id);

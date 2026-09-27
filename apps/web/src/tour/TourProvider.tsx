@@ -7,6 +7,7 @@ import { TourSpotlight } from './components/TourSpotlight';
 import { TourSummary } from './components/TourSummary';
 import { TourWelcome } from './components/TourWelcome';
 import { destroyTourReplay } from './tourReplay';
+import { stepsForVariant } from './steps/guidedSteps';
 import { useTourStore } from './tourStore';
 import type { TourInteraction } from './types';
 
@@ -35,7 +36,8 @@ function interactionSatisfied(
 export function TourProvider({ children }: { children: ReactNode }) {
   const status = useTourStore((s) => s.status);
   const stepIndex = useTourStore((s) => s.stepIndex);
-  const steps = useTourStore((s) => s.steps());
+  const variant = useTourStore((s) => s.variant);
+  const steps = useMemo(() => stepsForVariant(variant), [variant]);
   const step = steps[stepIndex];
   const completedInteractions = useTourStore((s) => s.completedInteractions);
   const showWhy = useTourStore((s) => s.showWhy);

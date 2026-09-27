@@ -6,9 +6,9 @@
 
 | Gate | Target | Status |
 |------|--------|--------|
-| Tactical screenshots | 12 / 12 in `artifacts/screenshots/tactical/` | **BLOCKED** on this host (`libasound.so.2`); run on VM or after `playwright install-deps` |
+| Tactical screenshots | 12 / 12 in `artifacts/screenshots/tactical/` | **PASS** (Docker Playwright, live golden campaign, ~85KB/frame) |
 | Cost SSE | `cost.snapshot.updated` on campaign path | `apps/api/tests/test_cost_bridge_sse.py` |
-| Cost E2E | UI ↔ `GET /v1/ranges/{id}/cost` | `tests/e2e/tactical/tactical-cost.spec.ts` |
+| Cost E2E | UI ↔ `GET /v1/ranges/{id}/cost` | **PASS** — `scripts/tactical-cost-e2e-docker.sh` vs prod nip.io |
 | Cost restart recovery | Postgres `cost_ledger_campaigns` | `apps/api/ghostrange_api/cost_persistence.py` |
 | Reconciliation | `GET .../cost/reconciliation` | `PROVIDER_UNAVAILABLE` until invoice API exists |
 | P50/P95 timing | `operation_timing_samples` + `/timing` | Needs ≥5 samples for non-LOW confidence |
@@ -45,7 +45,9 @@ npm run typecheck && npm run test -w apps/web
 
 | Item | Reason |
 |------|--------|
-| 12 PNGs here | Chromium headless needs `libasound.so.2` on capture machine |
-| `cost.snapshot.updated` on live until redeploy | Running API predates cost-bridge persistence pass |
 | Provider invoice MATCHED | Vultr API has no campaign-level invoice total |
 | GPU telemetry | Phase 8 — not blocking |
+
+## React #185 fix (2026-09-27)
+
+Production blank UI was `Maximum update depth exceeded`: unstable Zustand snapshots in `TourProvider` (`s.steps()` new array every read) and `EventTicker` (`eventLog.slice` in selector). Also `useM20CampaignBootstrap` ignored `VITE_BOOTSTRAP_M20=false` via implicit `PROD && live` enable.

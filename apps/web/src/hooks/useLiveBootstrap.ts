@@ -10,10 +10,11 @@ function resolveRangeId(): string {
 
 /** Live mode: snapshot + native EventSource (after=seq). */
 export function useLiveBootstrap(enabled = false) {
+  const streamRangeId = useGhostStore((s) => s.streamRangeId);
   useEffect(() => {
     if (!enabled) return;
 
-    const RANGE_ID = resolveRangeId();
+    const RANGE_ID = resolveRangeId() || streamRangeId || '';
     if (!RANGE_ID) {
       useGhostStore.setState({
         dataSource: 'live',
@@ -39,5 +40,5 @@ export function useLiveBootstrap(enabled = false) {
     return () => {
       cancelled = true;
     };
-  }, [enabled]);
+  }, [enabled, streamRangeId]);
 }

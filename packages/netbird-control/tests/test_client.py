@@ -11,7 +11,7 @@ import pytest
 from ghostrange_netbird_control import NetBirdClient
 from ghostrange_netbird_control.http_client import NetBirdHTTPClient
 
-from .fake_netbird_server import FAKE_TOKEN, FakeNetBirdServer
+from fake_netbird_server import FAKE_TOKEN, FakeNetBirdServer
 
 
 @pytest.fixture(autouse=True)

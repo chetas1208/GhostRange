@@ -11,7 +11,7 @@ from ghostrange_vultr_control import (
 )
 from ghostrange_vultr_control.errors import VultrNotFoundError, VultrTimeoutError, VultrValidationError
 
-from conftest import make_compute_req
+from vultr_test_helpers import make_compute_req
 
 
 class TestWorldLifecycle:

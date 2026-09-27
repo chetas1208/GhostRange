@@ -39,7 +39,10 @@ export const useTourStore = create<TourStore>((set, get) => ({
   status: 'NOT_STARTED',
   variant: 'guided',
   stepIndex: 0,
-  showWelcome: typeof localStorage !== 'undefined' && localStorage.getItem(LS_KEY) !== '1',
+  showWelcome:
+    import.meta.env.VITE_ENABLE_TOUR !== 'false' &&
+    typeof localStorage !== 'undefined' &&
+    localStorage.getItem(LS_KEY) !== '1',
   showInput: false,
   showSummary: false,
   exploreMode: false,

@@ -10,10 +10,12 @@ export function useCrossTabFocus() {
     const worldId = s.selection?.kind === 'world' ? s.selection.id : s.focusedWorldId;
     if (!worldId) return;
     if (mode === 'execution') {
-      s.focusWorld(worldId);
-      s.setCameraLevel('execution');
+      if (s.focusedWorldId !== worldId) s.focusWorld(worldId);
+      if (s.cameraLevel !== 'execution') s.setCameraLevel('execution');
     } else if (mode === 'evidence') {
-      s.setSelection({ kind: 'world', id: worldId });
+      if (s.selection?.kind !== 'world' || s.selection.id !== worldId) {
+        s.setSelection({ kind: 'world', id: worldId });
+      }
     }
   }, [mode]);
 }
