@@ -1,24 +1,24 @@
 {
-  "captured_at": "2026-09-27T09:46:35.350Z",
+  "captured_at": "2026-09-27T09:58:57.962Z",
   "api_url": "http://45-76-248-45.nip.io",
-  "elapsed_ms": 268017,
+  "elapsed_ms": 13566,
   "campaign": {
     "campaign": {
       "schema_version": "1",
-      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
-      "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
-      "investigation_id": "66790862-a989-46a8-b57a-0a6e7fc2a803",
+      "campaign_id": "eb2e4f9f-42e0-432b-8f2f-6918ed474def",
+      "range_id": "1b21c6ec-4875-4391-8480-9b290905f320",
+      "investigation_id": "eb1d18f6-6345-4125-aab9-5ed914d36460",
       "phase": "FAILED",
       "source_input_ref": "/app/ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml",
       "twin_revision_id": "6ea54eeb-585d-5e97-a9fe-7748d81cee12",
-      "correlation_id": "3bd9f6e8d972beb6",
+      "correlation_id": "d57b909aabf2e5e7",
       "deploy_sha": "prod-v4-worker",
       "live_mode": "live",
-      "created_at": "2026-09-27T09:42:07.720555Z",
-      "completed_at": "2026-09-27T09:42:07.720636Z"
+      "created_at": "2026-09-27T09:58:44.793492Z",
+      "completed_at": "2026-09-27T09:58:44.793535Z"
     },
-    "investigation_id": "66790862-a989-46a8-b57a-0a6e7fc2a803",
-    "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "investigation_id": "eb1d18f6-6345-4125-aab9-5ed914d36460",
+    "range_id": "1b21c6ec-4875-4391-8480-9b290905f320",
     "phases": [
       "compile:nodes=5",
       "director:stop=None",
@@ -32,22 +32,22 @@
       "compile_ms": 11,
       "director_ms": 1,
       "scheduler_ms": 0,
-      "adversarial_ms": 2,
+      "adversarial_ms": 0,
       "ledger_ms": 1,
-      "total_ms": 17,
+      "total_ms": 16,
       "experiments_run": 2,
       "director_decisions": 2,
       "scheduler_decisions": 1,
       "counterexamples_confirmed": 1,
       "bundle_verified": true,
       "live_mode": "live",
-      "correlation_id": "3bd9f6e8d972beb6"
+      "correlation_id": "d57b909aabf2e5e7"
     },
     "report": {
       "schema_version": "1",
-      "report_id": "4fd4ef1a-9e03-46f3-a4f7-4dae524968e3",
-      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
-      "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+      "report_id": "47adba8b-c2c3-4623-89fa-3f6537cafd34",
+      "campaign_id": "eb2e4f9f-42e0-432b-8f2f-6918ed474def",
+      "range_id": "1b21c6ec-4875-4391-8480-9b290905f320",
       "incident_summary": "Controlled auth/session incident (auth-lab compose input)",
       "hypothesis_count": 3,
       "hypotheses_refuted": 1,
@@ -56,7 +56,7 @@
       "counterexamples_confirmed": 1,
       "remediation_survivors": 1,
       "remediation_refuted": 1,
-      "bundle_digest": "sha256:d4d3f0440f01b4c67e92bb4f53131e5a65ac6b33134d0a2de81226a3b8726b67",
+      "bundle_digest": "sha256:e9af2dc24e2fd2810a97b08c44c744af505cccdb8b0c9cfae1baf66f2a28d6a0",
       "arena_recommendation": "QUALIFIED",
       "cost_usd_estimate": 15,
       "limitations": [
@@ -72,13 +72,13 @@
         "ledger:verified=True",
         "teardown:LIVE_NOT_IMPLEMENTED_IN_M10_SLICE"
       ],
-      "generated_at": "2026-09-27T09:42:07.723366Z"
+      "generated_at": "2026-09-27T09:58:44.795750Z"
     },
     "evidence_bundle": {
       "schema_version": "1",
-      "bundle_id": "c13ed64e-731c-45ab-aa5d-135123695bdd",
-      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
-      "manifest_digest": "sha256:d4d3f0440f01b4c67e92bb4f53131e5a65ac6b33134d0a2de81226a3b8726b67",
+      "bundle_id": "5fefbfbe-1624-4122-8ab8-519012dce335",
+      "campaign_id": "eb2e4f9f-42e0-432b-8f2f-6918ed474def",
+      "manifest_digest": "sha256:e9af2dc24e2fd2810a97b08c44c744af505cccdb8b0c9cfae1baf66f2a28d6a0",
       "claims": [
         {
           "kind": "incident",
@@ -86,7 +86,7 @@
           "provenance": "auth_incident_scenario"
         }
       ],
-      "event_summary_digest": "45bc72d5ed2a3400ec3cf3370c9c547142c2359c74459ba671d076f10fcbca9d",
+      "event_summary_digest": "9c051d20223b943bff840b5fbbdd624fedc242617e61443124543d03c38089e7",
       "scheduler_decision_count": 1,
       "verification_results": {
         "adversarial_phase": "COUNTEREXAMPLE_FOUND",
@@ -95,13 +95,13 @@
       "authorization_evidence": {},
       "arena_qualification": "QUALIFIED",
       "checksums": {
-        "event_summary": "45bc72d5ed2a3400ec3cf3370c9c547142c2359c74459ba671d076f10fcbca9d"
+        "event_summary": "9c051d20223b943bff840b5fbbdd624fedc242617e61443124543d03c38089e7"
       }
     },
     "reproduction_manifest": {
       "schema_version": "1",
-      "manifest_id": "a3728de3-cd83-4847-a7a2-79fe06e68b7b",
-      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
+      "manifest_id": "d262e126-ed5b-4751-b6c7-0efe01c654cf",
+      "campaign_id": "eb2e4f9f-42e0-432b-8f2f-6918ed474def",
       "deploy_sha": "prod-v4-worker",
       "compose_path": "/app/ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml",
       "director_policy": "GHOSTDIRECTOR_V1",
@@ -123,11 +123,11 @@
     ],
     "release_maturity": "RESEARCH_PROTOTYPE"
   },
-  "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+  "range_id": "1b21c6ec-4875-4391-8480-9b290905f320",
   "event_sequence": 17,
-  "cost_snapshot_event": false,
+  "cost_snapshot_event": true,
   "cost": {
-    "campaign_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "campaign_id": "1b21c6ec-4875-4391-8480-9b290905f320",
     "semantic_type": "ACCRUED_ESTIMATE",
     "confidence": "PARTIAL",
     "categories": {
@@ -153,7 +153,7 @@
     }
   },
   "reconciliation": {
-    "campaign_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "campaign_id": "1b21c6ec-4875-4391-8480-9b290905f320",
     "calculated_usd_micros": 0,
     "provider_reported_usd_micros": null,
     "delta_usd_micros": null,
@@ -162,20 +162,8 @@
     "note": "Vultr API does not expose invoice-level campaign totals; use CALCULATED as authoritative."
   },
   "timing": {
-    "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
-    "benchmark_decomposition": {
-      "provisioning_ms": 3273,
-      "boot_ms": 3273,
-      "execution_ms": 0,
-      "verification_ms": 0,
-      "teardown_ms": 0,
-      "total_ms": 3309,
-      "estimated_cost_usd": 0,
-      "event_count": 4,
-      "evidence_artifacts": 0,
-      "scheduler_decisions": 0,
-      "live_provider": "mock"
-    },
+    "range_id": "1b21c6ec-4875-4391-8480-9b290905f320",
+    "benchmark_decomposition": {},
     "task_events": [],
     "operation_type": "M2_RUN_TOTAL",
     "historical": {
@@ -190,6 +178,7 @@
       "estimate_confidence": "LOW_SAMPLE_COUNT"
     },
     "active_estimate": {
+      "elapsed_ms": null,
       "estimated_total_ms": null,
       "estimated_remaining_ms": null,
       "estimate_basis": "INSUFFICIENT_DATA",
@@ -200,6 +189,7 @@
   "event_names": [
     "campaign.phase",
     "compute.requested",
+    "cost.snapshot.updated",
     "director.decision",
     "ghostledger.sealed",
     "golden_path.phase",

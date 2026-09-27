@@ -48,7 +48,8 @@ test.describe('Tactical cost chain', () => {
     }
     expect(sawCostEvent).toBeTruthy();
 
-    await page.goto(`/?tab=execution&rangeId=${rangeId}`);
+    await page.goto(`/?tab=execution&rangeId=${rangeId}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(3000);
     await expect(page.locator('.cost-indicator')).toBeVisible({ timeout: 60_000 });
 
     const hudText = (await page.locator('.cost-indicator').textContent()) ?? '';

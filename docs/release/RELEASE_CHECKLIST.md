@@ -12,6 +12,8 @@
 - [x] Secret-pattern scan of repository content
 - [x] README internal-link and Mermaid checks
 - [x] Generated browser output ignored
+- [x] Public repository created: `chetas1208/GhostRange`
+- [x] Reviewed initial commit pushed to `main`
 
 ## External gates
 
@@ -21,10 +23,9 @@
 - [ ] Verify provider absence and `owned_workers == []`
 - [ ] Complete screenshot/tour human review
 - [ ] Supply target GitHub repository and review remote history
-- [ ] Stage-only secret/hygiene audit
-- [ ] Publish without force-push or unauthorized Actions
+- [x] Stage-only secret/hygiene audit
+- [x] Publish without force-push or unauthorized Actions
 
 ## Release rule
 
 Until all required external gates are complete, the release label remains `RESEARCH_PROTOTYPE` / `NO-SHIP`.
-

@@ -49,12 +49,11 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 
 ## Known blockers
 
-1. Initial public commit/push still requires the final staged-content review.
-2. Public deployment is stale relative to this checkout; current campaign and newer subsystem routes return 404 there.
-3. Vultr Compute API ACL rejects this runner's egress IP; no live worker was created.
-4. NetBird client construction exists, but the real worker orchestrator does not yet consume the client for live enrollment/revocation.
-5. Screenshot/tour acceptance requires a compatible browser runtime and human review; the prior capture attempt lacked `libasound.so.2`.
-6. The repository contains an ignored local `.env` with configured credentials and an ignored `vultr` OpenSSH private key. Neither is tracked, but neither may enter a public commit.
+1. Public deployment is stale relative to this checkout; current campaign and newer subsystem routes return 404 there.
+2. Vultr Compute API ACL rejects this runner's egress IP; no live worker was created.
+3. NetBird client construction exists, but the real worker orchestrator does not yet consume the client for live enrollment/revocation.
+4. Screenshot/tour acceptance requires a compatible browser runtime and human review; the prior capture attempt lacked `libasound.so.2`.
+5. The repository contains an ignored local `.env` with configured credentials and an ignored `vultr` OpenSSH private key. Neither is tracked, but neither may enter a public commit.
 
 ## Decisions made in this campaign
 
@@ -71,7 +70,7 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 3. Wire NetBird enrollment/revocation into the real worker orchestrator, or document it as optional/unconsumed until implemented.
 4. Add a durable restart test against local PostgreSQL for campaign cost and timing state.
 5. Run screenshot capture in a supported container/browser environment and complete the existing 24-frame human acceptance.
-6. Perform the staged-content secret/hygiene review, then push the reviewed initial commit.
+6. Review the published repository, then address the remaining external release gates.
 
 ## Human action required
 
@@ -89,4 +88,4 @@ GhostRange is an evidence-grounded cyber-defense proving ground. It reconstructs
 | Security | `GO` — targeted Shield/ownership/cap tests pass; dry-run candidate scan found no credential patterns. |
 | Cost / Scheduler | `GO` — 136 targeted package tests pass; integer microdollars and billing-quantum logic are covered. |
 | UI / UX | `GO` — exactly three primary modes and truthful execution labels are present; visual sign-off remains human-gated. |
-| Release / Documentation | `NO-GO` — external deployment, live worker proof, and human visual gates remain open; initial publication is pending staged review. |
+| Release / Documentation | `NO-GO` — external deployment, live worker proof, and human visual gates remain open; initial publication is complete. |

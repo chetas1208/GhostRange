@@ -9,7 +9,7 @@
 | --- | --- | --- |
 | P0 | Current checkout is not deployed to the public control VM | Public `/health/ready` is healthy, but current campaign/scheduler/Director/Causal/GhostWatch/GhostMesh routes are absent. Deploy through the approved control-VM path. |
 | P0 | No verified live Vultr Compute lifecycle for this checkout | Current runner is rejected by the Vultr token IP ACL before any create call. Run from the allowed control VM only with explicit authorization. |
-| P0 | No GitHub remote or target repository | Obtain target URL; inspect remote history; stage-only secret scan; never force-push. |
+| P0 | Public repository publication review | `chetas1208/GhostRange` exists on `main`; review the published commit and keep future pushes non-destructive. |
 | P0 | Release maturity remains research prototype | M20 final review records `NO-SHIP`; do not relabel until gates are actually closed. |
 | P1 | NetBird is not consumed by `RealWorkerOrchestrator` | Either complete enrollment/revocation wiring and tests or keep the integration explicitly optional. |
 | P1 | Cost persistence needs a real Postgres restart acceptance | Code is wired conditionally through `CostLedgerPersistence`; add/run a database-backed restart test when local Postgres is available. |
@@ -21,7 +21,7 @@
 | P2 | Screenshot acceptance remains incomplete | Existing capture scripts and 24-frame specification exist; browser dependency prevented capture. |
 | P2 | Interactive tour is TOUR-NO-GO pending human review | Use controlled replay; do not create billable resources for the tour. |
 | P2 | No production telemetry claim | UI shows unavailable/derived data where backend does not expose real CPU/RAM/GPU metrics. |
-| P2 | Root repository has no baseline commit | Create a reviewed initial commit only after secret/hygiene review and target repository decision. |
+| P2 | Baseline publication | Initial reviewed baseline commit exists as `ab4d40e` on public `main`. |
 | P2 | Some older architecture docs still describe persistence as planned | Update stale wording where it conflicts with current wiring; preserve remaining limitations. |
 | P3 | Minor visual polish and animation improvements | Defer until evidence, deployment, and acceptance gates close. |
 | P3 | Broader benchmark corpus and multi-seed live Arena | Optional research work, not a reason to overstate M20 maturity. |
@@ -55,4 +55,3 @@
 - Screenshot capture was not completed because the local browser environment lacked `libasound.so.2`.
 - The release script initially failed six async tests because the root pytest configuration omitted `asyncio_mode = auto`; this was corrected and the full test matrix passed.
 - No provider invoice-level campaign total was available through the current API; reconciliation remains explicit rather than invented.
-

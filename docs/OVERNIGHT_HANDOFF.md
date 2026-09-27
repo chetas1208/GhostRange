@@ -1,7 +1,7 @@
 # GhostRange Overnight Handoff
 
 **Date:** 2026-09-27  
-**Recommendation:** `NO-SHIP`
+**Recommendation:** `NO-SHIP` for production; public repository publication complete.
 
 ## What was done
 
@@ -63,7 +63,7 @@ Product truth, architecture, security, cost/scheduler, and three-tab UI checks r
 
 ## Human actions required
 
-1. Review the initial public GitHub repository and commit contents.
+1. Review the published public GitHub repository and commit contents.
 2. Review or rotate ignored local credentials and the SSH key outside Git.
 3. Approve current-code deployment to the control VM.
 4. If needed, authorize one CPU worker lifecycle from an ACL-allowed origin.
@@ -90,4 +90,4 @@ git diff --cached --binary | rg -n '(BEGIN .*PRIVATE KEY|VULTR_API_KEY=.{8,}|NET
 
 ## Git status
 
-The checkout is connected to `https://github.com/chetas1208/GhostRange.git`. The initial commit is still pending staged-content review; ignored credentials and generated artifacts remain outside Git's candidate set.
+The checkout is connected to `https://github.com/chetas1208/GhostRange.git`; `main` is published at commit `ab4d40e`. Ignored credentials and generated artifacts remain outside Git's candidate set. Two post-push local changes from validation tooling remain to be reviewed before a follow-up commit.
