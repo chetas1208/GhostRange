@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "ExperimentRootV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_merkle_root": {
+          "title": "Artifact Merkle Root",
+          "type": "string"
+        },
+        "claim_set_digest": {
+          "title": "Claim Set Digest",
+          "type": "string"
+        },
+        "event_log_root": {
+          "title": "Event Log Root",
+          "type": "string"
+        },
+        "manifest_digest": {
+          "title": "Manifest Digest",
+          "type": "string"
+        },
+        "provenance_graph_digest": {
+          "title": "Provenance Graph Digest",
+          "type": "string"
+        },
+        "root_digest": {
+          "title": "Root Digest",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest_digest",
+        "provenance_graph_digest",
+        "artifact_merkle_root",
+        "event_log_root",
+        "claim_set_digest",
+        "root_digest"
+      ],
+      "title": "ExperimentRootV1",
+      "type": "object"
+    },
+    "GhostRangeExperimentPredicateV1": {
+      "additionalProperties": false,
+      "description": "in-toto-compatible predicate body (typed, not envelope).",
+      "properties": {
+        "experiment_root": {
+          "$ref": "#/$defs/ExperimentRootV1"
+        },
+        "manifest_id": {
+          "format": "uuid",
+          "title": "Manifest Id",
+          "type": "string"
+        },
+        "predicate_type": {
+          "default": "https://ghostrange.local/attestation/experiment/v1",
+          "title": "Predicate Type",
+          "type": "string"
+        },
+        "replay_level_available": {
+          "$ref": "#/$defs/ReplayLevel",
+          "default": "LEVEL_4"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_root",
+        "manifest_id"
+      ],
+      "title": "GhostRangeExperimentPredicateV1",
+      "type": "object"
+    },
+    "ReplayLevel": {
+      "enum": [
+        "LEVEL_0",
+        "LEVEL_1",
+        "LEVEL_2",
+        "LEVEL_3",
+        "LEVEL_4",
+        "LEVEL_5"
+      ],
+      "title": "ReplayLevel",
+      "type": "string"
+    },
+    "SigningIdentityKind": {
+      "enum": [
+        "LOCAL_DEVELOPMENT",
+        "IDENTITY_BOUND"
+      ],
+      "title": "SigningIdentityKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "envelope_type": {
+      "default": "application/vnd.in-toto+json",
+      "title": "Envelope Type",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "key_id": {
+      "title": "Key Id",
+      "type": "string"
+    },
+    "payload_type": {
+      "default": "application/vnd.ghostrange.experimentpredicate+json",
+      "title": "Payload Type",
+      "type": "string"
+    },
+    "predicate": {
+      "$ref": "#/$defs/GhostRangeExperimentPredicateV1"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signature_b64": {
+      "title": "Signature B64",
+      "type": "string"
+    },
+    "signed_at": {
+      "format": "date-time",
+      "title": "Signed At",
+      "type": "string"
+    },
+    "signer_kind": {
+      "$ref": "#/$defs/SigningIdentityKind",
+      "default": "LOCAL_DEVELOPMENT"
+    },
+    "subject_digest": {
+      "description": "sha256 digest of experiment root",
+      "title": "Subject Digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "subject_digest",
+    "predicate",
+    "signature_b64",
+    "key_id"
+  ],
+  "title": "ExperimentAttestationV1",
+  "type": "object"
+}

@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "CheckpointStrategy": {
+      "enum": [
+        "NONE",
+        "RESTARTABLE",
+        "STATEFUL"
+      ],
+      "title": "CheckpointStrategy",
+      "type": "string"
+    },
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "checkpoint_strategy": {
+      "$ref": "#/$defs/CheckpointStrategy",
+      "default": "RESTARTABLE"
+    },
+    "cold_start_sensitive": {
+      "default": false,
+      "title": "Cold Start Sensitive",
+      "type": "boolean"
+    },
+    "cpu_min": {
+      "exclusiveMinimum": 0,
+      "title": "Cpu Min",
+      "type": "number"
+    },
+    "cpu_preferred": {
+      "exclusiveMinimum": 0,
+      "title": "Cpu Preferred",
+      "type": "number"
+    },
+    "disk_intensity": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Disk Intensity",
+      "type": "number"
+    },
+    "expected_runtime_seconds": {
+      "minimum": 0,
+      "title": "Expected Runtime Seconds",
+      "type": "number"
+    },
+    "gpu_memory_gb": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gpu Memory Gb"
+    },
+    "gpu_optional": {
+      "default": false,
+      "title": "Gpu Optional",
+      "type": "boolean"
+    },
+    "gpu_required": {
+      "default": false,
+      "title": "Gpu Required",
+      "type": "boolean"
+    },
+    "locality_constraints": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Locality Constraints",
+      "type": "object"
+    },
+    "model_inference": {
+      "default": false,
+      "title": "Model Inference",
+      "type": "boolean"
+    },
+    "network_intensity": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Network Intensity",
+      "type": "number"
+    },
+    "parallelizable": {
+      "default": true,
+      "title": "Parallelizable",
+      "type": "boolean"
+    },
+    "preemptible": {
+      "default": false,
+      "title": "Preemptible",
+      "type": "boolean"
+    },
+    "ram_min_gb": {
+      "exclusiveMinimum": 0,
+      "title": "Ram Min Gb",
+      "type": "number"
+    },
+    "ram_preferred_gb": {
+      "exclusiveMinimum": 0,
+      "title": "Ram Preferred Gb",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "speculatable": {
+      "default": false,
+      "title": "Speculatable",
+      "type": "boolean"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_type": {
+      "$ref": "#/$defs/TaskType"
+    }
+  },
+  "required": [
+    "task_id",
+    "task_type",
+    "cpu_min",
+    "cpu_preferred",
+    "ram_min_gb",
+    "ram_preferred_gb",
+    "expected_runtime_seconds"
+  ],
+  "title": "TaskResourceProfileV2",
+  "type": "object"
+}

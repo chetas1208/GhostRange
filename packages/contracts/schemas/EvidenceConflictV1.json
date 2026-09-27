@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "investigation_id": {
+      "format": "uuid",
+      "title": "Investigation Id",
+      "type": "string"
+    },
+    "observation_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "minItems": 2,
+      "title": "Observation Ids",
+      "type": "array"
+    },
+    "resolution_priority": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "HIGH"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "investigation_id",
+    "observation_ids",
+    "description"
+  ],
+  "title": "EvidenceConflictV1",
+  "type": "object"
+}

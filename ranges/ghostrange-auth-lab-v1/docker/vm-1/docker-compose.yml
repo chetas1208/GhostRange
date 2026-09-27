@@ -1,0 +1,77 @@
+# ghostrange-auth-lab-v1 — M2 physical layout: all 4 logical assets (gateway, api,
+# auth, data-store) consolidated onto one physical VM ("vm-1" in topology.yaml) via
+# docker-compose. This file is read by packages/range-iac's compiler
+# (ghostrange_range_iac.loader.load_range) and embedded verbatim into the cloud-init
+# user-data written to the real Vultr instance -- see
+# packages/range-iac/ghostrange_range_iac/cloud_init.py.
+#
+# Service images/app code here are honest, minimal, stdlib-only placeholders that
+# prove the RangeSpec -> real-infrastructure -> booted-services pipeline end to end
+# (see ../files/api/app.py and ../files/auth/app.py's docstrings). The wave-2
+# "controlled scenario" agent swaps these for the real ghostrange-auth-lab-v1
+# application/vulnerabilities; this compose file's shape (4 services, this
+# dependency chain) is expected to survive that swap unchanged.
+#
+# All files referenced via bind mounts below are written onto the instance by
+# cloud-init from ../files/** (see ghostrange_range_iac.loader for the path
+# convention: files/<rel> -> /opt/ghostrange/<rel>).
+
+networks:
+  authlab-net:
+    name: authlab-net
+
+services:
+  gateway:
+    image: nginx:1.27-alpine
+    networks: [authlab-net]
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/ghostrange/gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    image: python:3.12-slim
+    networks: [authlab-net]
+    working_dir: /app
+    volumes:
+      - /opt/ghostrange/api/app.py:/app/app.py:ro
+    command: ["python3", "/app/app.py"]
+    environment:
+      AUTH_URL: "http://auth:8090/verify"
+    depends_on:
+      - auth
+    restart: unless-stopped
+
+  auth:
+    image: python:3.12-slim
+    networks: [authlab-net]
+    working_dir: /app
+    volumes:
+      - /opt/ghostrange/auth/app.py:/app/app.py:ro
+    command: ["python3", "/app/app.py"]
+    environment:
+      DATA_STORE_HOST: "data-store"
+      DATA_STORE_PORT: "5432"
+    depends_on:
+      - data-store
+    restart: unless-stopped
+
+  data-store:
+    image: postgres:16-alpine
+    networks: [authlab-net]
+    environment:
+      # Lab-only, disposable-range credentials. Never real secrets; never exposed
+      # to the host network (no `ports:` mapping) or to anything outside authlab-net.
+      POSTGRES_USER: "ghostrange"
+      POSTGRES_PASSWORD: "ghostrange-lab-only"
+      POSTGRES_DB: "authlab"
+    volumes:
+      - /opt/ghostrange/data-store/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - authlab-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  authlab-db-data: {}

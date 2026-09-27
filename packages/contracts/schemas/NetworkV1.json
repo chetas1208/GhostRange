@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cidr": {
+      "title": "Cidr",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "vlan_id": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vlan Id"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "name",
+    "cidr"
+  ],
+  "title": "NetworkV1",
+  "type": "object"
+}

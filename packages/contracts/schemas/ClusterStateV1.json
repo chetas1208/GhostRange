@@ -1,0 +1,252 @@
+{
+  "$defs": {
+    "BudgetStateV1": {
+      "additionalProperties": false,
+      "description": "Live budget snapshot: the frozen ``BudgetV1`` policy plus in-flight\ncommitments not yet reflected in ``BudgetV1.spent_cost_usd``.",
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "budget": {
+          "$ref": "#/$defs/BudgetV1"
+        },
+        "committed_cost_usd": {
+          "default": 0.0,
+          "description": "Cost of scheduler decisions already issued this tick/window whose spend has not yet posted to budget.spent_cost_usd.",
+          "minimum": 0,
+          "title": "Committed Cost Usd",
+          "type": "number"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "budget"
+      ],
+      "title": "BudgetStateV1",
+      "type": "object"
+    },
+    "BudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alert_threshold_pct": {
+          "default": 0.8,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Alert Threshold Pct",
+          "type": "number"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "hard_stop": {
+          "default": true,
+          "description": "If True, scheduler must refuse new spend once exhausted",
+          "title": "Hard Stop",
+          "type": "boolean"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "max_duration_seconds": {
+          "exclusiveMinimum": 0,
+          "title": "Max Duration Seconds",
+          "type": "number"
+        },
+        "max_total_cost_usd": {
+          "exclusiveMinimum": 0,
+          "title": "Max Total Cost Usd",
+          "type": "number"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "spent_cost_usd": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Spent Cost Usd",
+          "type": "number"
+        }
+      },
+      "required": [
+        "range_id",
+        "max_total_cost_usd",
+        "max_duration_seconds"
+      ],
+      "title": "BudgetV1",
+      "type": "object"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    },
+    "TaskDurationStatsV1": {
+      "additionalProperties": false,
+      "description": "Rolling per-``TaskType`` duration statistics, used for relative\n(peer-cohort) straggler detection per ``SPECULATION.md`` \u00a7B rather than\na single global absolute timeout.",
+      "properties": {
+        "p50_seconds": {
+          "minimum": 0,
+          "title": "P50 Seconds",
+          "type": "number"
+        },
+        "p90_seconds": {
+          "minimum": 0,
+          "title": "P90 Seconds",
+          "type": "number"
+        },
+        "sample_count": {
+          "minimum": 0,
+          "title": "Sample Count",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_type": {
+          "$ref": "#/$defs/TaskType"
+        }
+      },
+      "required": [
+        "task_type",
+        "p50_seconds",
+        "p90_seconds",
+        "sample_count"
+      ],
+      "title": "TaskDurationStatsV1",
+      "type": "object"
+    },
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Snapshot of a Range's compute fleet at decision time: capacity,\nin-use slots, a cost-model rate card, and duration stats \u2014 everything\nGhostScheduler needs for resource-class selection, parallelism, cost\nestimation, and straggler detection that isn't carried by any single\n``ComputeWorkerV1``.",
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "budget": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BudgetStateV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Live budget snapshot for this Range's compute spend, if a budget is configured. Carried on ClusterStateV1 (rather than as a fourth argument to schedule()) because budget is scoped to the whole Range's compute fleet, same scope as everything else on this model \u2014 see BUDGET_EXHAUSTED handling in ghostrange_scheduler."
+    },
+    "capacity": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "description": "Total provisionable slots per resource class, e.g. how many concurrent CPU_MEDIUM workers this Range's plan/policy allows.",
+      "propertyNames": {
+        "$ref": "#/$defs/ResourceClass"
+      },
+      "title": "Capacity",
+      "type": "object"
+    },
+    "duration_stats": {
+      "additionalProperties": {
+        "$ref": "#/$defs/TaskDurationStatsV1"
+      },
+      "description": "Rolling p50/p90 duration per task_type, for relative straggler detection (SPECULATION.md \u00a7B).",
+      "propertyNames": {
+        "$ref": "#/$defs/TaskType"
+      },
+      "title": "Duration Stats",
+      "type": "object"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "in_use": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "description": "Slots of each resource class currently occupied by running tasks.",
+      "propertyNames": {
+        "$ref": "#/$defs/ResourceClass"
+      },
+      "title": "In Use",
+      "type": "object"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "rate_card_usd_per_hour": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Known/observed hourly cost per resource class for this cluster (e.g. averaged from ComputeWorkerV1.cost_per_hour_usd of active workers of that class). Falls back to a documented placeholder rate card in ghostrange_scheduler.cost when absent for a class.",
+      "propertyNames": {
+        "$ref": "#/$defs/ResourceClass"
+      },
+      "title": "Rate Card Usd Per Hour",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id"
+  ],
+  "title": "ClusterStateV1",
+  "type": "object"
+}

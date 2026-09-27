@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "PromptDisclosure": {
+      "enum": [
+        "HASH_ONLY",
+        "REDACTED",
+        "FULL_AUTHORIZED"
+      ],
+      "title": "PromptDisclosure",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "endpoint_class": {
+      "default": "serverless",
+      "title": "Endpoint Class",
+      "type": "string"
+    },
+    "estimated_cost_usd": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Estimated Cost Usd"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency Ms"
+    },
+    "model_identifier": {
+      "title": "Model Identifier",
+      "type": "string"
+    },
+    "model_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Version"
+    },
+    "prompt_disclosure": {
+      "$ref": "#/$defs/PromptDisclosure",
+      "default": "HASH_ONLY"
+    },
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "request_schema_version": {
+      "default": "1",
+      "title": "Request Schema Version",
+      "type": "string"
+    },
+    "response_hash": {
+      "title": "Response Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "structured_input_hash": {
+      "title": "Structured Input Hash",
+      "type": "string"
+    },
+    "tokens_in": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tokens In"
+    },
+    "tokens_out": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tokens Out"
+    },
+    "tool_schema_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Schema Hash"
+    }
+  },
+  "required": [
+    "provider",
+    "model_identifier",
+    "structured_input_hash",
+    "response_hash"
+  ],
+  "title": "ModelInvocationRecordV1",
+  "type": "object"
+}

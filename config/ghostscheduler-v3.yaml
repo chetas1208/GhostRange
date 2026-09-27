@@ -1,0 +1,73 @@
+# GhostScheduler V3 — explicit policy parameters (M4)
+# Loaded by simulator and plan(); do not bury tunables in code.
+
+policy_version: ghostscheduler/v3
+default_policy_id: GHOSTSCHEDULER_V3
+failsafe_policy_id: FIXED_POOL_SAFE
+
+objectives:
+  minimize_time_to_verified: 1.0
+  minimize_compute_cost: 0.5
+  minimize_idle_compute: 0.3
+  minimize_wasted_speculation: 0.4
+  maximize_verification_coverage: 1.0
+  maximize_evidence_gain: 0.6
+  maximize_utilization: 0.2
+
+priority:
+  uncertainty_high: 0.66
+  security_risk_high: 0.75
+  dependency_criticality_high: 0.66
+  cost_floor_usd: 0.01
+
+critical_path:
+  slack_priority_boost: 0.15
+
+queue:
+  scale_out_ready_threshold: 8
+  scale_out_critical_ready_threshold: 3
+  scale_in_idle_seconds: 120
+  oldest_wait_scale_out_seconds: 45
+
+autoscale:
+  scale_out_threshold: 0.75
+  scale_in_threshold: 0.25
+  cooldown_seconds: 90
+  minimum_worker_lifetime_seconds: 180
+  minimum_idle_period_seconds: 60
+  max_scale_out_per_tick: 2
+
+straggler:
+  percentile: 0.95
+  multiplier_over_p95: 1.5
+  min_samples: 5
+
+speculation:
+  min_expected_latency_saved_seconds: 30
+  max_duplicate_cost_usd: 0.50
+  cancel_sibling_on_success: true
+
+stopping:
+  optional_exploration_marginal_gain_floor: 0.05
+  mandatory_tests_never_skipped: true
+
+reasoning:
+  default_level: MEDIUM
+  high_uncertainty_threshold: 0.7
+  max_model_cost_usd_per_investigation: 1.0
+
+fragmentation:
+  placement_failure_rate_alert: 0.2
+
+benchmark:
+  deterministic_seeds: [0, 1, 2, 3, 4]
+  workloads:
+    - SMALL_SERIAL
+    - WIDE_PARALLEL
+    - MIXED_BRANCH
+    - STRAGGLER_HEAVY
+    - BURSTY
+    - GPU_OPTIONAL
+    - BUDGET_CONSTRAINED
+    - HIGH_UNCERTAINTY
+    - RESOURCE_FRAGMENTED

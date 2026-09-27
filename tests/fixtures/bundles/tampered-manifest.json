@@ -1,0 +1,149 @@
+{
+  "bundle": {
+    "schema_version": "1",
+    "bundle_id": "acfa6c88-2386-49de-a8d2-aefa41e97482",
+    "mode": "THIN",
+    "manifest": {
+      "schema_version": "1",
+      "manifest_id": "f675b235-59b1-41db-998f-25cce4a4423c",
+      "experiment": {
+        "schema_version": "1",
+        "definition": {
+          "schema_version": "1",
+          "definition_id": "auth-remediation-v1",
+          "title": "Auth remediation verification",
+          "description": "M7 fixture experiment"
+        },
+        "run_id": "25679612-e9cd-4323-86f7-0a6458233bab"
+      },
+      "source_revision_id": "9952489d-351e-480e-ac88-e15e9a36cb6c",
+      "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "twin_revision_id": "b564e19b-45ea-4bdf-9cef-19f3d7d5bee6",
+      "twin_fingerprint": "fp-auth-lab-1",
+      "range_spec_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "range_spec_version": "2",
+      "compiler_version": "range-compiler/v0.1",
+      "compiler_policy_version": "sanitization/v1",
+      "fidelity_profile_id": "69a1192f-bb82-4e03-92be-def2e7d86dc3",
+      "fidelity_report_hash": null,
+      "investigation_objective": "tampered",
+      "remediation_candidates": [],
+      "selected_remediation_id": null,
+      "attack_replay_plan_id": null,
+      "attack_replay_hash": null,
+      "verification_suite_id": null,
+      "verification_suite_hash": null,
+      "scheduler_policy": "GHOSTSCHEDULER_V3",
+      "scheduler_policy_version": "ghostscheduler/v3",
+      "scheduler_config_hash": null,
+      "model_invocations": [],
+      "tool_invocations": [],
+      "infrastructure": null,
+      "budget_max_usd": null,
+      "started_at": "2026-09-26T08:40:21.672184Z",
+      "initiator": "operator@ghostrange.local",
+      "authorization_context_ref": null
+    },
+    "provenance_graph": {
+      "schema_version": "1",
+      "id": "966aebf3-91a9-4960-ab77-3523c46ba9a6",
+      "experiment_run_id": "25679612-e9cd-4323-86f7-0a6458233bab",
+      "nodes": [
+        {
+          "schema_version": "1",
+          "id": "b2a5df0c-b6b9-4a19-b38d-82846f41c3a9",
+          "kind": "SOURCE_REVISION",
+          "ref_id": "9952489d-351e-480e-ac88-e15e9a36cb6c",
+          "digest": null,
+          "label": "source"
+        },
+        {
+          "schema_version": "1",
+          "id": "1b1d8b70-9780-44c0-8337-83d55b3d03d0",
+          "kind": "TWIN_REVISION",
+          "ref_id": "b564e19b-45ea-4bdf-9cef-19f3d7d5bee6",
+          "digest": null,
+          "label": "twin"
+        },
+        {
+          "schema_version": "1",
+          "id": "901e997d-4265-4160-b6e1-f120323c92bb",
+          "kind": "EXPERIMENT",
+          "ref_id": "25679612-e9cd-4323-86f7-0a6458233bab",
+          "digest": null,
+          "label": "experiment"
+        }
+      ],
+      "edges": [
+        {
+          "schema_version": "1",
+          "from_node_id": "901e997d-4265-4160-b6e1-f120323c92bb",
+          "to_node_id": "1b1d8b70-9780-44c0-8337-83d55b3d03d0",
+          "kind": "DERIVED_FROM"
+        },
+        {
+          "schema_version": "1",
+          "from_node_id": "1b1d8b70-9780-44c0-8337-83d55b3d03d0",
+          "to_node_id": "b2a5df0c-b6b9-4a19-b38d-82846f41c3a9",
+          "kind": "DERIVED_FROM"
+        }
+      ],
+      "graph_digest": "sha256:4ba87c53f81bbed033a86e9cc5a2645c543f792909702ad1f380f4d133ce17ab"
+    },
+    "experiment_root": {
+      "schema_version": "1",
+      "manifest_digest": "sha256:cac95ca6a22e0ccffce5fdee0ab8d6ade31c8288684c5693c9ed0938b45c9cff",
+      "provenance_graph_digest": "sha256:4ba87c53f81bbed033a86e9cc5a2645c543f792909702ad1f380f4d133ce17ab",
+      "artifact_merkle_root": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
+      "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+      "root_digest": "sha256:51013a04d76ac32b0395fb65535af00670361d2b78c123e74b633c9e3a400d6a"
+    },
+    "attestation": {
+      "schema_version": "1",
+      "id": "cfa1f948-effd-4862-949d-19b4b1b9ffc3",
+      "envelope_type": "application/vnd.in-toto+json",
+      "payload_type": "application/vnd.ghostrange.experimentpredicate+json",
+      "subject_digest": "sha256:51013a04d76ac32b0395fb65535af00670361d2b78c123e74b633c9e3a400d6a",
+      "predicate": {
+        "schema_version": "1",
+        "predicate_type": "https://ghostrange.local/attestation/experiment/v1",
+        "experiment_root": {
+          "schema_version": "1",
+          "manifest_digest": "sha256:cac95ca6a22e0ccffce5fdee0ab8d6ade31c8288684c5693c9ed0938b45c9cff",
+          "provenance_graph_digest": "sha256:4ba87c53f81bbed033a86e9cc5a2645c543f792909702ad1f380f4d133ce17ab",
+          "artifact_merkle_root": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
+          "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+          "root_digest": "sha256:51013a04d76ac32b0395fb65535af00670361d2b78c123e74b633c9e3a400d6a"
+        },
+        "manifest_id": "f675b235-59b1-41db-998f-25cce4a4423c",
+        "replay_level_available": "LEVEL_4"
+      },
+      "signature_b64": "SbTYeI4f/mskxC2wUO+Kqfn1rVFsQizkFkDg8/aZHMtlERWL1uEeSWdaAWJaoXaNepmw1p12JzuENCUdq9JUCQ==",
+      "key_id": "ghostrange-dev",
+      "signer_kind": "LOCAL_DEVELOPMENT",
+      "signed_at": "2026-09-26T08:40:21.672416Z"
+    },
+    "artifact_index": [],
+    "event_log": [
+      {
+        "type": "experiment.started",
+        "previous_event_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "event_hash": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf"
+      }
+    ],
+    "claims_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+    "replay_level": "LEVEL_4",
+    "disclosure": {
+      "schema_version": "1",
+      "level": "INTERNAL",
+      "redact_paths": [],
+      "allow_hostname": false
+    },
+    "bundle_digest": "sha256:a2af8d2f4f02818fd97cb6cd12b42bf344d22cab06ff6167641b1892ae0a3abd"
+  },
+  "trusted_public_keys": {
+    "ghostrange-dev": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA/mUXmwYmpbq0MQGqsgg21d3W2Y2Wl9iTftlgNX24dFY=\n-----END PUBLIC KEY-----\n"
+  }
+}

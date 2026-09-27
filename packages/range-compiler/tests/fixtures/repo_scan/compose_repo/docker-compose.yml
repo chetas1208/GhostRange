@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  gateway:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+    depends_on:
+      - auth
+  auth:
+    build:
+      context: ./auth
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"

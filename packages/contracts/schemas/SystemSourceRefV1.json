@@ -1,0 +1,25 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "branch": {
+      "default": "main",
+      "title": "Branch",
+      "type": "string"
+    },
+    "repository_url": {
+      "title": "Repository Url",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "repository_url"
+  ],
+  "title": "SystemSourceRefV1",
+  "type": "object"
+}

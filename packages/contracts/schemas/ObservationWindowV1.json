@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "duration_seconds": {
+      "default": 300,
+      "minimum": 1,
+      "title": "Duration Seconds",
+      "type": "integer"
+    },
+    "minimum_samples": {
+      "default": 5,
+      "minimum": 1,
+      "title": "Minimum Samples",
+      "type": "integer"
+    },
+    "sample_interval_seconds": {
+      "default": 30,
+      "minimum": 1,
+      "title": "Sample Interval Seconds",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "warmup_seconds": {
+      "default": 60,
+      "minimum": 0,
+      "title": "Warmup Seconds",
+      "type": "integer"
+    }
+  },
+  "title": "ObservationWindowV1",
+  "type": "object"
+}

@@ -1,0 +1,47 @@
+{
+  "$defs": {
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "abstract_pattern_hash": {
+      "title": "Abstract Pattern Hash",
+      "type": "string"
+    },
+    "fingerprint": {
+      "title": "Fingerprint",
+      "type": "string"
+    },
+    "knowledge_class": {
+      "$ref": "#/$defs/KnowledgeClass"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fingerprint",
+    "knowledge_class",
+    "abstract_pattern_hash"
+  ],
+  "title": "KnowledgeFingerprintV1",
+  "type": "object"
+}

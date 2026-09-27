@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "TwinSecretSubstitutionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "original_reference": {
+          "title": "Original Reference",
+          "type": "string"
+        },
+        "replacement_type": {
+          "title": "Replacement Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "twin_secret_ref": {
+          "title": "Twin Secret Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "original_reference",
+        "replacement_type",
+        "twin_secret_ref"
+      ],
+      "title": "TwinSecretSubstitutionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "blueprint_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Blueprint Hash"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "external_stubs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "External Stubs",
+      "type": "array"
+    },
+    "fidelity_profile_id": {
+      "format": "uuid",
+      "title": "Fidelity Profile Id",
+      "type": "string"
+    },
+    "ghost_ir_id": {
+      "format": "uuid",
+      "title": "Ghost Ir Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "logical_topology_summary": {
+      "default": "",
+      "title": "Logical Topology Summary",
+      "type": "string"
+    },
+    "network_policies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Network Policies",
+      "type": "array"
+    },
+    "required_invariant_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Required Invariant Ids",
+      "type": "array"
+    },
+    "required_services": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Services",
+      "type": "array"
+    },
+    "resource_requirements": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Resource Requirements",
+      "type": "object"
+    },
+    "revision": {
+      "default": "1",
+      "title": "Revision",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "secret_substitutions": {
+      "items": {
+        "$ref": "#/$defs/TwinSecretSubstitutionV1"
+      },
+      "title": "Secret Substitutions",
+      "type": "array"
+    },
+    "service_images": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Service Images",
+      "type": "object"
+    }
+  },
+  "required": [
+    "ghost_ir_id",
+    "fidelity_profile_id"
+  ],
+  "title": "TwinBlueprintV1",
+  "type": "object"
+}

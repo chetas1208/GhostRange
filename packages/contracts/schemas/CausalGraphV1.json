@@ -1,0 +1,274 @@
+{
+  "$defs": {
+    "CausalAssumptionKind": {
+      "enum": [
+        "NO_UNMEASURED_CONFOUNDING",
+        "CAUSAL_SUFFICIENCY",
+        "MECHANISM_INVARIANCE",
+        "POSITIVITY",
+        "CONSISTENCY",
+        "SUTVA_LIKE",
+        "TEMPORAL_ORDER",
+        "NO_INTERFERENCE",
+        "MEASUREMENT_RELIABILITY",
+        "SELECTION_MODEL",
+        "LATENT_VARIABLE_ALLOWED",
+        "DOMAIN_SHIFT_ASSUMPTION"
+      ],
+      "title": "CausalAssumptionKind",
+      "type": "string"
+    },
+    "CausalAssumptionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "assumption_id": {
+          "title": "Assumption Id",
+          "type": "string"
+        },
+        "established": {
+          "default": false,
+          "title": "Established",
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/$defs/CausalAssumptionKind"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assumption_id",
+        "kind"
+      ],
+      "title": "CausalAssumptionV1",
+      "type": "object"
+    },
+    "CausalEdgeKind": {
+      "enum": [
+        "CAUSES",
+        "POSSIBLY_CAUSES",
+        "CONFOUNDED_WITH",
+        "MEDIATES",
+        "MODIFIES_EFFECT",
+        "SELECTION_DEPENDS_ON"
+      ],
+      "title": "CausalEdgeKind",
+      "type": "string"
+    },
+    "CausalEdgeOrigin": {
+      "enum": [
+        "TOPOLOGY_DERIVED",
+        "MODEL_PROPOSED",
+        "MESH_PRIOR",
+        "OBSERVATION_INFERRED",
+        "INTERVENTION_SUPPORTED"
+      ],
+      "title": "CausalEdgeOrigin",
+      "type": "string"
+    },
+    "CausalEdgeStatus": {
+      "enum": [
+        "HYPOTHESIZED",
+        "OBSERVATION_SUPPORTED",
+        "INTERVENTION_SUPPORTED",
+        "REFUTED",
+        "UNIDENTIFIED"
+      ],
+      "title": "CausalEdgeStatus",
+      "type": "string"
+    },
+    "CausalEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "assumption_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumption Ids",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/CausalEdgeKind",
+          "default": "POSSIBLY_CAUSES"
+        },
+        "origin": {
+          "$ref": "#/$defs/CausalEdgeOrigin",
+          "default": "OBSERVATION_INFERRED"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/CausalEdgeStatus",
+          "default": "HYPOTHESIZED"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "target_id"
+      ],
+      "title": "CausalEdgeV1",
+      "type": "object"
+    },
+    "CausalGraphRevisionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/CausalEdgeV1"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "parent_revision_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Revision Id"
+        },
+        "revision_id": {
+          "format": "uuid",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "variables": {
+          "items": {
+            "$ref": "#/$defs/CausalVariableV1"
+          },
+          "title": "Variables",
+          "type": "array"
+        }
+      },
+      "title": "CausalGraphRevisionV1",
+      "type": "object"
+    },
+    "CausalVariableCategory": {
+      "enum": [
+        "CONFIGURATION",
+        "IDENTITY_STATE",
+        "SESSION_STATE",
+        "SERVICE_STATE",
+        "DEPENDENCY_BEHAVIOR",
+        "NETWORK_POLICY",
+        "REQUEST_ORDER",
+        "CACHE_STATE",
+        "DEPLOYMENT_REVISION",
+        "SECURITY_OUTCOME",
+        "HEALTH_OUTCOME",
+        "VERIFICATION_OUTCOME"
+      ],
+      "title": "CausalVariableCategory",
+      "type": "string"
+    },
+    "CausalVariableV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/CausalVariableCategory"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "observable": {
+          "default": true,
+          "title": "Observable",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "variable_id": {
+          "title": "Variable Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "variable_id",
+        "name",
+        "category"
+      ],
+      "title": "CausalVariableV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumptions": {
+      "items": {
+        "$ref": "#/$defs/CausalAssumptionV1"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "current_revision": {
+      "$ref": "#/$defs/CausalGraphRevisionV1"
+    },
+    "graph_id": {
+      "format": "uuid",
+      "title": "Graph Id",
+      "type": "string"
+    },
+    "investigation_id": {
+      "format": "uuid",
+      "title": "Investigation Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "CausalGraphV1",
+  "type": "object"
+}

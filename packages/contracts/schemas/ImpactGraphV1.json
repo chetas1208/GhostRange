@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "ImpactEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edge_kind": {
+          "title": "Edge Kind",
+          "type": "string"
+        },
+        "from_entity_id": {
+          "title": "From Entity Id",
+          "type": "string"
+        },
+        "propagated_categories": {
+          "items": {
+            "$ref": "#/$defs/SemanticDriftCategory"
+          },
+          "title": "Propagated Categories",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_entity_id": {
+          "title": "To Entity Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_entity_id",
+        "to_entity_id",
+        "edge_kind"
+      ],
+      "title": "ImpactEdgeV1",
+      "type": "object"
+    },
+    "ImpactLevel": {
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+        "UNKNOWN"
+      ],
+      "title": "ImpactLevel",
+      "type": "string"
+    },
+    "ImpactRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "categories": {
+          "items": {
+            "$ref": "#/$defs/SemanticDriftCategory"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "entity_id": {
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_name": {
+          "title": "Entity Name",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/ImpactLevel"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_name",
+        "level"
+      ],
+      "title": "ImpactRecordV1",
+      "type": "object"
+    },
+    "SemanticDriftCategory": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "VERSION",
+        "CONFIGURATION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_POLICY",
+        "RESOURCE",
+        "STORAGE",
+        "DEPENDENCY",
+        "SECURITY_CONTROL",
+        "EXTERNAL_DEPENDENCY",
+        "UNKNOWN"
+      ],
+      "title": "SemanticDriftCategory",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "affected_claim_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Affected Claim Ids",
+      "type": "array"
+    },
+    "drift_set_id": {
+      "format": "uuid",
+      "title": "Drift Set Id",
+      "type": "string"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/ImpactEdgeV1"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/ImpactRecordV1"
+      },
+      "title": "Records",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "drift_set_id"
+  ],
+  "title": "ImpactGraphV1",
+  "type": "object"
+}

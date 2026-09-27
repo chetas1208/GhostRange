@@ -1,0 +1,104 @@
+{
+  "$defs": {
+    "AttackReplayActionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_asset_id": {
+          "format": "uuid",
+          "title": "Target Asset Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "target_asset_id"
+      ],
+      "title": "AttackReplayActionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/AttackReplayActionV1"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "expected_baseline_observation": {
+      "title": "Expected Baseline Observation",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "safety_policy_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Safety Policy Id"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_asset_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Target Asset Ids",
+      "type": "array"
+    },
+    "timeout_seconds": {
+      "exclusiveMinimum": 0,
+      "title": "Timeout Seconds",
+      "type": "number"
+    },
+    "verification_condition": {
+      "title": "Verification Condition",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "expected_baseline_observation",
+    "verification_condition",
+    "timeout_seconds"
+  ],
+  "title": "AttackReplayPlanV1",
+  "type": "object"
+}

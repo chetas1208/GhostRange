@@ -1,0 +1,73 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "confirmation_runs": {
+      "default": 2,
+      "minimum": 1,
+      "title": "Confirmation Runs",
+      "type": "integer"
+    },
+    "max_attempts": {
+      "default": 500,
+      "minimum": 1,
+      "title": "Max Attempts",
+      "type": "integer"
+    },
+    "max_compute_cost_usd": {
+      "default": 25.0,
+      "minimum": 0,
+      "title": "Max Compute Cost Usd",
+      "type": "number"
+    },
+    "max_model_cost_usd": {
+      "default": 5.0,
+      "minimum": 0,
+      "title": "Max Model Cost Usd",
+      "type": "number"
+    },
+    "max_mutation_depth": {
+      "default": 6,
+      "minimum": 1,
+      "title": "Max Mutation Depth",
+      "type": "integer"
+    },
+    "max_parallel_searches": {
+      "default": 4,
+      "minimum": 1,
+      "title": "Max Parallel Searches",
+      "type": "integer"
+    },
+    "max_remediation_revisions": {
+      "default": 5,
+      "minimum": 0,
+      "title": "Max Remediation Revisions",
+      "type": "integer"
+    },
+    "max_sequence_length": {
+      "default": 8,
+      "minimum": 1,
+      "title": "Max Sequence Length",
+      "type": "integer"
+    },
+    "max_wall_time_sec": {
+      "default": 300,
+      "exclusiveMinimum": 0,
+      "title": "Max Wall Time Sec",
+      "type": "number"
+    },
+    "max_worlds": {
+      "default": 8,
+      "minimum": 1,
+      "title": "Max Worlds",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "AdversarialBudgetV1",
+  "type": "object"
+}

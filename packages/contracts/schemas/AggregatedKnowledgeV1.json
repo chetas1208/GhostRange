@@ -1,0 +1,150 @@
+{
+  "$defs": {
+    "ContributionPrivacyProfileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation_required": {
+          "default": false,
+          "title": "Aggregation Required",
+          "type": "boolean"
+        },
+        "dp_applied": {
+          "default": false,
+          "title": "Dp Applied",
+          "type": "boolean"
+        },
+        "fields_generalized": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Generalized",
+          "type": "array"
+        },
+        "fields_hashed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Hashed",
+          "type": "array"
+        },
+        "fields_removed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Removed",
+          "type": "array"
+        },
+        "minimum_cohort": {
+          "default": 1,
+          "title": "Minimum Cohort",
+          "type": "integer"
+        },
+        "residual_leakage_assessment": {
+          "default": "UNEVALUATED",
+          "title": "Residual Leakage Assessment",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "ContributionPrivacyProfileV1",
+      "type": "object"
+    },
+    "KnowledgeAbstractionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "abstract_relations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Abstract Relations",
+          "type": "array"
+        },
+        "abstract_tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Abstract Tags",
+          "type": "array"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "KnowledgeAbstractionV1",
+      "type": "object"
+    },
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "abstract_summary": {
+      "$ref": "#/$defs/KnowledgeAbstractionV1"
+    },
+    "aggregate_id": {
+      "format": "uuid",
+      "title": "Aggregate Id",
+      "type": "string"
+    },
+    "cohort_bucket_label": {
+      "default": "",
+      "title": "Cohort Bucket Label",
+      "type": "string"
+    },
+    "contributor_cohort_size": {
+      "title": "Contributor Cohort Size",
+      "type": "integer"
+    },
+    "knowledge_class": {
+      "$ref": "#/$defs/KnowledgeClass"
+    },
+    "privacy_profile": {
+      "$ref": "#/$defs/ContributionPrivacyProfileV1"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "validation_success_rate": {
+      "default": 0.0,
+      "title": "Validation Success Rate",
+      "type": "number"
+    }
+  },
+  "required": [
+    "knowledge_class",
+    "abstract_summary",
+    "contributor_cohort_size"
+  ],
+  "title": "AggregatedKnowledgeV1",
+  "type": "object"
+}

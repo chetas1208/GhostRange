@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-netbird-control"
+version = "0.1.0"
+description = "Single choke point for GhostRange's calls to the NetBird management API: peer/group lookups for the worker readiness gate, and peer revocation on worker teardown."
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "httpx>=0.27,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_netbird_control*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

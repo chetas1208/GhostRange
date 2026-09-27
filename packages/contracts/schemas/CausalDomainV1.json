@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "configuration_fingerprint": {
+      "default": "",
+      "title": "Configuration Fingerprint",
+      "type": "string"
+    },
+    "domain_id": {
+      "title": "Domain Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "twin_revision": {
+      "default": "",
+      "title": "Twin Revision",
+      "type": "string"
+    },
+    "world_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "World Id"
+    }
+  },
+  "required": [
+    "domain_id"
+  ],
+  "title": "CausalDomainV1",
+  "type": "object"
+}

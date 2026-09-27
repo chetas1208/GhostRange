@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "ApprovedRollbackTargetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_digest": {
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "config_fingerprint": {
+          "default": "",
+          "title": "Config Fingerprint",
+          "type": "string"
+        },
+        "immutable": {
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "revision",
+        "artifact_digest"
+      ],
+      "title": "ApprovedRollbackTargetV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "authorized": {
+      "title": "Authorized",
+      "type": "boolean"
+    },
+    "executor_response": {
+      "default": "",
+      "title": "Executor Response",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observed_digest_after": {
+      "default": "",
+      "title": "Observed Digest After",
+      "type": "string"
+    },
+    "result": {
+      "default": "PENDING",
+      "title": "Result",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target": {
+      "$ref": "#/$defs/ApprovedRollbackTargetV1"
+    },
+    "trigger_id": {
+      "title": "Trigger Id",
+      "type": "string"
+    },
+    "verified": {
+      "default": false,
+      "title": "Verified",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "trigger_id",
+    "authorized",
+    "target"
+  ],
+  "title": "RollbackExecutionV1",
+  "type": "object"
+}

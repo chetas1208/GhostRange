@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "DriftChangeType": {
+      "enum": [
+        "ADD",
+        "REMOVE",
+        "MODIFY",
+        "MOVE",
+        "RENAME",
+        "UNKNOWN"
+      ],
+      "title": "DriftChangeType",
+      "type": "string"
+    },
+    "SemanticDriftCategory": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "VERSION",
+        "CONFIGURATION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_POLICY",
+        "RESOURCE",
+        "STORAGE",
+        "DEPENDENCY",
+        "SECURITY_CONTROL",
+        "EXTERNAL_DEPENDENCY",
+        "UNKNOWN"
+      ],
+      "title": "SemanticDriftCategory",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "change_type": {
+      "$ref": "#/$defs/DriftChangeType"
+    },
+    "confidence": {
+      "default": 1.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "detected_at": {
+      "format": "date-time",
+      "title": "Detected At",
+      "type": "string"
+    },
+    "entity_name": {
+      "title": "Entity Name",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "new_fingerprint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "New Fingerprint"
+    },
+    "old_fingerprint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Old Fingerprint"
+    },
+    "property_path": {
+      "title": "Property Path",
+      "type": "string"
+    },
+    "provenance": {
+      "default": "",
+      "title": "Provenance",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantic_category": {
+      "$ref": "#/$defs/SemanticDriftCategory",
+      "default": "UNKNOWN"
+    },
+    "source_revision_from": {
+      "format": "uuid",
+      "title": "Source Revision From",
+      "type": "string"
+    },
+    "source_revision_to": {
+      "format": "uuid",
+      "title": "Source Revision To",
+      "type": "string"
+    },
+    "stable_entity_id": {
+      "title": "Stable Entity Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_revision_from",
+    "source_revision_to",
+    "stable_entity_id",
+    "entity_name",
+    "property_path",
+    "change_type"
+  ],
+  "title": "DriftEventV1",
+  "type": "object"
+}

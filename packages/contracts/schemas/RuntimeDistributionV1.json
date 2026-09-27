@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Count",
+      "type": "integer"
+    },
+    "mean_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Mean Seconds",
+      "type": "number"
+    },
+    "p50_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "P50 Seconds",
+      "type": "number"
+    },
+    "p75_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "P75 Seconds",
+      "type": "number"
+    },
+    "p90_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "P90 Seconds",
+      "type": "number"
+    },
+    "p95_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "P95 Seconds",
+      "type": "number"
+    },
+    "p99_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "P99 Seconds",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_type": {
+      "$ref": "#/$defs/TaskType"
+    },
+    "variance_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Variance Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "task_type"
+  ],
+  "title": "RuntimeDistributionV1",
+  "type": "object"
+}

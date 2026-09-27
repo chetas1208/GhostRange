@@ -1,0 +1,81 @@
+# ghostrange-auth-lab-v1 — RangeSpecV1 (LOGICAL topology only)
+#
+# This file is a real RangeSpecV1 instance (packages/contracts/ghostrange_contracts/range.py).
+# It validates as-is against RangeSpecV1.model_validate(yaml.safe_load(...)) — see
+# packages/range-iac/tests/test_rangespec_validates.py for the proof.
+#
+# IMPORTANT — logical vs physical:
+#   This file describes WHAT the range logically consists of (networks, assets, their
+#   roles, what image/software each one runs, how critical each one is). It says nothing
+#   about which physical Vultr instance(s) any asset actually lands on. That mapping is a
+#   separate, compiler-owned artifact: ./topology.yaml (RangeTopologyPlanV1, defined in
+#   packages/range-iac — NOT part of the frozen ghostrange_contracts schema). See
+#   docs/adr/ADR-M2-RANGE-PROVISIONING.md for why this split exists and why it matters once
+#   GhostScheduler starts moving workloads between physical hosts.
+#
+# Conceptual chain this range models (a minimal internet-facing auth path):
+#   INTERNET / TEST ORIGIN -> gw01 (gateway) -> api01 (api) -> auth01 (auth) -> db01 (data store)
+
+schema_version: "1"
+id: "112ab381-173f-46f3-9e81-772345e47118"
+name: "ghostrange-auth-lab-v1"
+description: >
+  Minimal 4-tier authorized-infrastructure reconstruction (gateway -> api -> auth ->
+  data store) used as the canonical M2 provisioning range. Scenario/vulnerability content
+  (the actual auth-lab application logic, CVEs, injected misconfigurations) is owned by the
+  wave-2 "controlled scenario" agent; this spec's asset `image` fields are honest,
+  minimal, working stand-ins that prove the RangeSpec -> real-infrastructure pipeline end
+  to end (see ranges/ghostrange-auth-lab-v1/docker/) and can be swapped for the final
+  scenario images without touching this file's shape.
+owner: "chetasparekh2003@gmail.com"
+
+networks:
+  - id: "6b896360-04f9-4879-a450-3da1171fef75"
+    name: "auth-lab-core"
+    cidr: "10.60.0.0/24"
+    description: >
+      Single logical segment for M2. All four assets are declared on one network because
+      the M2 scope consolidates them onto one physical VM (see topology.yaml); a v2 range
+      would split this into a DMZ segment (gateway) and an internal segment (api/auth/data
+      store) once physical placement actually spans multiple hosts.
+
+assets:
+  - id: "c0c521e9-2980-498e-880e-f3e1cbb29d3b"
+    hostname: "gw01"
+    network_id: "6b896360-04f9-4879-a450-3da1171fef75"
+    os_family: "linux"
+    role: "LOAD_BALANCER"
+    image: "ghostrange/auth-lab-gateway:v1"
+    criticality: "MEDIUM"
+
+  - id: "7826d301-e013-4a34-9f6f-fd4b263f1a75"
+    hostname: "api01"
+    network_id: "6b896360-04f9-4879-a450-3da1171fef75"
+    os_family: "linux"
+    role: "SERVER"
+    image: "ghostrange/auth-lab-api:v1"
+    criticality: "MEDIUM"
+
+  - id: "2dee3e2c-cb35-4de2-a979-46e22b13331e"
+    hostname: "auth01"
+    network_id: "6b896360-04f9-4879-a450-3da1171fef75"
+    os_family: "linux"
+    role: "SERVER"
+    image: "ghostrange/auth-lab-auth:v1"
+    criticality: "HIGH"
+
+  - id: "a593ab48-d8fa-458a-b559-2b535d687b28"
+    hostname: "db01"
+    network_id: "6b896360-04f9-4879-a450-3da1171fef75"
+    os_family: "linux"
+    role: "DATABASE"
+    image: "postgres:16-alpine"
+    criticality: "HIGH"
+
+policy_id: null
+budget_id: null
+
+tags:
+  range_family: "ghostrange-auth-lab"
+  spec_owner: "agent-03-infra"
+  m2_physical_layout: "single-vm-docker-compose"

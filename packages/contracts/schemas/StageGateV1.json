@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "ConformanceStatus": {
+      "enum": [
+        "MATCH",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MATERIAL_DIFFERENCE",
+        "UNKNOWN",
+        "NOT_OBSERVABLE"
+      ],
+      "title": "ConformanceStatus",
+      "type": "string"
+    },
+    "GateEvaluationStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_DATA",
+        "ERROR"
+      ],
+      "title": "GateEvaluationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "gate_id": {
+      "title": "Gate Id",
+      "type": "string"
+    },
+    "requires_conformance": {
+      "$ref": "#/$defs/ConformanceStatus",
+      "default": "MATCH"
+    },
+    "requires_error_rate": {
+      "$ref": "#/$defs/GateEvaluationStatus",
+      "default": "PASS"
+    },
+    "requires_health": {
+      "$ref": "#/$defs/GateEvaluationStatus",
+      "default": "PASS"
+    },
+    "requires_latency": {
+      "$ref": "#/$defs/GateEvaluationStatus",
+      "default": "PASS"
+    },
+    "requires_security_invariant": {
+      "$ref": "#/$defs/GateEvaluationStatus",
+      "default": "PASS"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "gate_id"
+  ],
+  "title": "StageGateV1",
+  "type": "object"
+}

@@ -1,0 +1,75 @@
+{
+  "$defs": {
+    "FidelityDimension": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "CONFIGURATION",
+        "VERSION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_CONTENT",
+        "RUNTIME_BEHAVIOR",
+        "RESOURCE",
+        "STORAGE",
+        "TIMING",
+        "DEPENDENCY",
+        "SECURITY_CONTROL"
+      ],
+      "title": "FidelityDimension",
+      "type": "string"
+    },
+    "FidelityRequirementLevel": {
+      "enum": [
+        "REQUIRED",
+        "IMPORTANT",
+        "OPTIONAL",
+        "IGNORED"
+      ],
+      "title": "FidelityRequirementLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dimensions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/FidelityRequirementLevel"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/FidelityDimension"
+      },
+      "title": "Dimensions",
+      "type": "object"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "objective_id": {
+      "format": "uuid",
+      "title": "Objective Id",
+      "type": "string"
+    },
+    "pass_threshold": {
+      "default": 0.85,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Pass Threshold",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "objective_id"
+  ],
+  "title": "FidelityProfileV1",
+  "type": "object"
+}

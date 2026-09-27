@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "SearchTreeEdgeKind": {
+      "enum": [
+        "EXPANDS",
+        "MUTATES",
+        "EXECUTES",
+        "OBSERVES",
+        "FALSIFIES"
+      ],
+      "title": "SearchTreeEdgeKind",
+      "type": "string"
+    },
+    "SearchTreeEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "from_node_id": {
+          "format": "uuid",
+          "title": "From Node Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/SearchTreeEdgeKind"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_node_id": {
+          "format": "uuid",
+          "title": "To Node Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_node_id",
+        "to_node_id",
+        "kind"
+      ],
+      "title": "SearchTreeEdgeV1",
+      "type": "object"
+    },
+    "SearchTreeNodeKind": {
+      "enum": [
+        "HYPOTHESIS",
+        "MUTATION",
+        "EXECUTION",
+        "OBSERVATION",
+        "COUNTEREXAMPLE"
+      ],
+      "title": "SearchTreeNodeKind",
+      "type": "string"
+    },
+    "SearchTreeNodeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/SearchTreeNodeKind"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "ref_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref Id"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "SearchTreeNodeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/SearchTreeEdgeV1"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/SearchTreeNodeV1"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "search_run_id": {
+      "format": "uuid",
+      "title": "Search Run Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "search_run_id"
+  ],
+  "title": "SearchTreeV1",
+  "type": "object"
+}

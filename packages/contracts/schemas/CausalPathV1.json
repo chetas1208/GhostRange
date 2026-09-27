@@ -1,0 +1,44 @@
+{
+  "$defs": {
+    "CausalEdgeKind": {
+      "enum": [
+        "CAUSES",
+        "POSSIBLY_CAUSES",
+        "CONFOUNDED_WITH",
+        "MEDIATES",
+        "MODIFIES_EFFECT",
+        "SELECTION_DEPENDS_ON"
+      ],
+      "title": "CausalEdgeKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "edge_kinds": {
+      "items": {
+        "$ref": "#/$defs/CausalEdgeKind"
+      },
+      "title": "Edge Kinds",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "nodes"
+  ],
+  "title": "CausalPathV1",
+  "type": "object"
+}

@@ -1,0 +1,199 @@
+{
+  "$defs": {
+    "FidelityDimension": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "CONFIGURATION",
+        "VERSION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_CONTENT",
+        "RUNTIME_BEHAVIOR",
+        "RESOURCE",
+        "STORAGE",
+        "TIMING",
+        "DEPENDENCY",
+        "SECURITY_CONTROL"
+      ],
+      "title": "FidelityDimension",
+      "type": "string"
+    },
+    "FidelityProfileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/FidelityRequirementLevel"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/FidelityDimension"
+          },
+          "title": "Dimensions",
+          "type": "object"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "objective_id": {
+          "format": "uuid",
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "pass_threshold": {
+          "default": 0.85,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Pass Threshold",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "objective_id"
+      ],
+      "title": "FidelityProfileV1",
+      "type": "object"
+    },
+    "FidelityRequirementLevel": {
+      "enum": [
+        "REQUIRED",
+        "IMPORTANT",
+        "OPTIONAL",
+        "IGNORED"
+      ],
+      "title": "FidelityRequirementLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "blueprint_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Blueprint Hash"
+    },
+    "compilation_id": {
+      "format": "uuid",
+      "title": "Compilation Id",
+      "type": "string"
+    },
+    "compiler_version": {
+      "default": "range-compiler/v0.1",
+      "title": "Compiler Version",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "fidelity_profile": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FidelityProfileV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "normalization_decisions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Normalization Decisions",
+      "type": "array"
+    },
+    "parser_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Parser Versions",
+      "type": "object"
+    },
+    "placement_decisions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Placement Decisions",
+      "type": "array"
+    },
+    "policy_version": {
+      "default": "sanitization/v1",
+      "title": "Policy Version",
+      "type": "string"
+    },
+    "sanitization_decisions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sanitization Decisions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Snapshot Ids",
+      "type": "array"
+    },
+    "source_hashes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Source Hashes",
+      "type": "array"
+    },
+    "substitutions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Substitutions",
+      "type": "array"
+    },
+    "template_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Template Ids",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "title": "CompilationManifestV1",
+  "type": "object"
+}

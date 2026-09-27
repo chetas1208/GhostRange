@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "VerificationMethod": {
+      "enum": [
+        "ADVERSARIAL_ATTACK",
+        "STATIC_ANALYSIS",
+        "RE_EXECUTION",
+        "PEER_REVIEW"
+      ],
+      "title": "VerificationMethod",
+      "type": "string"
+    },
+    "VerificationResult": {
+      "enum": [
+        "PENDING",
+        "PASSED",
+        "FAILED",
+        "INCONCLUSIVE"
+      ],
+      "title": "VerificationResult",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Completed At"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "method": {
+      "$ref": "#/$defs/VerificationMethod"
+    },
+    "observation_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Observation Ids",
+      "type": "array"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    },
+    "result": {
+      "$ref": "#/$defs/VerificationResult",
+      "default": "PENDING"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "verifier_agent_id": {
+      "format": "uuid",
+      "title": "Verifier Agent Id",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "world_id",
+    "method",
+    "verifier_agent_id"
+  ],
+  "title": "VerificationV1",
+  "type": "object"
+}

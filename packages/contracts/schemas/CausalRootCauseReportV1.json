@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "CausalValidityStatus": {
+      "enum": [
+        "OBSERVATIONAL_ONLY",
+        "ASSUMPTION_DEPENDENT",
+        "INTERVENTION_SUPPORTED",
+        "COUNTERFACTUALLY_SUPPORTED",
+        "TRANSPORTABLE_UNDER_ASSUMPTIONS",
+        "NOT_IDENTIFIABLE",
+        "CONTRADICTED",
+        "INCONCLUSIVE"
+      ],
+      "title": "CausalValidityStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "outcome_variable_id": {
+      "title": "Outcome Variable Id",
+      "type": "string"
+    },
+    "refuted_hypotheses": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Refuted Hypotheses",
+      "type": "array"
+    },
+    "remaining_confounders": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Remaining Confounders",
+      "type": "array"
+    },
+    "report_id": {
+      "format": "uuid",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "supported_causes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Causes",
+      "type": "array"
+    },
+    "validity": {
+      "$ref": "#/$defs/CausalValidityStatus",
+      "default": "INCONCLUSIVE"
+    }
+  },
+  "required": [
+    "outcome_variable_id"
+  ],
+  "title": "CausalRootCauseReportV1",
+  "type": "object"
+}

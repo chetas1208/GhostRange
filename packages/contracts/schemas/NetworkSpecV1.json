@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "description": "A network segment to provision as part of a RangeSpec.",
+  "properties": {
+    "cidr": {
+      "title": "Cidr",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "vlan_id": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vlan Id"
+    }
+  },
+  "required": [
+    "name",
+    "cidr"
+  ],
+  "title": "NetworkSpecV1",
+  "type": "object"
+}

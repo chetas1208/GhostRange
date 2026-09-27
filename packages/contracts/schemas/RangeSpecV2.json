@@ -1,0 +1,235 @@
+{
+  "$defs": {
+    "AssetRole": {
+      "enum": [
+        "WORKSTATION",
+        "SERVER",
+        "DOMAIN_CONTROLLER",
+        "FIREWALL",
+        "DATABASE",
+        "LOAD_BALANCER",
+        "OTHER"
+      ],
+      "title": "AssetRole",
+      "type": "string"
+    },
+    "AssetSpecV1": {
+      "additionalProperties": false,
+      "description": "Declarative description of an asset to provision (see also asset.py's\nruntime ``AssetV1``, which is the materialized instance inside a World).",
+      "properties": {
+        "criticality": {
+          "$ref": "#/$defs/SecurityCriticality",
+          "default": "MEDIUM"
+        },
+        "hostname": {
+          "title": "Hostname",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "image": {
+          "title": "Image",
+          "type": "string"
+        },
+        "network_id": {
+          "format": "uuid",
+          "title": "Network Id",
+          "type": "string"
+        },
+        "os_family": {
+          "title": "Os Family",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/AssetRole"
+        }
+      },
+      "required": [
+        "hostname",
+        "network_id",
+        "os_family",
+        "role",
+        "image"
+      ],
+      "title": "AssetSpecV1",
+      "type": "object"
+    },
+    "NetworkSpecV1": {
+      "additionalProperties": false,
+      "description": "A network segment to provision as part of a RangeSpec.",
+      "properties": {
+        "cidr": {
+          "title": "Cidr",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "vlan_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vlan Id"
+        }
+      },
+      "required": [
+        "name",
+        "cidr"
+      ],
+      "title": "NetworkSpecV1",
+      "type": "object"
+    },
+    "SecurityCriticality": {
+      "description": "How much damage compromise/misconfiguration of a thing would cause.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SecurityCriticality",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Extends RangeSpecV1 semantics with compiler provenance (additive schema).",
+  "properties": {
+    "assets": {
+      "items": {
+        "$ref": "#/$defs/AssetSpecV1"
+      },
+      "title": "Assets",
+      "type": "array"
+    },
+    "budget_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Budget Id"
+    },
+    "compilation_manifest_id": {
+      "format": "uuid",
+      "title": "Compilation Manifest Id",
+      "type": "string"
+    },
+    "compiled_from_revision": {
+      "default": "1",
+      "title": "Compiled From Revision",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "networks": {
+      "items": {
+        "$ref": "#/$defs/NetworkSpecV1"
+      },
+      "title": "Networks",
+      "type": "array"
+    },
+    "owner": {
+      "title": "Owner",
+      "type": "string"
+    },
+    "placement_plan_id": {
+      "format": "uuid",
+      "title": "Placement Plan Id",
+      "type": "string"
+    },
+    "policy_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Id"
+    },
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_graph_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Graph Hash"
+    },
+    "tags": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "object"
+    },
+    "twin_blueprint_id": {
+      "format": "uuid",
+      "title": "Twin Blueprint Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner",
+    "twin_blueprint_id",
+    "placement_plan_id",
+    "compilation_manifest_id"
+  ],
+  "title": "RangeSpecV2",
+  "type": "object"
+}

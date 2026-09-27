@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "scenarios": [
+    {"id": "clean_promotion", "expected_state": "READY_FOR_REVIEW", "should_block_unsafe": false},
+    {"id": "stale_source", "expected_state": "REQUIRES_REVALIDATION", "should_block_unsafe": true},
+    {"id": "material_patch_difference", "expected_state": "REQUIRES_RETEST", "should_block_unsafe": true},
+    {"id": "rollback_failure", "expected_blockers_contains": "ROLLBACK_NOT_VERIFIED", "should_block_unsafe": true},
+    {"id": "observability_gap", "expected_blockers_contains": "OBSERVABILITY_GAP", "should_block_unsafe": true},
+    {"id": "counterexample_present", "expected_blockers_contains": "COUNTEREXAMPLE_FOUND", "should_block_unsafe": true}
+  ],
+  "metrics_targets": {
+    "unsafe_promotion_pass_rate": 0,
+    "note": "Evaluator reads this file; gate engine must not"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "last_evidence_gain_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Evidence Gain At"
+    },
+    "per_world_artifact_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Per World Artifact Counts",
+      "type": "object"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id"
+  ],
+  "title": "EvidenceStateV1",
+  "type": "object"
+}

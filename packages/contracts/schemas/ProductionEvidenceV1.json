@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "content_hash": {
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "title": "Kind",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "redacted_summary": {
+      "default": "",
+      "title": "Redacted Summary",
+      "type": "string"
+    },
+    "reference": {
+      "default": "",
+      "title": "Reference",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "content_hash"
+  ],
+  "title": "ProductionEvidenceV1",
+  "type": "object"
+}

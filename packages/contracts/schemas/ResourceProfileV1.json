@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "What a Task asks for, before the scheduler decides what it gets.\n\nCompare to ``SchedulerDecisionV1.target_resource_class`` (what it\nactually gets) and ``ComputeWorkerV1.resource_class`` (what got\nprovisioned) \u2014 three points where a mismatch is meaningful telemetry.",
+  "properties": {
+    "cpu_cores": {
+      "exclusiveMinimum": 0,
+      "title": "Cpu Cores",
+      "type": "number"
+    },
+    "gpu_required": {
+      "default": false,
+      "title": "Gpu Required",
+      "type": "boolean"
+    },
+    "gpu_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gpu Type"
+    },
+    "memory_gb": {
+      "exclusiveMinimum": 0,
+      "title": "Memory Gb",
+      "type": "number"
+    },
+    "preferred_resource_class": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResourceClass"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cpu_cores",
+    "memory_gb"
+  ],
+  "title": "ResourceProfileV1",
+  "type": "object"
+}

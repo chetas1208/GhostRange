@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "assumption_id": {
+      "format": "uuid",
+      "title": "Assumption Id",
+      "type": "string"
+    },
+    "challenge_strategy": {
+      "title": "Challenge Strategy",
+      "type": "string"
+    },
+    "expected_violation_condition": {
+      "title": "Expected Violation Condition",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "required_world_state": {
+      "additionalProperties": true,
+      "title": "Required World State",
+      "type": "object"
+    },
+    "result": {
+      "default": "PENDING",
+      "title": "Result",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "assumption_id",
+    "challenge_strategy",
+    "expected_violation_condition"
+  ],
+  "title": "AssumptionChallengeV1",
+  "type": "object"
+}

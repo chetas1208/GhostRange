@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "adapter_id": {
+      "title": "Adapter Id",
+      "type": "string"
+    },
+    "health": {
+      "default": true,
+      "title": "Health",
+      "type": "boolean"
+    },
+    "logs": {
+      "default": false,
+      "title": "Logs",
+      "type": "boolean"
+    },
+    "metrics": {
+      "default": true,
+      "title": "Metrics",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "traces": {
+      "default": false,
+      "title": "Traces",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "adapter_id"
+  ],
+  "title": "ObservabilityAdapterCapabilitiesV1",
+  "type": "object"
+}

@@ -1,0 +1,41 @@
+{
+  "$defs": {
+    "DisclosureLevel": {
+      "enum": [
+        "PRIVATE",
+        "INTERNAL",
+        "SHAREABLE_REDACTED",
+        "PUBLIC_DIGEST_ONLY"
+      ],
+      "title": "DisclosureLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allow_hostname": {
+      "default": false,
+      "title": "Allow Hostname",
+      "type": "boolean"
+    },
+    "level": {
+      "$ref": "#/$defs/DisclosureLevel",
+      "default": "INTERNAL"
+    },
+    "redact_paths": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Redact Paths",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "DisclosurePolicyV1",
+  "type": "object"
+}

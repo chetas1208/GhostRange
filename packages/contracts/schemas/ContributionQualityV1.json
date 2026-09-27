@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "contribution_id": {
+      "format": "uuid",
+      "title": "Contribution Id",
+      "type": "string"
+    },
+    "cross_node_validations": {
+      "default": 0,
+      "title": "Cross Node Validations",
+      "type": "integer"
+    },
+    "local_validations": {
+      "default": 0,
+      "title": "Local Validations",
+      "type": "integer"
+    },
+    "poisoning_signals": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Poisoning Signals",
+      "type": "array"
+    },
+    "provenance_valid": {
+      "default": false,
+      "title": "Provenance Valid",
+      "type": "boolean"
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "recency_score": {
+      "default": 0.0,
+      "title": "Recency Score",
+      "type": "number"
+    },
+    "schema_compatible": {
+      "default": true,
+      "title": "Schema Compatible",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contribution_id"
+  ],
+  "title": "ContributionQualityV1",
+  "type": "object"
+}

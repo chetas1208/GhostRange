@@ -1,0 +1,75 @@
+{
+  "$defs": {
+    "VerificationDimensionStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "SKIP",
+        "NOT_APPLICABLE"
+      ],
+      "title": "VerificationDimensionStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifacts_complete": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "claim_references_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "event_chain_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "failures": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failures",
+      "type": "array"
+    },
+    "hashes_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "identity_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "redaction_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "replayable": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signature_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "structure_valid": {
+      "$ref": "#/$defs/VerificationDimensionStatus",
+      "default": "SKIP"
+    },
+    "verified_integrity": {
+      "title": "Verified Integrity",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "verified_integrity"
+  ],
+  "title": "BundleVerificationResultV1",
+  "type": "object"
+}

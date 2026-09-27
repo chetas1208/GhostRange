@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "gaps": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Gaps",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signals": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Signals",
+      "type": "array"
+    }
+  },
+  "title": "ObservabilityRequirementV1",
+  "type": "object"
+}

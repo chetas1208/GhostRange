@@ -1,0 +1,25 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "fields_generalized": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Fields Generalized",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "topology_leakage_risk": {
+      "default": "UNEVALUATED",
+      "title": "Topology Leakage Risk",
+      "type": "string"
+    }
+  },
+  "title": "CausalContributionPrivacyV1",
+  "type": "object"
+}

@@ -1,0 +1,44 @@
+{
+  "$defs": {
+    "PolicyActorKind": {
+      "description": "Who/what issued a request that reached the policy-check service \u2014\nthe ``ActorRef.kind`` field on ``AuditRecordV1`` (EXECUTION_POLICY.md\n\u00a78). Always one of these three; never free text.",
+      "enum": [
+        "AGENT",
+        "SERVICE",
+        "HUMAN"
+      ],
+      "title": "PolicyActorKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Who/what issued the request that produced an ``AuditRecordV1``.",
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/PolicyActorKind"
+    },
+    "tool_call_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Call Id"
+    }
+  },
+  "required": [
+    "kind",
+    "id"
+  ],
+  "title": "ActorRef",
+  "type": "object"
+}

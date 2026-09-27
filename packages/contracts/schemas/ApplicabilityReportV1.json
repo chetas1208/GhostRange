@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "ApplicabilityResult": {
+      "enum": [
+        "APPLICABLE",
+        "POSSIBLY_APPLICABLE",
+        "NOT_APPLICABLE",
+        "INSUFFICIENT_INFORMATION"
+      ],
+      "title": "ApplicabilityResult",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contribution_id": {
+      "format": "uuid",
+      "title": "Contribution Id",
+      "type": "string"
+    },
+    "explanation": {
+      "default": "",
+      "title": "Explanation",
+      "type": "string"
+    },
+    "matched_tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Matched Tags",
+      "type": "array"
+    },
+    "result": {
+      "$ref": "#/$defs/ApplicabilityResult"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contribution_id",
+    "result"
+  ],
+  "title": "ApplicabilityReportV1",
+  "type": "object"
+}

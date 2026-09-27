@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "maximize_evidence_gain": {
+      "default": 0.6,
+      "title": "Maximize Evidence Gain",
+      "type": "number"
+    },
+    "maximize_utilization": {
+      "default": 0.2,
+      "title": "Maximize Utilization",
+      "type": "number"
+    },
+    "maximize_verification_coverage": {
+      "default": 1.0,
+      "title": "Maximize Verification Coverage",
+      "type": "number"
+    },
+    "minimize_compute_cost": {
+      "default": 0.5,
+      "title": "Minimize Compute Cost",
+      "type": "number"
+    },
+    "minimize_idle_compute": {
+      "default": 0.3,
+      "title": "Minimize Idle Compute",
+      "type": "number"
+    },
+    "minimize_time_to_verified": {
+      "default": 1.0,
+      "title": "Minimize Time To Verified",
+      "type": "number"
+    },
+    "minimize_wasted_speculation": {
+      "default": 0.4,
+      "title": "Minimize Wasted Speculation",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "SchedulingObjectiveWeightsV1",
+  "type": "object"
+}

@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "artifact_merkle_root": {
+      "title": "Artifact Merkle Root",
+      "type": "string"
+    },
+    "claim_set_digest": {
+      "title": "Claim Set Digest",
+      "type": "string"
+    },
+    "event_log_root": {
+      "title": "Event Log Root",
+      "type": "string"
+    },
+    "manifest_digest": {
+      "title": "Manifest Digest",
+      "type": "string"
+    },
+    "provenance_graph_digest": {
+      "title": "Provenance Graph Digest",
+      "type": "string"
+    },
+    "root_digest": {
+      "title": "Root Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "manifest_digest",
+    "provenance_graph_digest",
+    "artifact_merkle_root",
+    "event_log_root",
+    "claim_set_digest",
+    "root_digest"
+  ],
+  "title": "ExperimentRootV1",
+  "type": "object"
+}

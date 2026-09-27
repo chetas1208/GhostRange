@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "abstract_tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstract Tags",
+      "type": "array"
+    },
+    "applicability_hint": {
+      "default": "",
+      "title": "Applicability Hint",
+      "type": "string"
+    },
+    "exploration_weight": {
+      "default": 0.25,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Exploration Weight",
+      "type": "number"
+    },
+    "knowledge_class": {
+      "$ref": "#/$defs/KnowledgeClass"
+    },
+    "prior_id": {
+      "format": "uuid",
+      "title": "Prior Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_contribution_id": {
+      "format": "uuid",
+      "title": "Source Contribution Id",
+      "type": "string"
+    },
+    "support_label": {
+      "default": "AGGREGATED",
+      "title": "Support Label",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_contribution_id",
+    "knowledge_class"
+  ],
+  "title": "MeshPriorV1",
+  "type": "object"
+}

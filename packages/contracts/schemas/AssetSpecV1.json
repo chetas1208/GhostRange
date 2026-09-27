@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "AssetRole": {
+      "enum": [
+        "WORKSTATION",
+        "SERVER",
+        "DOMAIN_CONTROLLER",
+        "FIREWALL",
+        "DATABASE",
+        "LOAD_BALANCER",
+        "OTHER"
+      ],
+      "title": "AssetRole",
+      "type": "string"
+    },
+    "SecurityCriticality": {
+      "description": "How much damage compromise/misconfiguration of a thing would cause.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SecurityCriticality",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Declarative description of an asset to provision (see also asset.py's\nruntime ``AssetV1``, which is the materialized instance inside a World).",
+  "properties": {
+    "criticality": {
+      "$ref": "#/$defs/SecurityCriticality",
+      "default": "MEDIUM"
+    },
+    "hostname": {
+      "title": "Hostname",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "image": {
+      "title": "Image",
+      "type": "string"
+    },
+    "network_id": {
+      "format": "uuid",
+      "title": "Network Id",
+      "type": "string"
+    },
+    "os_family": {
+      "title": "Os Family",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/AssetRole"
+    }
+  },
+  "required": [
+    "hostname",
+    "network_id",
+    "os_family",
+    "role",
+    "image"
+  ],
+  "title": "AssetSpecV1",
+  "type": "object"
+}

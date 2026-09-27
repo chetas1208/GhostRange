@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "adversarial_replay_plan_id": {
+      "format": "uuid",
+      "title": "Adversarial Replay Plan Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "optional_path_test_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Optional Path Test Ids",
+      "type": "array"
+    },
+    "regression_test_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Regression Test Ids",
+      "type": "array"
+    },
+    "reproduction_test_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reproduction Test Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_health_test_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Service Health Test Ids",
+      "type": "array"
+    },
+    "version": {
+      "default": "1",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "adversarial_replay_plan_id"
+  ],
+  "title": "VerificationSuiteV1",
+  "type": "object"
+}

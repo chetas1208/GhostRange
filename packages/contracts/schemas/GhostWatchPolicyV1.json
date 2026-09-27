@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "ConformanceDimension": {
+      "enum": [
+        "ARTIFACT",
+        "CONFIGURATION",
+        "SERVICE_VERSION",
+        "NETWORK_POLICY",
+        "IDENTITY_POLICY",
+        "DEPENDENCY",
+        "ROLLOUT_STRATEGY",
+        "ENVIRONMENT"
+      ],
+      "title": "ConformanceDimension",
+      "type": "string"
+    },
+    "DeploymentAuthorityMode": {
+      "enum": [
+        "OBSERVE_ONLY",
+        "RECOMMEND",
+        "PREAUTHORIZED_PAUSE",
+        "PREAUTHORIZED_ROLLBACK"
+      ],
+      "title": "DeploymentAuthorityMode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "control_fail_closed": {
+      "default": true,
+      "title": "Control Fail Closed",
+      "type": "boolean"
+    },
+    "debounce_consecutive_failures": {
+      "default": 2,
+      "title": "Debounce Consecutive Failures",
+      "type": "integer"
+    },
+    "default_authority": {
+      "$ref": "#/$defs/DeploymentAuthorityMode",
+      "default": "OBSERVE_ONLY"
+    },
+    "missing_data_policy": {
+      "default": "HOLD",
+      "title": "Missing Data Policy",
+      "type": "string"
+    },
+    "required_conformance_dimensions": {
+      "items": {
+        "$ref": "#/$defs/ConformanceDimension"
+      },
+      "title": "Required Conformance Dimensions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "version": {
+      "default": "ghostwatch-v1",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "title": "GhostWatchPolicyV1",
+  "type": "object"
+}

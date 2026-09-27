@@ -1,0 +1,231 @@
+{
+  "$defs": {
+    "ForkStrategy": {
+      "enum": [
+        "template_replay",
+        "snapshot_clone",
+        "image_replay",
+        "container_snapshot"
+      ],
+      "title": "ForkStrategy",
+      "type": "string"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    },
+    "WorldFingerprintV1": {
+      "additionalProperties": false,
+      "properties": {
+        "application_artifact_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Application Artifact Hash"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "config_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Config Hash"
+        },
+        "data_seed_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data Seed Hash"
+        },
+        "provider_image_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Image Id"
+        },
+        "scenario_version": {
+          "default": "1",
+          "title": "Scenario Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "template_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Template Version"
+        },
+        "world_id": {
+          "format": "uuid",
+          "title": "World Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "world_id"
+      ],
+      "title": "WorldFingerprintV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "M3 fork record \u2014 superset of WorldForkV1 semantics for lineage + isolation.",
+  "properties": {
+    "base_world_id": {
+      "format": "uuid",
+      "title": "Base World Id",
+      "type": "string"
+    },
+    "budget_slice_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Budget Slice Usd"
+    },
+    "child_world_id": {
+      "format": "uuid",
+      "title": "Child World Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "created_by": {
+      "title": "Created By",
+      "type": "string"
+    },
+    "creation_reason": {
+      "title": "Creation Reason",
+      "type": "string"
+    },
+    "fork_generation": {
+      "minimum": 0,
+      "title": "Fork Generation",
+      "type": "integer"
+    },
+    "fork_point_fingerprint": {
+      "$ref": "#/$defs/WorldFingerprintV1"
+    },
+    "fork_strategy": {
+      "$ref": "#/$defs/ForkStrategy"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "inherited_state_reference": {
+      "description": "Content-addressed or provider snapshot ref at fork point",
+      "title": "Inherited State Reference",
+      "type": "string"
+    },
+    "parent_world_id": {
+      "format": "uuid",
+      "title": "Parent World Id",
+      "type": "string"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "remediation_id": {
+      "format": "uuid",
+      "title": "Remediation Id",
+      "type": "string"
+    },
+    "requested_resource_profile": {
+      "$ref": "#/$defs/ResourceClass"
+    },
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "triggered_by_decision_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Triggered By Decision Id"
+    }
+  },
+  "required": [
+    "range_id",
+    "base_world_id",
+    "parent_world_id",
+    "child_world_id",
+    "remediation_id",
+    "fork_generation",
+    "fork_strategy",
+    "creation_reason",
+    "inherited_state_reference",
+    "fork_point_fingerprint",
+    "requested_resource_profile",
+    "created_by"
+  ],
+  "title": "WorldForkV2",
+  "type": "object"
+}

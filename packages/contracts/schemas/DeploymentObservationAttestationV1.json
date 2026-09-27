@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approved_change_hash": {
+      "title": "Approved Change Hash",
+      "type": "string"
+    },
+    "campaign_id": {
+      "format": "uuid",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "note": {
+      "default": "Observation integrity \u2014 not production safety proof",
+      "title": "Note",
+      "type": "string"
+    },
+    "observed_artifact_digest": {
+      "title": "Observed Artifact Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "approved_change_hash",
+    "observed_artifact_digest",
+    "campaign_id"
+  ],
+  "title": "DeploymentObservationAttestationV1",
+  "type": "object"
+}

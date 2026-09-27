@@ -1,0 +1,166 @@
+{
+  "$defs": {
+    "ReasonCode": {
+      "description": "Machine-readable justification codes attached to a SchedulerDecision.\n\nThese are consumed by the frontend to render *why* the scheduler did\nsomething (not just what it did), and by evaluation tooling to check\nthe scheduler is making decisions for the reasons it claims. Fixed\nvocabulary, no free-text reason may substitute for these on the\ndecision itself (``reason_codes``); free text belongs in\n``SchedulerDecisionV1.notes`` if ever needed.",
+      "enum": [
+        "DEPENDENCY_CRITICAL",
+        "HIGH_ASSET_RISK",
+        "HIGH_UNCERTAINTY",
+        "CHEAP_INFORMATION_GAIN",
+        "STRAGGLER_DETECTED",
+        "GPU_ACCELERATION_EXPECTED",
+        "GPU_NOT_JUSTIFIED",
+        "BRANCH_LOW_VALUE",
+        "BUDGET_EXHAUSTED",
+        "MARGINAL_GAIN_LOW",
+        "BRANCH_HIGH_UNCERTAINTY",
+        "BRANCH_HIGH_RISK",
+        "BRANCH_VERIFICATION_NEAR_COMPLETE",
+        "BRANCH_EARLY_FAILURE",
+        "BRANCH_LOW_EXPECTED_VALUE",
+        "PARALLEL_WORLD_SAFE",
+        "PARALLEL_TASK_SAFE",
+        "SCALE_OUT_QUEUE_PRESSURE",
+        "SCALE_OUT_CRITICAL_PATH",
+        "SCALE_IN_IDLE_CAPACITY",
+        "SPECULATION_STRAGGLER",
+        "SPECULATION_HIGH_VALUE_BRANCH",
+        "PRUNE_REMEDIATION_FAILED",
+        "PRUNE_REGRESSION_FAILED",
+        "PRUNE_LOW_VALUE",
+        "PRUNE_BUDGET_PRESSURE",
+        "CONTINUE_NEEDS_EVIDENCE",
+        "CONTINUE_ALTERNATIVE_PATH_UNTESTED",
+        "STOP_SUFFICIENT_VERIFICATION",
+        "STOP_MARGINAL_GAIN_LOW",
+        "WORLD_TERMINATION_APPROVED",
+        "CPU_SUFFICIENT"
+      ],
+      "title": "ReasonCode",
+      "type": "string"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "constraints": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Free-form key/value scheduling constraints, e.g. {'region': 'ewr'}",
+      "title": "Constraints",
+      "type": "object"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "estimated_cost_usd": {
+      "minimum": 0,
+      "title": "Estimated Cost Usd",
+      "type": "number"
+    },
+    "expected_value": {
+      "description": "Scheduler's unitless expected-evidence-value score for this decision",
+      "title": "Expected Value",
+      "type": "number"
+    },
+    "expiration": {
+      "description": "This decision is stale and must be re-evaluated after this time",
+      "format": "date-time",
+      "title": "Expiration",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Free-text context, never a substitute for reason_codes",
+      "title": "Notes"
+    },
+    "parallelism": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Parallelism",
+      "type": "integer"
+    },
+    "priority": {
+      "title": "Priority",
+      "type": "integer"
+    },
+    "reason_codes": {
+      "description": "Machine-readable justification; never empty",
+      "items": {
+        "$ref": "#/$defs/ReasonCode"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "speculative": {
+      "default": false,
+      "title": "Speculative",
+      "type": "boolean"
+    },
+    "target_resource_class": {
+      "$ref": "#/$defs/ResourceClass"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "termination_condition": {
+      "description": "Human/agent-readable condition under which the allocation is released",
+      "title": "Termination Condition",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "world_id",
+    "target_resource_class",
+    "priority",
+    "estimated_cost_usd",
+    "expected_value",
+    "reason_codes",
+    "expiration",
+    "termination_condition"
+  ],
+  "title": "SchedulerDecisionV1",
+  "type": "object"
+}

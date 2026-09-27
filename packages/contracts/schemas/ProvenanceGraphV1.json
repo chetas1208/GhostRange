@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "ProvenanceEdgeKind": {
+      "enum": [
+        "DERIVED_FROM",
+        "GENERATED_BY",
+        "USED",
+        "EXECUTED_IN",
+        "SUPPORTED_BY",
+        "SUPERSEDES",
+        "REVALIDATES",
+        "FORKED_FROM",
+        "SCHEDULED_BY",
+        "ATTESTED_BY"
+      ],
+      "title": "ProvenanceEdgeKind",
+      "type": "string"
+    },
+    "ProvenanceEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "from_node_id": {
+          "format": "uuid",
+          "title": "From Node Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ProvenanceEdgeKind"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_node_id": {
+          "format": "uuid",
+          "title": "To Node Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_node_id",
+        "to_node_id",
+        "kind"
+      ],
+      "title": "ProvenanceEdgeV1",
+      "type": "object"
+    },
+    "ProvenanceNodeKind": {
+      "enum": [
+        "SOURCE_REVISION",
+        "TWIN_REVISION",
+        "EXPERIMENT",
+        "WORLD",
+        "TASK",
+        "SCHEDULER_DECISION",
+        "MODEL_INVOCATION",
+        "TOOL_INVOCATION",
+        "EVIDENCE_ARTIFACT",
+        "VERIFICATION",
+        "CLAIM",
+        "ATTESTATION"
+      ],
+      "title": "ProvenanceNodeKind",
+      "type": "string"
+    },
+    "ProvenanceNodeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Digest"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ProvenanceNodeKind"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "ref_id": {
+          "title": "Ref Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "ref_id"
+      ],
+      "title": "ProvenanceNodeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/ProvenanceEdgeV1"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "experiment_run_id": {
+      "format": "uuid",
+      "title": "Experiment Run Id",
+      "type": "string"
+    },
+    "graph_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Graph Digest"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/ProvenanceNodeV1"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "experiment_run_id"
+  ],
+  "title": "ProvenanceGraphV1",
+  "type": "object"
+}

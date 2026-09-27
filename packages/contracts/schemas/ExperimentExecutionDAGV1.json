@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "description": "Handoff to GhostScheduler \u2014 WHAT becomes a task graph, not HOW to schedule it.",
+  "properties": {
+    "campaign_id": {
+      "format": "uuid",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "edges": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "format": "uuid",
+            "type": "string"
+          },
+          {
+            "format": "uuid",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "nodes": {
+      "description": "Experiment proposal ids",
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "parallel_groups": {
+      "items": {
+        "items": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Parallel Groups",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "nodes"
+  ],
+  "title": "ExperimentExecutionDAGV1",
+  "type": "object"
+}

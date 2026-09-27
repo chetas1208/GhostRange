@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "counterfactual_id": {
+      "format": "uuid",
+      "title": "Counterfactual Id",
+      "type": "string"
+    },
+    "intervention_description": {
+      "title": "Intervention Description",
+      "type": "string"
+    },
+    "predicted_outcome": {
+      "title": "Predicted Outcome",
+      "type": "string"
+    },
+    "query": {
+      "title": "Query",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "query",
+    "intervention_description",
+    "predicted_outcome"
+  ],
+  "title": "SecurityCounterfactualV1",
+  "type": "object"
+}

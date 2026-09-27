@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "AcquisitionScoreV1": {
+      "additionalProperties": false,
+      "properties": {
+        "components": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Components",
+          "type": "object"
+        },
+        "policy_version": {
+          "default": "ghostdirector/v1",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "total_score": {
+          "title": "Total Score",
+          "type": "number"
+        },
+        "utility": {
+          "$ref": "#/$defs/ExperimentUtilityV1"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "utility",
+        "total_score"
+      ],
+      "title": "AcquisitionScoreV1",
+      "type": "object"
+    },
+    "DirectorPolicyId": {
+      "enum": [
+        "FIXED_SCRIPT",
+        "RANDOM_SAFE",
+        "ROUND_ROBIN_UNCERTAINTY",
+        "GREEDY_INFORMATION",
+        "GREEDY_DECISION_VALUE",
+        "GHOSTDIRECTOR_V1",
+        "ORACLE_BENCHMARK"
+      ],
+      "title": "DirectorPolicyId",
+      "type": "string"
+    },
+    "DirectorReasonCode": {
+      "enum": [
+        "HIGH_DECISION_VALUE",
+        "HIGH_INFORMATION_GAIN",
+        "HIGH_SECURITY_IMPORTANCE",
+        "RESOLVES_CONFLICT",
+        "DISCRIMINATES_HYPOTHESES",
+        "CHEAP_INFORMATION",
+        "REPRESENTATIVE_TEST",
+        "ROBUSTNESS_CHECK",
+        "LOW_VALUE",
+        "REDUNDANT_EXPERIMENT",
+        "DOMINATED_EXPERIMENT",
+        "BUDGET_PRESSURE",
+        "UNSAFE_EXPERIMENT",
+        "INSUFFICIENT_FIDELITY",
+        "DEPENDENCY_BLOCKED",
+        "MODEL_ONLY_UNSUPPORTED"
+      ],
+      "title": "DirectorReasonCode",
+      "type": "string"
+    },
+    "ExperimentUtilityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_cost_usd": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Compute Cost Usd",
+          "type": "number"
+        },
+        "decision_relevance": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Decision Relevance",
+          "type": "number"
+        },
+        "expected_security_value": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Expected Security Value",
+          "type": "number"
+        },
+        "experiment_risk": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Experiment Risk",
+          "type": "number"
+        },
+        "hypothesis_discrimination": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Hypothesis Discrimination",
+          "type": "number"
+        },
+        "information_gain": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Information Gain",
+          "type": "number"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "representativeness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Representativeness",
+          "type": "number"
+        },
+        "robustness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Robustness",
+          "type": "number"
+        },
+        "runtime_sec": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Runtime Sec",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposal_id"
+      ],
+      "title": "ExperimentUtilityV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Candidate Ids",
+      "type": "array"
+    },
+    "decided_at": {
+      "format": "date-time",
+      "title": "Decided At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "knowledge_state_hash": {
+      "title": "Knowledge State Hash",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/DirectorPolicyId",
+      "default": "GHOSTDIRECTOR_V1"
+    },
+    "reason_codes": {
+      "items": {
+        "$ref": "#/$defs/DirectorReasonCode"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "rejected_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Rejected Ids",
+      "type": "array"
+    },
+    "rejection_reasons": {
+      "additionalProperties": {
+        "$ref": "#/$defs/DirectorReasonCode"
+      },
+      "title": "Rejection Reasons",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selected_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Selected Ids",
+      "type": "array"
+    },
+    "utility_snapshots": {
+      "items": {
+        "$ref": "#/$defs/AcquisitionScoreV1"
+      },
+      "title": "Utility Snapshots",
+      "type": "array"
+    }
+  },
+  "required": [
+    "knowledge_state_hash"
+  ],
+  "title": "DirectorDecisionV1",
+  "type": "object"
+}

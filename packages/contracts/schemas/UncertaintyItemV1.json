@@ -1,0 +1,104 @@
+{
+  "$defs": {
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    },
+    "UncertaintyCategory": {
+      "enum": [
+        "EXPLOITABILITY",
+        "REMEDIATION_EFFECTIVENESS",
+        "REGRESSION_RISK",
+        "ASSUMPTION_VALIDITY",
+        "ATTACK_PATH",
+        "DEPENDENCY_BEHAVIOR",
+        "IDENTITY_BEHAVIOR",
+        "CONFIGURATION",
+        "FIDELITY",
+        "COUNTEREXAMPLE_EXISTENCE",
+        "MODEL_DISAGREEMENT",
+        "UNKNOWN"
+      ],
+      "title": "UncertaintyCategory",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "$ref": "#/$defs/UncertaintyCategory"
+    },
+    "confidence_basis": {
+      "default": "",
+      "title": "Confidence Basis",
+      "type": "string"
+    },
+    "contradicting_evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Contradicting Evidence Ids",
+      "type": "array"
+    },
+    "current_belief": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "UNKNOWN"
+    },
+    "decision_relevance": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "MEDIUM"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "importance": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "MEDIUM"
+    },
+    "proposition": {
+      "title": "Proposition",
+      "type": "string"
+    },
+    "resolution_conditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Resolution Conditions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "subject": {
+      "title": "Subject",
+      "type": "string"
+    },
+    "supporting_evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Supporting Evidence Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "subject",
+    "proposition",
+    "category"
+  ],
+  "title": "UncertaintyItemV1",
+  "type": "object"
+}

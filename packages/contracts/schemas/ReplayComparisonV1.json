@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "ReplayEquivalence": {
+      "enum": [
+        "EXACT",
+        "SEMANTICALLY_EQUIVALENT",
+        "DIVERGED_EXPECTEDLY",
+        "DIVERGED_UNEXPECTEDLY",
+        "NOT_COMPARABLE"
+      ],
+      "title": "ReplayEquivalence",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claim_outcome": {
+      "$ref": "#/$defs/ReplayEquivalence",
+      "default": "NOT_COMPARABLE"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "original_run_id": {
+      "format": "uuid",
+      "title": "Original Run Id",
+      "type": "string"
+    },
+    "replay_run_id": {
+      "format": "uuid",
+      "title": "Replay Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verification_result": {
+      "$ref": "#/$defs/ReplayEquivalence",
+      "default": "NOT_COMPARABLE"
+    },
+    "world_fingerprint": {
+      "$ref": "#/$defs/ReplayEquivalence",
+      "default": "NOT_COMPARABLE"
+    }
+  },
+  "required": [
+    "original_run_id",
+    "replay_run_id"
+  ],
+  "title": "ReplayComparisonV1",
+  "type": "object"
+}

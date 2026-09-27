@@ -1,0 +1,13 @@
+version: ghostwatch-v1
+default_authority: OBSERVE_ONLY
+required_conformance_dimensions:
+  - ARTIFACT
+  - CONFIGURATION
+missing_data_policy: HOLD
+debounce_consecutive_failures: 2
+control_fail_closed: true
+evidence:
+  redact_secrets: true
+  max_snippet_bytes: 4096
+privacy:
+  allow_raw_logs: false

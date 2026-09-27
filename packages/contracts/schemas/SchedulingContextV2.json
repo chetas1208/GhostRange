@@ -1,0 +1,168 @@
+{
+  "$defs": {
+    "BranchStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "estimated_remaining_cost_usd": {
+          "minimum": 0,
+          "title": "Estimated Remaining Cost Usd",
+          "type": "number"
+        },
+        "estimated_remaining_runtime_seconds": {
+          "minimum": 0,
+          "title": "Estimated Remaining Runtime Seconds",
+          "type": "number"
+        },
+        "expected_evidence_gain": {
+          "minimum": 0,
+          "title": "Expected Evidence Gain",
+          "type": "number"
+        },
+        "failure_signals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failure Signals",
+          "type": "array"
+        },
+        "remaining_uncertainty": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Remaining Uncertainty",
+          "type": "number"
+        },
+        "remediation_id": {
+          "format": "uuid",
+          "title": "Remediation Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "security_criticality": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Security Criticality",
+          "type": "number"
+        },
+        "verification_progress": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Verification Progress",
+          "type": "number"
+        },
+        "world_id": {
+          "format": "uuid",
+          "title": "World Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "world_id",
+        "remediation_id",
+        "security_criticality",
+        "remaining_uncertainty",
+        "verification_progress",
+        "expected_evidence_gain",
+        "estimated_remaining_cost_usd",
+        "estimated_remaining_runtime_seconds"
+      ],
+      "title": "BranchStateV1",
+      "type": "object"
+    },
+    "EvidenceStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "last_evidence_gain_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Evidence Gain At"
+        },
+        "per_world_artifact_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Per World Artifact Counts",
+          "type": "object"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "range_id"
+      ],
+      "title": "EvidenceStateV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "active_world_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Active World Ids",
+      "type": "array"
+    },
+    "branches": {
+      "items": {
+        "$ref": "#/$defs/BranchStateV1"
+      },
+      "title": "Branches",
+      "type": "array"
+    },
+    "cluster_state_ref": {
+      "description": "Id or snapshot ref to ClusterStateV1",
+      "title": "Cluster State Ref",
+      "type": "string"
+    },
+    "evidence_state": {
+      "$ref": "#/$defs/EvidenceStateV1"
+    },
+    "investigation_budget_id": {
+      "format": "uuid",
+      "title": "Investigation Budget Id",
+      "type": "string"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id",
+    "cluster_state_ref",
+    "evidence_state",
+    "investigation_budget_id"
+  ],
+  "title": "SchedulingContextV2",
+  "type": "object"
+}

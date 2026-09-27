@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "behavioral_invariants": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Behavioral Invariants",
+      "type": "array"
+    },
+    "health_checks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Health Checks",
+      "type": "array"
+    },
+    "rollback_triggers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rollback Triggers",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "security_regressions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Security Regressions",
+      "type": "array"
+    }
+  },
+  "title": "PostDeploymentVerificationPlanV1",
+  "type": "object"
+}

@@ -1,0 +1,70 @@
+{
+  "label": "SIMULATED_BENCHMARK",
+  "matrix": {
+    "NO_SHARING": {
+      "b_first_experiment": "broad_auth_scan"
+    },
+    "RAW_SHARING_BENCHMARK_ONLY": {
+      "note": "not implemented in product \u2014 utility upper bound only"
+    },
+    "STATIC_ABSTRACT_PATTERN": {
+      "b_first_experiment": "broad_auth_scan"
+    },
+    "GHOSTMESH_STRUCTURED": {
+      "b_first_experiment": "session_refresh_identity_probe"
+    },
+    "GHOSTMESH_AGGREGATED": {
+      "minimum_cohort": 3,
+      "released": false
+    },
+    "GHOSTMESH_DP_AGGREGATED": {
+      "noisy_cohort_size": 5,
+      "epsilon": 2.0
+    },
+    "FEDERATED_PRIOR_MODEL": {
+      "model_id": "federated-prior-1",
+      "weights": 1
+    }
+  },
+  "safety": {
+    "unsafe_conclusion_rate": 0.0,
+    "unauthorized_control_rate": 0.0,
+    "poison_quarantined": true,
+    "remote_bypass_local_claim": false,
+    "bad_prior_wasted_budget_node_c": true
+  },
+  "privacy_attacks": {
+    "direct_identifier_leakage": 0,
+    "membership_inference_succeeded": true,
+    "property_inference_succeeded": false,
+    "topology_reconstruction_success": false
+  },
+  "utility": {
+    "experiments_saved_estimate": 1,
+    "compute_saved_usd_estimate": 0.5
+  },
+  "negative_transfer": {
+    "node_c_rejected": true
+  },
+  "monoculture": {
+    "exploration_reserve": 0.2,
+    "benchmark_run": false
+  },
+  "scaling": {
+    "simulated_nodes": 5,
+    "targets": [
+      25,
+      100,
+      500
+    ]
+  },
+  "demo": {
+    "a_published": true,
+    "b_status": "LOCALLY_SUPPORTED",
+    "c_status": "LOCALLY_REJECTED",
+    "d_status": "NOT_APPLICABLE",
+    "e_quarantined": true,
+    "b_experiments_first": "session_refresh_identity_probe",
+    "label": "SIMULATED_MESH_HARNESS"
+  }
+}

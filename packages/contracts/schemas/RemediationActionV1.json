@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "RemediationActionKind": {
+      "enum": [
+        "config_patch",
+        "service_restart",
+        "package_update",
+        "container_image_change"
+      ],
+      "title": "RemediationActionKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/RemediationActionKind"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Parameters",
+      "type": "object"
+    },
+    "rollback_hint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rollback Hint"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_asset_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Target Asset Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "RemediationActionV1",
+  "type": "object"
+}

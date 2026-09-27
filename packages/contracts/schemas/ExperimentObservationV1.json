@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    },
+    "ExperimentOperatorKind": {
+      "enum": [
+        "REPLAY_ATTACK",
+        "APPLY_CONTROLLED_CONFIG_VARIATION",
+        "CHANGE_SYNTHETIC_IDENTITY_STATE",
+        "CHANGE_STUB_RESPONSE",
+        "RESTART_RANGE_SERVICE",
+        "APPLY_REMEDIATION",
+        "RUN_REGRESSION",
+        "RUN_COUNTEREXAMPLE_SEARCH",
+        "COMPARE_WORLDS",
+        "COLLECT_OBSERVATION"
+      ],
+      "title": "ExperimentOperatorKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "experiment_id": {
+      "format": "uuid",
+      "title": "Experiment Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observable": {
+      "title": "Observable",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "operator_kind": {
+      "$ref": "#/$defs/ExperimentOperatorKind"
+    },
+    "reliability": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "MEDIUM"
+    },
+    "result": {
+      "additionalProperties": true,
+      "title": "Result",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "experiment_id",
+    "world_id",
+    "operator_kind",
+    "observable"
+  ],
+  "title": "ExperimentObservationV1",
+  "type": "object"
+}

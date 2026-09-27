@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "digest": {
+      "description": "sha256:...",
+      "title": "Digest",
+      "type": "string"
+    },
+    "logical_name": {
+      "title": "Logical Name",
+      "type": "string"
+    },
+    "media_type": {
+      "default": "application/octet-stream",
+      "title": "Media Type",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "size_bytes": {
+      "minimum": 0,
+      "title": "Size Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "logical_name",
+    "digest",
+    "size_bytes"
+  ],
+  "title": "ArtifactIndexEntryV1",
+  "type": "object"
+}

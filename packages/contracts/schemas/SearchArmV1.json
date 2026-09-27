@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "SearchArmKind": {
+      "enum": [
+        "HEADER_MUTATION",
+        "IDENTITY_STATE",
+        "SEQUENCE_MUTATION",
+        "TIMING",
+        "PATH_VARIATION",
+        "DEPENDENCY_VARIATION",
+        "PARAMETER_MUTATION"
+      ],
+      "title": "SearchArmKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempts": {
+      "default": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "cost_usd": {
+      "default": 0.0,
+      "title": "Cost Usd",
+      "type": "number"
+    },
+    "counterexamples": {
+      "default": 0,
+      "title": "Counterexamples",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/SearchArmKind"
+    },
+    "novel_observations": {
+      "default": 0,
+      "title": "Novel Observations",
+      "type": "integer"
+    },
+    "priority_weight": {
+      "default": 1.0,
+      "title": "Priority Weight",
+      "type": "number"
+    },
+    "runtime_ms": {
+      "default": 0.0,
+      "title": "Runtime Ms",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "successes": {
+      "default": 0,
+      "title": "Successes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "SearchArmV1",
+  "type": "object"
+}

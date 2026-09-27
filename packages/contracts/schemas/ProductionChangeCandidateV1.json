@@ -1,0 +1,803 @@
+{
+  "$defs": {
+    "CanaryPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "default": "PLAN ONLY \u2014 not production traffic routing",
+          "title": "Note",
+          "type": "string"
+        },
+        "rollback_trigger": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rollback Trigger",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stages": {
+          "items": {
+            "$ref": "#/$defs/CanaryStageV1"
+          },
+          "title": "Stages",
+          "type": "array"
+        }
+      },
+      "title": "CanaryPlanV1",
+      "type": "object"
+    },
+    "CanaryStageV1": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_minutes": {
+          "minimum": 1,
+          "title": "Duration Minutes",
+          "type": "integer"
+        },
+        "failure_conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failure Conditions",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage_index": {
+          "minimum": 0,
+          "title": "Stage Index",
+          "type": "integer"
+        },
+        "success_conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Success Conditions",
+          "type": "array"
+        },
+        "traffic_percentage": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Traffic Percentage",
+          "type": "number"
+        }
+      },
+      "required": [
+        "stage_index",
+        "traffic_percentage",
+        "duration_minutes"
+      ],
+      "title": "CanaryStageV1",
+      "type": "object"
+    },
+    "ChangeActionKind": {
+      "enum": [
+        "CONFIG",
+        "CONTAINER_IMAGE",
+        "PACKAGE_VERSION",
+        "INFRA_PARAMETER",
+        "NETWORK_POLICY",
+        "IDENTITY_POLICY",
+        "DATABASE_MIGRATION_REF"
+      ],
+      "title": "ChangeActionKind",
+      "type": "string"
+    },
+    "ChangeActionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "after_summary": {
+          "default": "",
+          "title": "After Summary",
+          "type": "string"
+        },
+        "before_summary": {
+          "default": "",
+          "title": "Before Summary",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ChangeActionKind"
+        },
+        "remediation_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Remediation Ref"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_path": {
+          "title": "Target Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "target_path",
+        "description"
+      ],
+      "title": "ChangeActionV1",
+      "type": "object"
+    },
+    "ChangeEquivalenceReportV1": {
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/EquivalenceStatus"
+          },
+          "title": "Dimensions",
+          "type": "object"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "overall": {
+          "$ref": "#/$defs/EquivalenceStatus",
+          "default": "UNKNOWN"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "ChangeEquivalenceReportV1",
+      "type": "object"
+    },
+    "ChangeRiskProfileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_component_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Component Ids",
+          "type": "array"
+        },
+        "availability_risk": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "MEDIUM"
+        },
+        "blast_radius": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "MEDIUM"
+        },
+        "data_impact": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "NONE"
+        },
+        "dependency_depth": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "LOW"
+        },
+        "identity_impact": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "HIGH"
+        },
+        "network_impact": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "LOW"
+        },
+        "observability_gap": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "LOW"
+        },
+        "reversibility": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "MEDIUM"
+        },
+        "rollback_complexity": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "LOW"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "statefulness": {
+          "$ref": "#/$defs/RiskLevel",
+          "default": "LOW"
+        }
+      },
+      "title": "ChangeRiskProfileV1",
+      "type": "object"
+    },
+    "DeploymentStrategyKind": {
+      "enum": [
+        "ALL_AT_ONCE",
+        "CANARY",
+        "BLUE_GREEN",
+        "ROLLING",
+        "SHADOW",
+        "CONFIG_FLAG",
+        "MANUAL_SEQUENCE"
+      ],
+      "title": "DeploymentStrategyKind",
+      "type": "string"
+    },
+    "DeploymentStrategyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "canary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CanaryPlanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "$ref": "#/$defs/DeploymentStrategyKind"
+        },
+        "rationale": {
+          "default": "",
+          "title": "Rationale",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "DeploymentStrategyV1",
+      "type": "object"
+    },
+    "EquivalenceStatus": {
+      "enum": [
+        "EXACT",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MATERIAL_DIFFERENCE",
+        "NOT_COMPARABLE",
+        "UNKNOWN"
+      ],
+      "title": "EquivalenceStatus",
+      "type": "string"
+    },
+    "ObservabilityRequirementV1": {
+      "additionalProperties": false,
+      "properties": {
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gaps",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "signals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signals",
+          "type": "array"
+        }
+      },
+      "title": "ObservabilityRequirementV1",
+      "type": "object"
+    },
+    "PostDeploymentVerificationPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "behavioral_invariants": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Behavioral Invariants",
+          "type": "array"
+        },
+        "health_checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Health Checks",
+          "type": "array"
+        },
+        "rollback_triggers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rollback Triggers",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "security_regressions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Security Regressions",
+          "type": "array"
+        }
+      },
+      "title": "PostDeploymentVerificationPlanV1",
+      "type": "object"
+    },
+    "PromotionReadinessV1": {
+      "additionalProperties": false,
+      "properties": {
+        "adversarial_status": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "approval_readiness": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "blockers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blockers",
+          "type": "array"
+        },
+        "change_equivalence": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "claim_validity": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "fidelity": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "observability_readiness": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "regression_status": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "residual_uncertainty": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "rollback_readiness": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_currency": {
+          "$ref": "#/$defs/ReadinessDimensionStatus",
+          "default": "SKIP"
+        }
+      },
+      "title": "PromotionReadinessV1",
+      "type": "object"
+    },
+    "PromotionState": {
+      "enum": [
+        "DRAFT",
+        "ASSESSING",
+        "REQUIRES_RETEST",
+        "REQUIRES_REVALIDATION",
+        "ROLLBACK_TESTING",
+        "READY_FOR_REVIEW",
+        "WAITING_FOR_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "REQUEST_CHANGES",
+        "SUPERSEDED",
+        "EXPIRED"
+      ],
+      "title": "PromotionState",
+      "type": "string"
+    },
+    "ReadinessDimensionStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "WARN",
+        "SKIP",
+        "NOT_APPLICABLE"
+      ],
+      "title": "ReadinessDimensionStatus",
+      "type": "string"
+    },
+    "ResidualRiskV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "default": "UNCERTAINTY",
+          "title": "Category",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "severity": {
+          "default": "MEDIUM",
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "title": "ResidualRiskV1",
+      "type": "object"
+    },
+    "RiskLevel": {
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "UNKNOWN"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    },
+    "RollbackPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "data_reversibility": {
+          "default": "FULL",
+          "title": "Data Reversibility",
+          "type": "string"
+        },
+        "estimated_duration_minutes": {
+          "default": 15,
+          "title": "Estimated Duration Minutes",
+          "type": "integer"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "required_artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Artifacts",
+          "type": "array"
+        },
+        "rollback_type": {
+          "default": "CONFIG_REVERT",
+          "title": "Rollback Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "verification": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Verification",
+          "type": "array"
+        }
+      },
+      "title": "RollbackPlanV1",
+      "type": "object"
+    },
+    "RollbackStatus": {
+      "enum": [
+        "UNTESTED",
+        "TESTED_PASS",
+        "TESTED_FAIL",
+        "PARTIAL",
+        "IRREVERSIBLE"
+      ],
+      "title": "RollbackStatus",
+      "type": "string"
+    },
+    "TestedProductionDeltaV1": {
+      "additionalProperties": false,
+      "properties": {
+        "proposed_actions": {
+          "items": {
+            "$ref": "#/$defs/ChangeActionV1"
+          },
+          "title": "Proposed Actions",
+          "type": "array"
+        },
+        "proposed_patch_digest": {
+          "title": "Proposed Patch Digest",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "tested_actions": {
+          "items": {
+            "$ref": "#/$defs/ChangeActionV1"
+          },
+          "title": "Tested Actions",
+          "type": "array"
+        },
+        "tested_patch_digest": {
+          "title": "Tested Patch Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tested_patch_digest",
+        "proposed_patch_digest"
+      ],
+      "title": "TestedProductionDeltaV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adversarial_summary": {
+      "default": "",
+      "title": "Adversarial Summary",
+      "type": "string"
+    },
+    "affected_components": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Components",
+      "type": "array"
+    },
+    "change_actions": {
+      "items": {
+        "$ref": "#/$defs/ChangeActionV1"
+      },
+      "title": "Change Actions",
+      "type": "array"
+    },
+    "change_candidate_hash": {
+      "default": "",
+      "title": "Change Candidate Hash",
+      "type": "string"
+    },
+    "claim_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Claim Ids",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "deployment_strategy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DeploymentStrategyV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "equivalence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChangeEquivalenceReportV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence_root_digest": {
+      "title": "Evidence Root Digest",
+      "type": "string"
+    },
+    "experiment_id": {
+      "format": "uuid",
+      "title": "Experiment Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "known_limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Known Limitations",
+      "type": "array"
+    },
+    "observability": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ObservabilityRequirementV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "patch_text": {
+      "default": "",
+      "title": "Patch Text",
+      "type": "string"
+    },
+    "post_change_verification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PostDeploymentVerificationPlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "readiness": {
+      "$ref": "#/$defs/PromotionReadinessV1"
+    },
+    "remediation_id": {
+      "format": "uuid",
+      "title": "Remediation Id",
+      "type": "string"
+    },
+    "remediation_revision_label": {
+      "default": "Fix B.2",
+      "title": "Remediation Revision Label",
+      "type": "string"
+    },
+    "residual_risks": {
+      "items": {
+        "$ref": "#/$defs/ResidualRiskV1"
+      },
+      "title": "Residual Risks",
+      "type": "array"
+    },
+    "risk": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChangeRiskProfileV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "rollback_plan": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RollbackPlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "rollback_status": {
+      "$ref": "#/$defs/RollbackStatus",
+      "default": "UNTESTED"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_revision_id": {
+      "format": "uuid",
+      "title": "Source Revision Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/PromotionState",
+      "default": "DRAFT"
+    },
+    "target_environment_class": {
+      "default": "PRODUCTION_CANDIDATE",
+      "title": "Target Environment Class",
+      "type": "string"
+    },
+    "tested_delta": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TestedProductionDeltaV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "twin_revision_id": {
+      "format": "uuid",
+      "title": "Twin Revision Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "remediation_id",
+    "source_revision_id",
+    "twin_revision_id",
+    "experiment_id",
+    "evidence_root_digest"
+  ],
+  "title": "ProductionChangeCandidateV1",
+  "type": "object"
+}

@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cache_behavior": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Cache Behavior",
+      "type": "number"
+    },
+    "identity_semantics": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Identity Semantics",
+      "type": "number"
+    },
+    "mechanism_id": {
+      "title": "Mechanism Id",
+      "type": "string"
+    },
+    "network_ordering": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Network Ordering",
+      "type": "number"
+    },
+    "overall_sufficient": {
+      "default": false,
+      "title": "Overall Sufficient",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mechanism_id"
+  ],
+  "title": "CausalFidelityProfileV1",
+  "type": "object"
+}

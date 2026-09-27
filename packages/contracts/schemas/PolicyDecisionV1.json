@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "ExecutionTicketV1": {
+      "additionalProperties": false,
+      "description": "Short-lived, single-use, request-hash-bound authorization ticket\nissued on ALLOW (EXECUTION_POLICY.md \u00a73.4). Executors\n(adversary-adapter, range-runtime, vultr-control) re-verify this\nticket's signature and hash-binding themselves, immediately before\ntheir side-effecting call \u2014 a policy-check ALLOW decision is not\nitself permission to act.",
+      "properties": {
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "issued_at": {
+          "format": "date-time",
+          "title": "Issued At",
+          "type": "string"
+        },
+        "request_hash": {
+          "minLength": 1,
+          "title": "Request Hash",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "signature": {
+          "minLength": 1,
+          "title": "Signature",
+          "type": "string"
+        },
+        "single_use": {
+          "default": true,
+          "title": "Single Use",
+          "type": "boolean"
+        },
+        "ticket_id": {
+          "format": "uuid",
+          "title": "Ticket Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_hash",
+        "expires_at",
+        "signature"
+      ],
+      "title": "ExecutionTicketV1",
+      "type": "object"
+    },
+    "PolicyDenyReason": {
+      "description": "Fixed vocabulary of policy-check deny codes\n(``docs/security/EXECUTION_POLICY.md`` \u00a73.2). A ``PolicyDecisionV1``\ndenial's ``reason`` is always one of these, never free text, so\ndetection/alerting tooling (\"the agent is trying to escalate\") can\npattern-match reliably instead of parsing prose.",
+      "enum": [
+        "BAD_TOKEN_SIGNATURE",
+        "TOKEN_EXPIRED",
+        "TOKEN_SCOPE_MISMATCH",
+        "UNKNOWN_RANGE",
+        "TARGET_NOT_IN_RANGE",
+        "CAPABILITY_NOT_GRANTED",
+        "ABILITY_NOT_IN_CATALOG",
+        "QUOTA_EXCEEDED",
+        "HUMAN_APPROVAL_REQUIRED",
+        "OFF_RANGE_TARGET_ABSOLUTE_DENY",
+        "POLICY_SERVICE_UNAVAILABLE"
+      ],
+      "title": "PolicyDenyReason",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The structured, terminal result of one ``authorize()`` call.\n\nShape-enforced consistency (not just convention): an ALLOW decision\nalways carries a ticket and never a reason; a DENY decision always\ncarries a reason and never a ticket. This makes \"allowed=True but no\nticket\" or \"allowed=False but here's a ticket anyway\" a construction-\ntime error, not a bug some caller could introduce later.",
+  "properties": {
+    "allowed": {
+      "title": "Allowed",
+      "type": "boolean"
+    },
+    "decided_at": {
+      "format": "date-time",
+      "title": "Decided At",
+      "type": "string"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PolicyDenyReason"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "request_hash": {
+      "minLength": 1,
+      "title": "Request Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "ticket": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExecutionTicketV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "allowed",
+    "request_hash"
+  ],
+  "title": "PolicyDecisionV1",
+  "type": "object"
+}

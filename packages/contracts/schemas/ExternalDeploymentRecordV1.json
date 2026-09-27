@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "ExposureKind": {
+      "enum": [
+        "PERCENTAGE",
+        "REPLICA_FRACTION",
+        "COHORT",
+        "REGION",
+        "FEATURE_FLAG",
+        "CUSTOM"
+      ],
+      "title": "ExposureKind",
+      "type": "string"
+    },
+    "ExposureV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExposureKind",
+          "default": "PERCENTAGE"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "value": {
+          "default": "0",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "title": "ExposureV1",
+      "type": "object"
+    },
+    "ObservedDeploymentStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_digest": {
+          "default": "",
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "config_fingerprint": {
+          "default": "",
+          "title": "Config Fingerprint",
+          "type": "string"
+        },
+        "deployment_revision": {
+          "default": "",
+          "title": "Deployment Revision",
+          "type": "string"
+        },
+        "infrastructure_fingerprint": {
+          "default": "",
+          "title": "Infrastructure Fingerprint",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "service_version": {
+          "default": "",
+          "title": "Service Version",
+          "type": "string"
+        },
+        "source": {
+          "default": "adapter",
+          "title": "Source",
+          "type": "string"
+        },
+        "traffic_percentage_new": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Traffic Percentage New",
+          "type": "number"
+        }
+      },
+      "title": "ObservedDeploymentStateV1",
+      "type": "object"
+    },
+    "RolloutStageKind": {
+      "enum": [
+        "PRE_DEPLOY",
+        "INITIAL_CANARY",
+        "CANARY_10",
+        "CANARY_25",
+        "CANARY_50",
+        "FULL",
+        "HOLD",
+        "ROLLBACK",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "RolloutStageKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Ingress from external deployment executor (signed webhook / manual adapter).",
+  "properties": {
+    "approved_change_hash": {
+      "default": "",
+      "title": "Approved Change Hash",
+      "type": "string"
+    },
+    "campaign_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Campaign Id"
+    },
+    "event_id": {
+      "default": "",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "executor": {
+      "title": "Executor",
+      "type": "string"
+    },
+    "exposure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "external_id": {
+      "title": "External Id",
+      "type": "string"
+    },
+    "observed_state": {
+      "$ref": "#/$defs/ObservedDeploymentStateV1"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sequence": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "signature": {
+      "default": "",
+      "title": "Signature",
+      "type": "string"
+    },
+    "stage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RolloutStageKind"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "executor",
+    "external_id",
+    "observed_state"
+  ],
+  "title": "ExternalDeploymentRecordV1",
+  "type": "object"
+}

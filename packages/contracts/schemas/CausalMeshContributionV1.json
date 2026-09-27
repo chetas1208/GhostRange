@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "abstract_mechanism_path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstract Mechanism Path",
+      "type": "array"
+    },
+    "abstract_variables": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstract Variables",
+      "type": "array"
+    },
+    "assumption_profile": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumption Profile",
+      "type": "array"
+    },
+    "effect_class": {
+      "default": "",
+      "title": "Effect Class",
+      "type": "string"
+    },
+    "intervention_class": {
+      "default": "",
+      "title": "Intervention Class",
+      "type": "string"
+    },
+    "provenance_digest": {
+      "default": "",
+      "title": "Provenance Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "CausalMeshContributionV1",
+  "type": "object"
+}

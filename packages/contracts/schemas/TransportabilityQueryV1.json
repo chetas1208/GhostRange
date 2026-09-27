@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assumption_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumption Ids",
+      "type": "array"
+    },
+    "causal_query": {
+      "title": "Causal Query",
+      "type": "string"
+    },
+    "mechanism_path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Mechanism Path",
+      "type": "array"
+    },
+    "query_id": {
+      "format": "uuid",
+      "title": "Query Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_domain": {
+      "title": "Source Domain",
+      "type": "string"
+    },
+    "target_domain": {
+      "title": "Target Domain",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_domain",
+    "target_domain",
+    "causal_query"
+  ],
+  "title": "TransportabilityQueryV1",
+  "type": "object"
+}

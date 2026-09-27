@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "CausalVariableCategory": {
+      "enum": [
+        "CONFIGURATION",
+        "IDENTITY_STATE",
+        "SESSION_STATE",
+        "SERVICE_STATE",
+        "DEPENDENCY_BEHAVIOR",
+        "NETWORK_POLICY",
+        "REQUEST_ORDER",
+        "CACHE_STATE",
+        "DEPLOYMENT_REVISION",
+        "SECURITY_OUTCOME",
+        "HEALTH_OUTCOME",
+        "VERIFICATION_OUTCOME"
+      ],
+      "title": "CausalVariableCategory",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "$ref": "#/$defs/CausalVariableCategory"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "observable": {
+      "default": true,
+      "title": "Observable",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "variable_id": {
+      "title": "Variable Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "variable_id",
+    "name",
+    "category"
+  ],
+  "title": "CausalVariableV1",
+  "type": "object"
+}

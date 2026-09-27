@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "machine_check": {
+      "description": "Stable predicate id, e.g. unauthenticated_admin_access",
+      "title": "Machine Check",
+      "type": "string"
+    },
+    "required_observations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Observations",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "description",
+    "machine_check"
+  ],
+  "title": "FalsificationConditionV1",
+  "type": "object"
+}

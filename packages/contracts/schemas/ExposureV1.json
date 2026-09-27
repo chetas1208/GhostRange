@@ -1,0 +1,41 @@
+{
+  "$defs": {
+    "ExposureKind": {
+      "enum": [
+        "PERCENTAGE",
+        "REPLICA_FRACTION",
+        "COHORT",
+        "REGION",
+        "FEATURE_FLAG",
+        "CUSTOM"
+      ],
+      "title": "ExposureKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/ExposureKind",
+      "default": "PERCENTAGE"
+    },
+    "label": {
+      "default": "",
+      "title": "Label",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "value": {
+      "default": "0",
+      "title": "Value",
+      "type": "string"
+    }
+  },
+  "title": "ExposureV1",
+  "type": "object"
+}

@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "blocked_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Blocked Count",
+      "type": "integer"
+    },
+    "critical_ready_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Critical Ready Count",
+      "type": "integer"
+    },
+    "demand_by_resource_class": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Demand By Resource Class",
+      "type": "object"
+    },
+    "oldest_wait_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Oldest Wait Seconds",
+      "type": "number"
+    },
+    "queue_wait_seconds_p95": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Queue Wait Seconds P95",
+      "type": "number"
+    },
+    "ready_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Ready Count",
+      "type": "integer"
+    },
+    "running_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Running Count",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "QueueStateV1",
+  "type": "object"
+}

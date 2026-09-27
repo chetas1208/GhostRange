@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "RolloutStageKind": {
+      "enum": [
+        "PRE_DEPLOY",
+        "INITIAL_CANARY",
+        "CANARY_10",
+        "CANARY_25",
+        "CANARY_50",
+        "FULL",
+        "HOLD",
+        "ROLLBACK",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "RolloutStageKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/RolloutStageKind"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "traffic_percentage_new": {
+      "default": 0,
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Traffic Percentage New",
+      "type": "number"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "RolloutStageV1",
+  "type": "object"
+}

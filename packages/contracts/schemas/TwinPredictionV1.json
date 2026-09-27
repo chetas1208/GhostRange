@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_artifact_digest": {
+      "title": "Expected Artifact Digest",
+      "type": "string"
+    },
+    "expected_behavior_summary": {
+      "title": "Expected Behavior Summary",
+      "type": "string"
+    },
+    "note": {
+      "default": "Immutable \u2014 do not rewrite after rollout observation",
+      "title": "Note",
+      "type": "string"
+    },
+    "promotion_candidate_id": {
+      "format": "uuid",
+      "title": "Promotion Candidate Id",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "promotion_candidate_id",
+    "expected_artifact_digest",
+    "expected_behavior_summary"
+  ],
+  "title": "TwinPredictionV1",
+  "type": "object"
+}

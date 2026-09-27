@@ -1,0 +1,12 @@
+{
+  "scenario_id": "PARAMETER_BYPASS",
+  "family": "HEADER_MUTATION",
+  "hidden_minimal_counterexample": {
+    "method": "GET",
+    "path": "/admin",
+    "headers": { "X-Forwarded-User": "admin" },
+    "identity": "anonymous"
+  },
+  "falsification_condition": "unauthenticated_admin_access",
+  "notes": "Ground truth for benchmark evaluation only — not loaded by search engine."
+}

@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "CausalAssumptionKind": {
+      "enum": [
+        "NO_UNMEASURED_CONFOUNDING",
+        "CAUSAL_SUFFICIENCY",
+        "MECHANISM_INVARIANCE",
+        "POSITIVITY",
+        "CONSISTENCY",
+        "SUTVA_LIKE",
+        "TEMPORAL_ORDER",
+        "NO_INTERFERENCE",
+        "MEASUREMENT_RELIABILITY",
+        "SELECTION_MODEL",
+        "LATENT_VARIABLE_ALLOWED",
+        "DOMAIN_SHIFT_ASSUMPTION"
+      ],
+      "title": "CausalAssumptionKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumption_id": {
+      "title": "Assumption Id",
+      "type": "string"
+    },
+    "established": {
+      "default": false,
+      "title": "Established",
+      "type": "boolean"
+    },
+    "kind": {
+      "$ref": "#/$defs/CausalAssumptionKind"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "assumption_id",
+    "kind"
+  ],
+  "title": "CausalAssumptionV1",
+  "type": "object"
+}

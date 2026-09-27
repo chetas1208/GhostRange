@@ -1,0 +1,58 @@
+{
+  "unsafe_promotion_pass_count": 0,
+  "unsafe_promotion_pass_rate_target": 0,
+  "results": [
+    {
+      "scenario": "clean_promotion",
+      "state": "READY_FOR_REVIEW",
+      "blockers": [],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    },
+    {
+      "scenario": "stale_source",
+      "state": "REQUIRES_REVALIDATION",
+      "blockers": [
+        "SOURCE_DRIFT_RELEVANT"
+      ],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    },
+    {
+      "scenario": "material_patch_difference",
+      "state": "REQUIRES_RETEST",
+      "blockers": [
+        "MATERIAL_TESTED_PRODUCTION_DIFF"
+      ],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    },
+    {
+      "scenario": "rollback_failure",
+      "state": "DRAFT",
+      "blockers": [
+        "ROLLBACK_NOT_VERIFIED"
+      ],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    },
+    {
+      "scenario": "observability_gap",
+      "state": "DRAFT",
+      "blockers": [
+        "OBSERVABILITY_GAP"
+      ],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    },
+    {
+      "scenario": "counterexample_present",
+      "state": "DRAFT",
+      "blockers": [
+        "COUNTEREXAMPLE_FOUND"
+      ],
+      "promotion_analysis_ms": 0,
+      "unsafe_ready_for_approval": false
+    }
+  ]
+}

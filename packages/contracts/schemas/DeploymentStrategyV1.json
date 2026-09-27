@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "CanaryPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "default": "PLAN ONLY \u2014 not production traffic routing",
+          "title": "Note",
+          "type": "string"
+        },
+        "rollback_trigger": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rollback Trigger",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stages": {
+          "items": {
+            "$ref": "#/$defs/CanaryStageV1"
+          },
+          "title": "Stages",
+          "type": "array"
+        }
+      },
+      "title": "CanaryPlanV1",
+      "type": "object"
+    },
+    "CanaryStageV1": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_minutes": {
+          "minimum": 1,
+          "title": "Duration Minutes",
+          "type": "integer"
+        },
+        "failure_conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failure Conditions",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage_index": {
+          "minimum": 0,
+          "title": "Stage Index",
+          "type": "integer"
+        },
+        "success_conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Success Conditions",
+          "type": "array"
+        },
+        "traffic_percentage": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Traffic Percentage",
+          "type": "number"
+        }
+      },
+      "required": [
+        "stage_index",
+        "traffic_percentage",
+        "duration_minutes"
+      ],
+      "title": "CanaryStageV1",
+      "type": "object"
+    },
+    "DeploymentStrategyKind": {
+      "enum": [
+        "ALL_AT_ONCE",
+        "CANARY",
+        "BLUE_GREEN",
+        "ROLLING",
+        "SHADOW",
+        "CONFIG_FLAG",
+        "MANUAL_SEQUENCE"
+      ],
+      "title": "DeploymentStrategyKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "canary": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CanaryPlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "kind": {
+      "$ref": "#/$defs/DeploymentStrategyKind"
+    },
+    "rationale": {
+      "default": "",
+      "title": "Rationale",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "DeploymentStrategyV1",
+  "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "provisioning_ms": 14,
+  "boot_ms": 14,
+  "execution_ms": 0,
+  "verification_ms": 0,
+  "teardown_ms": 23,
+  "total_ms": 0,
+  "estimated_cost_usd": 0.024,
+  "event_count": 31,
+  "evidence_artifacts": 1,
+  "scheduler_decisions": 1,
+  "live_provider": "mock"
+}

@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "description": "An assertion made by an agent, subject to verification.",
+  "properties": {
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "made_by_agent_id": {
+      "format": "uuid",
+      "title": "Made By Agent Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "statement": {
+      "title": "Statement",
+      "type": "string"
+    },
+    "verification_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Verification Ids",
+      "type": "array"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "statement",
+    "made_by_agent_id",
+    "confidence"
+  ],
+  "title": "ClaimV1",
+  "type": "object"
+}

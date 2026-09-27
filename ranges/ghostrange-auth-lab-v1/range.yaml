@@ -1,0 +1,33 @@
+# M2 range manifest — ghostrange-auth-lab-v1
+schema_version: "1"
+identity:
+  name: ghostrange-auth-lab-v1
+  owner: chetasparekh2003@gmail.com
+  rangespec: ./rangespec.yaml
+  topology: ./topology.yaml
+logical_topology:
+  description: TEST ORIGIN -> Gateway -> API -> Auth -> Database
+  assets: [gw01, api01, auth01, db01]
+physical:
+  strategy: single_vm_docker_compose
+  compose_root: ./docker/vm-1
+network_policy:
+  mode: single_segment_m2
+  cidr: 10.60.0.0/24
+execution_policy:
+  allowlist_only: true
+  no_freeform_urls: true
+budget:
+  max_worlds: 1
+  max_runtime_minutes: 45
+  estimated_usd_cap: 2.0
+ttl_minutes: 45
+scenario:
+  id: auth-lab-controlled-validation
+  objective: reproduce controlled auth rejection (401/403), not exploit delivery
+verification:
+  engine: ghostrange_evidence.scenario_verification.evaluate_auth_lab_v1
+  deterministic: true
+teardown:
+  required: true
+  confirm_provider_absence: true

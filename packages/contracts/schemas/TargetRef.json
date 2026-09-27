@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "description": "A single execution target, scoped to exactly one range.\n\nDeliberately NOT free text with no constraint: ``host_or_ip`` must be a\nplausible bare hostname or IPv4/IPv6 literal (no scheme, no path, no\nwhitespace, no shell/URL metacharacters) so this type can never itself\nbecome an injection vector even before the *semantic* check (\"is this\nactually in the range's registry\") runs in policy-check. The semantic\ncheck is the real security property (enforced by\n``packages/policy-check``, re-derived from its own registry on every\ncall) \u2014 this pattern constraint is defense-in-depth, not a substitute\nfor it.",
+  "properties": {
+    "host_or_ip": {
+      "maxLength": 253,
+      "minLength": 1,
+      "title": "Host Or Ip",
+      "type": "string"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id",
+    "host_or_ip"
+  ],
+  "title": "TargetRef",
+  "type": "object"
+}

@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "description": "A directed edge ``upstream_task_id -> downstream_task_id`` meaning\ndownstream depends on upstream having completed.",
+  "properties": {
+    "downstream_task_id": {
+      "format": "uuid",
+      "title": "Downstream Task Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "upstream_task_id": {
+      "format": "uuid",
+      "title": "Upstream Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "upstream_task_id",
+    "downstream_task_id"
+  ],
+  "title": "DependencyEdgeV1",
+  "type": "object"
+}

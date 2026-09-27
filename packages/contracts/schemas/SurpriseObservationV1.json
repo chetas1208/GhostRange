@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observation_id": {
+      "format": "uuid",
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "suggested_new_hypothesis": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Suggested New Hypothesis"
+    },
+    "unpredicted_by_hypothesis_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Unpredicted By Hypothesis Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "observation_id"
+  ],
+  "title": "SurpriseObservationV1",
+  "type": "object"
+}

@@ -1,0 +1,1064 @@
+{
+  "$defs": {
+    "AcquisitionScoreV1": {
+      "additionalProperties": false,
+      "properties": {
+        "components": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Components",
+          "type": "object"
+        },
+        "policy_version": {
+          "default": "ghostdirector/v1",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "total_score": {
+          "title": "Total Score",
+          "type": "number"
+        },
+        "utility": {
+          "$ref": "#/$defs/ExperimentUtilityV1"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "utility",
+        "total_score"
+      ],
+      "title": "AcquisitionScoreV1",
+      "type": "object"
+    },
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    },
+    "CampaignState": {
+      "enum": [
+        "INITIALIZING",
+        "ASSESSING",
+        "GENERATING",
+        "SELECTING",
+        "WAITING_FOR_APPROVAL",
+        "EXECUTING",
+        "OBSERVING",
+        "UPDATING",
+        "REASSESSING",
+        "STOPPED",
+        "FAILED"
+      ],
+      "title": "CampaignState",
+      "type": "string"
+    },
+    "CandidateOrigin": {
+      "enum": [
+        "RULE",
+        "MODEL",
+        "COUNTEREXAMPLE",
+        "HUMAN",
+        "DRIFT",
+        "VERIFICATION_GAP",
+        "FIDELITY_GAP"
+      ],
+      "title": "CandidateOrigin",
+      "type": "string"
+    },
+    "DirectorDecisionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Candidate Ids",
+          "type": "array"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "knowledge_state_hash": {
+          "title": "Knowledge State Hash",
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/DirectorPolicyId",
+          "default": "GHOSTDIRECTOR_V1"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/DirectorReasonCode"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "rejected_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Rejected Ids",
+          "type": "array"
+        },
+        "rejection_reasons": {
+          "additionalProperties": {
+            "$ref": "#/$defs/DirectorReasonCode"
+          },
+          "title": "Rejection Reasons",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "selected_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Selected Ids",
+          "type": "array"
+        },
+        "utility_snapshots": {
+          "items": {
+            "$ref": "#/$defs/AcquisitionScoreV1"
+          },
+          "title": "Utility Snapshots",
+          "type": "array"
+        }
+      },
+      "required": [
+        "knowledge_state_hash"
+      ],
+      "title": "DirectorDecisionV1",
+      "type": "object"
+    },
+    "DirectorPolicyId": {
+      "enum": [
+        "FIXED_SCRIPT",
+        "RANDOM_SAFE",
+        "ROUND_ROBIN_UNCERTAINTY",
+        "GREEDY_INFORMATION",
+        "GREEDY_DECISION_VALUE",
+        "GHOSTDIRECTOR_V1",
+        "ORACLE_BENCHMARK"
+      ],
+      "title": "DirectorPolicyId",
+      "type": "string"
+    },
+    "DirectorReasonCode": {
+      "enum": [
+        "HIGH_DECISION_VALUE",
+        "HIGH_INFORMATION_GAIN",
+        "HIGH_SECURITY_IMPORTANCE",
+        "RESOLVES_CONFLICT",
+        "DISCRIMINATES_HYPOTHESES",
+        "CHEAP_INFORMATION",
+        "REPRESENTATIVE_TEST",
+        "ROBUSTNESS_CHECK",
+        "LOW_VALUE",
+        "REDUNDANT_EXPERIMENT",
+        "DOMINATED_EXPERIMENT",
+        "BUDGET_PRESSURE",
+        "UNSAFE_EXPERIMENT",
+        "INSUFFICIENT_FIDELITY",
+        "DEPENDENCY_BLOCKED",
+        "MODEL_ONLY_UNSUPPORTED"
+      ],
+      "title": "DirectorReasonCode",
+      "type": "string"
+    },
+    "DirectorStopReason": {
+      "enum": [
+        "DECISION_SUFFICIENT",
+        "MANDATORY_VERIFICATION_COMPLETE",
+        "UNCERTAINTY_BELOW_POLICY_THRESHOLD",
+        "NO_HIGH_VALUE_EXPERIMENTS",
+        "BUDGET_EXHAUSTED",
+        "TIME_EXHAUSTED",
+        "COUNTEREXAMPLE_CONFIRMED",
+        "HUMAN_STOP"
+      ],
+      "title": "DirectorStopReason",
+      "type": "string"
+    },
+    "ExpectedOutcomeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_value": {
+          "title": "Expected Value"
+        },
+        "if_hypothesis_id": {
+          "format": "uuid",
+          "title": "If Hypothesis Id",
+          "type": "string"
+        },
+        "observation_key": {
+          "title": "Observation Key",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "if_hypothesis_id",
+        "observation_key",
+        "expected_value"
+      ],
+      "title": "ExpectedOutcomeV1",
+      "type": "object"
+    },
+    "ExperimentCampaignBudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "max_compute_usd": {
+          "default": 50.0,
+          "minimum": 0,
+          "title": "Max Compute Usd",
+          "type": "number"
+        },
+        "max_experiments": {
+          "default": 20,
+          "minimum": 1,
+          "title": "Max Experiments",
+          "type": "integer"
+        },
+        "max_model_usd": {
+          "default": 10.0,
+          "minimum": 0,
+          "title": "Max Model Usd",
+          "type": "number"
+        },
+        "max_wall_time_sec": {
+          "default": 3600,
+          "exclusiveMinimum": 0,
+          "title": "Max Wall Time Sec",
+          "type": "number"
+        },
+        "max_worlds": {
+          "default": 10,
+          "minimum": 1,
+          "title": "Max Worlds",
+          "type": "integer"
+        },
+        "reserved_usd": {
+          "default": 0.0,
+          "title": "Reserved Usd",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "spent_usd": {
+          "default": 0.0,
+          "title": "Spent Usd",
+          "type": "number"
+        }
+      },
+      "title": "ExperimentCampaignBudgetV1",
+      "type": "object"
+    },
+    "ExperimentObservationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "experiment_id": {
+          "format": "uuid",
+          "title": "Experiment Id",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "observable": {
+          "title": "Observable",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "operator_kind": {
+          "$ref": "#/$defs/ExperimentOperatorKind"
+        },
+        "reliability": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "MEDIUM"
+        },
+        "result": {
+          "additionalProperties": true,
+          "title": "Result",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "world_id": {
+          "format": "uuid",
+          "title": "World Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_id",
+        "world_id",
+        "operator_kind",
+        "observable"
+      ],
+      "title": "ExperimentObservationV1",
+      "type": "object"
+    },
+    "ExperimentOperatorKind": {
+      "enum": [
+        "REPLAY_ATTACK",
+        "APPLY_CONTROLLED_CONFIG_VARIATION",
+        "CHANGE_SYNTHETIC_IDENTITY_STATE",
+        "CHANGE_STUB_RESPONSE",
+        "RESTART_RANGE_SERVICE",
+        "APPLY_REMEDIATION",
+        "RUN_REGRESSION",
+        "RUN_COUNTEREXAMPLE_SEARCH",
+        "COMPARE_WORLDS",
+        "COLLECT_OBSERVATION"
+      ],
+      "title": "ExperimentOperatorKind",
+      "type": "string"
+    },
+    "ExperimentOperatorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExperimentOperatorKind"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_asset_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Asset Id"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ExperimentOperatorV1",
+      "type": "object"
+    },
+    "ExperimentProposalV1": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on_experiment_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Depends On Experiment Ids",
+          "type": "array"
+        },
+        "discriminating_power": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "MEDIUM"
+        },
+        "estimated_cost_usd": {
+          "minimum": 0,
+          "title": "Estimated Cost Usd",
+          "type": "number"
+        },
+        "estimated_runtime_sec": {
+          "minimum": 0,
+          "title": "Estimated Runtime Sec",
+          "type": "number"
+        },
+        "expected_outcomes": {
+          "items": {
+            "$ref": "#/$defs/ExpectedOutcomeV1"
+          },
+          "title": "Expected Outcomes",
+          "type": "array"
+        },
+        "fingerprint": {
+          "default": "",
+          "title": "Fingerprint",
+          "type": "string"
+        },
+        "hypotheses_tested": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Hypotheses Tested",
+          "type": "array"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "investigation_id": {
+          "format": "uuid",
+          "title": "Investigation Id",
+          "type": "string"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "string"
+        },
+        "operators": {
+          "items": {
+            "$ref": "#/$defs/ExperimentOperatorV1"
+          },
+          "minItems": 1,
+          "title": "Operators",
+          "type": "array"
+        },
+        "origin": {
+          "$ref": "#/$defs/CandidateOrigin",
+          "default": "RULE"
+        },
+        "parallelizable": {
+          "default": true,
+          "title": "Parallelizable",
+          "type": "boolean"
+        },
+        "required_fidelity": {
+          "default": "standard",
+          "title": "Required Fidelity",
+          "type": "string"
+        },
+        "required_world_state": {
+          "$ref": "#/$defs/WorldExperimentalState",
+          "default": "CLEAN"
+        },
+        "risk": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "LOW"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "uncertainties_targeted": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Uncertainties Targeted",
+          "type": "array"
+        }
+      },
+      "required": [
+        "investigation_id",
+        "objective",
+        "operators",
+        "estimated_cost_usd",
+        "estimated_runtime_sec"
+      ],
+      "title": "ExperimentProposalV1",
+      "type": "object"
+    },
+    "ExperimentUtilityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_cost_usd": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Compute Cost Usd",
+          "type": "number"
+        },
+        "decision_relevance": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Decision Relevance",
+          "type": "number"
+        },
+        "expected_security_value": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Expected Security Value",
+          "type": "number"
+        },
+        "experiment_risk": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Experiment Risk",
+          "type": "number"
+        },
+        "hypothesis_discrimination": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Hypothesis Discrimination",
+          "type": "number"
+        },
+        "information_gain": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Information Gain",
+          "type": "number"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "representativeness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Representativeness",
+          "type": "number"
+        },
+        "robustness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Robustness",
+          "type": "number"
+        },
+        "runtime_sec": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Runtime Sec",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposal_id"
+      ],
+      "title": "ExperimentUtilityV1",
+      "type": "object"
+    },
+    "HypothesisEdgeKind": {
+      "enum": [
+        "SUPPORTS",
+        "CONTRADICTS",
+        "DEPENDS_ON",
+        "REFINES",
+        "COMPETES_WITH",
+        "EXPLAINS",
+        "REQUIRES"
+      ],
+      "title": "HypothesisEdgeKind",
+      "type": "string"
+    },
+    "HypothesisGraphEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "from_hypothesis_id": {
+          "format": "uuid",
+          "title": "From Hypothesis Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/HypothesisEdgeKind"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_hypothesis_id": {
+          "format": "uuid",
+          "title": "To Hypothesis Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_hypothesis_id",
+        "to_hypothesis_id",
+        "kind"
+      ],
+      "title": "HypothesisGraphEdgeV1",
+      "type": "object"
+    },
+    "HypothesisGraphV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/HypothesisGraphEdgeV1"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "hypotheses": {
+          "items": {
+            "$ref": "#/$defs/InvestigationHypothesisV1"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "investigation_id": {
+          "format": "uuid",
+          "title": "Investigation Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "investigation_id"
+      ],
+      "title": "HypothesisGraphV1",
+      "type": "object"
+    },
+    "InvestigationHypothesisStatus": {
+      "enum": [
+        "PROPOSED",
+        "ACTIVE",
+        "SUPPORTED",
+        "WEAKENED",
+        "REFUTED",
+        "UNRESOLVED"
+      ],
+      "title": "InvestigationHypothesisStatus",
+      "type": "string"
+    },
+    "InvestigationHypothesisV1": {
+      "additionalProperties": false,
+      "description": "M9 investigation hypothesis \u2014 not the incident ``HypothesisV1`` in hypothesis.py.",
+      "properties": {
+        "contradicting_evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Contradicting Evidence Ids",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "hypothesis_type": {
+          "default": "ROOT_CAUSE",
+          "title": "Hypothesis Type",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "investigation_id": {
+          "format": "uuid",
+          "title": "Investigation Id",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/CandidateOrigin",
+          "default": "RULE"
+        },
+        "priority": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "MEDIUM"
+        },
+        "related_assumption_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Related Assumption Ids",
+          "type": "array"
+        },
+        "related_claim_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Related Claim Ids",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/InvestigationHypothesisStatus",
+          "default": "PROPOSED"
+        },
+        "supporting_evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Supporting Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "investigation_id",
+        "statement"
+      ],
+      "title": "InvestigationHypothesisV1",
+      "type": "object"
+    },
+    "InvestigationKnowledgeStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Claim Ids",
+          "type": "array"
+        },
+        "counterexample_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Counterexample Ids",
+          "type": "array"
+        },
+        "experiment_history_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Experiment History Ids",
+          "type": "array"
+        },
+        "hypothesis_graph": {
+          "$ref": "#/$defs/HypothesisGraphV1"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "investigation_id": {
+          "format": "uuid",
+          "title": "Investigation Id",
+          "type": "string"
+        },
+        "knowledge_state_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Knowledge State Hash"
+        },
+        "known_facts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Known Facts",
+          "type": "array"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "string"
+        },
+        "remaining_questions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Remaining Questions",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "uncertain_facts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncertain Facts",
+          "type": "array"
+        },
+        "uncertainties": {
+          "items": {
+            "$ref": "#/$defs/UncertaintyItemV1"
+          },
+          "title": "Uncertainties",
+          "type": "array"
+        }
+      },
+      "required": [
+        "investigation_id",
+        "objective",
+        "hypothesis_graph"
+      ],
+      "title": "InvestigationKnowledgeStateV1",
+      "type": "object"
+    },
+    "UncertaintyCategory": {
+      "enum": [
+        "EXPLOITABILITY",
+        "REMEDIATION_EFFECTIVENESS",
+        "REGRESSION_RISK",
+        "ASSUMPTION_VALIDITY",
+        "ATTACK_PATH",
+        "DEPENDENCY_BEHAVIOR",
+        "IDENTITY_BEHAVIOR",
+        "CONFIGURATION",
+        "FIDELITY",
+        "COUNTEREXAMPLE_EXISTENCE",
+        "MODEL_DISAGREEMENT",
+        "UNKNOWN"
+      ],
+      "title": "UncertaintyCategory",
+      "type": "string"
+    },
+    "UncertaintyItemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/UncertaintyCategory"
+        },
+        "confidence_basis": {
+          "default": "",
+          "title": "Confidence Basis",
+          "type": "string"
+        },
+        "contradicting_evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Contradicting Evidence Ids",
+          "type": "array"
+        },
+        "current_belief": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "UNKNOWN"
+        },
+        "decision_relevance": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "MEDIUM"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "importance": {
+          "$ref": "#/$defs/BeliefLevel",
+          "default": "MEDIUM"
+        },
+        "proposition": {
+          "title": "Proposition",
+          "type": "string"
+        },
+        "resolution_conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Resolution Conditions",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "supporting_evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Supporting Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "subject",
+        "proposition",
+        "category"
+      ],
+      "title": "UncertaintyItemV1",
+      "type": "object"
+    },
+    "WorldExperimentalState": {
+      "enum": [
+        "CLEAN",
+        "MODIFIED",
+        "CONTAMINATED",
+        "RESET_REQUIRED"
+      ],
+      "title": "WorldExperimentalState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/ExperimentCampaignBudgetV1"
+    },
+    "decisions": {
+      "items": {
+        "$ref": "#/$defs/DirectorDecisionV1"
+      },
+      "title": "Decisions",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "investigation_id": {
+      "format": "uuid",
+      "title": "Investigation Id",
+      "type": "string"
+    },
+    "knowledge_state": {
+      "$ref": "#/$defs/InvestigationKnowledgeStateV1"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/ExperimentObservationV1"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/DirectorPolicyId"
+    },
+    "proposals": {
+      "items": {
+        "$ref": "#/$defs/ExperimentProposalV1"
+      },
+      "title": "Proposals",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/CampaignState",
+      "default": "INITIALIZING"
+    },
+    "stop_reason": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DirectorStopReason"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "investigation_id",
+    "policy",
+    "knowledge_state"
+  ],
+  "title": "ExperimentCampaignV1",
+  "type": "object"
+}

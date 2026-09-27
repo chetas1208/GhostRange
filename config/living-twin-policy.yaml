@@ -1,0 +1,44 @@
+# Living Twin M6 — drift, impact, sync, revalidation
+
+policy_version: living-twin/v1
+
+watch:
+  default_mode: ON_IMPORT
+  scheduled_interval_seconds: 3600
+
+impact:
+  propagate_edges:
+    DEPENDS_ON: [SERVICE, VERSION, CONFIGURATION, DEPENDENCY]
+    AUTHENTICATES_VIA: [IDENTITY, CONFIGURATION, SECURITY_CONTROL]
+    CONNECTS_TO: [NETWORK, TOPOLOGY]
+    EXPOSES: [NETWORK, SECURITY_CONTROL]
+  resource_cpu_change_default: NONE
+  unknown_on_required_fidelity: HIGH
+
+sync:
+  NONE: IGNORE
+  LOW: RECORD_ONLY
+  MEDIUM: INVALIDATE
+  HIGH: INCREMENTAL_SYNC
+  CRITICAL: FULL_SYNC
+  UNKNOWN: INVALIDATE
+
+revalidation:
+  mandatory_tests_never_skipped: true
+  auth_version_change_tests:
+    - auth_invariants
+    - attack_replay
+    - auth_regression
+  readme_only_change_tests: []
+
+escalation:
+  full_rebuild_if_removed_services: true
+  full_rebuild_if_identity_architecture_change: true
+  max_incremental_graph_distance: 0.35
+
+benchmark:
+  strategies:
+    - FULL_REBUILD_ALWAYS
+    - FULL_REVERIFY_ALWAYS
+    - CHANGE_AWARE_REBUILD
+    - GHOSTRANGE_SELECTIVE_REVALIDATION

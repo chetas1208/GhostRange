@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "description": "Short-lived, single-use, request-hash-bound authorization ticket\nissued on ALLOW (EXECUTION_POLICY.md \u00a73.4). Executors\n(adversary-adapter, range-runtime, vultr-control) re-verify this\nticket's signature and hash-binding themselves, immediately before\ntheir side-effecting call \u2014 a policy-check ALLOW decision is not\nitself permission to act.",
+  "properties": {
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "request_hash": {
+      "minLength": 1,
+      "title": "Request Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signature": {
+      "minLength": 1,
+      "title": "Signature",
+      "type": "string"
+    },
+    "single_use": {
+      "default": true,
+      "title": "Single Use",
+      "type": "boolean"
+    },
+    "ticket_id": {
+      "format": "uuid",
+      "title": "Ticket Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_hash",
+    "expires_at",
+    "signature"
+  ],
+  "title": "ExecutionTicketV1",
+  "type": "object"
+}

@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "MeshDisclosureLevel": {
+      "enum": [
+        "PRIVATE_LOCAL",
+        "FEDERATED_AGGREGATE_ONLY",
+        "PSEUDONYMOUS_STRUCTURED",
+        "TRUSTED_GROUP",
+        "PUBLIC_SAFE"
+      ],
+      "title": "MeshDisclosureLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "accepted_disclosure_levels": {
+      "items": {
+        "$ref": "#/$defs/MeshDisclosureLevel"
+      },
+      "title": "Accepted Disclosure Levels",
+      "type": "array"
+    },
+    "accepted_schemas": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Accepted Schemas",
+      "type": "array"
+    },
+    "federation_id": {
+      "title": "Federation Id",
+      "type": "string"
+    },
+    "minimum_cohort_release": {
+      "default": 3,
+      "title": "Minimum Cohort Release",
+      "type": "integer"
+    },
+    "policy_digest": {
+      "default": "",
+      "title": "Policy Digest",
+      "type": "string"
+    },
+    "privacy_requirements_digest": {
+      "default": "",
+      "title": "Privacy Requirements Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "trust_root_fingerprints": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Trust Root Fingerprints",
+      "type": "array"
+    }
+  },
+  "required": [
+    "federation_id"
+  ],
+  "title": "MeshFederationV1",
+  "type": "object"
+}

@@ -1,0 +1,6 @@
+{
+  "direct_identifier_leakage": 0,
+  "membership_inference_succeeded": true,
+  "property_inference_succeeded": false,
+  "topology_reconstruction_success": false
+}

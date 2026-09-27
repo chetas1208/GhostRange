@@ -1,0 +1,22 @@
+:root {
+  --gr-void: #0a0a0c;
+  --gr-graphite: #141418;
+  --gr-surface: #1c1c22;
+  --gr-text: #c8cdd6;
+  --gr-text-muted: #64748b;
+  --gr-electric: #60a5fa;
+  --gr-violet: #a78bfa;
+  --gr-mint: #6ee7b7;
+  --gr-amber: #fbbf24;
+  --gr-failure: #f87171;
+  --gr-cyan: #22d3ee;
+  --gr-inspector-width: min(380px, 34vw);
+  --gr-font-mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, monospace;
+  --gr-font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --gr-motion-scale: 0;
+  }
+}

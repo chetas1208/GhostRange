@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "TwinRevisionStatus": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "RECOMPILING",
+        "VALIDATING",
+        "SUPERSEDED",
+        "INVALID"
+      ],
+      "title": "TwinRevisionStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "blueprint_hash": {
+      "title": "Blueprint Hash",
+      "type": "string"
+    },
+    "compiler_version": {
+      "title": "Compiler Version",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "fidelity_profile_id": {
+      "format": "uuid",
+      "title": "Fidelity Profile Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "parent_twin_revision_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Twin Revision Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_revision_id": {
+      "format": "uuid",
+      "title": "Source Revision Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/TwinRevisionStatus",
+      "default": "CURRENT"
+    },
+    "twin_id": {
+      "format": "uuid",
+      "title": "Twin Id",
+      "type": "string"
+    },
+    "world_fingerprint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "World Fingerprint"
+    }
+  },
+  "required": [
+    "twin_id",
+    "source_revision_id",
+    "blueprint_hash",
+    "compiler_version",
+    "fidelity_profile_id"
+  ],
+  "title": "TwinRevisionV1",
+  "type": "object"
+}

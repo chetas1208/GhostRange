@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_value": {
+      "title": "Expected Value"
+    },
+    "if_hypothesis_id": {
+      "format": "uuid",
+      "title": "If Hypothesis Id",
+      "type": "string"
+    },
+    "observation_key": {
+      "title": "Observation Key",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "if_hypothesis_id",
+    "observation_key",
+    "expected_value"
+  ],
+  "title": "ExpectedOutcomeV1",
+  "type": "object"
+}

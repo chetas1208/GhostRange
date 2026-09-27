@@ -1,0 +1,47 @@
+{
+  "$defs": {
+    "OracleKind": {
+      "enum": [
+        "HTTP_RESPONSE",
+        "AUTHORIZATION_DECISION",
+        "SERVICE_LOG",
+        "COMPOSITE"
+      ],
+      "title": "OracleKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "falsification_condition_id": {
+      "format": "uuid",
+      "title": "Falsification Condition Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/OracleKind"
+    },
+    "rules": {
+      "additionalProperties": true,
+      "title": "Rules",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "falsification_condition_id"
+  ],
+  "title": "SecurityOracleV1",
+  "type": "object"
+}

@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "DependencyEdgeV1": {
+      "additionalProperties": false,
+      "description": "A directed edge ``upstream_task_id -> downstream_task_id`` meaning\ndownstream depends on upstream having completed.",
+      "properties": {
+        "downstream_task_id": {
+          "format": "uuid",
+          "title": "Downstream Task Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "upstream_task_id": {
+          "format": "uuid",
+          "title": "Upstream Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "upstream_task_id",
+        "downstream_task_id"
+      ],
+      "title": "DependencyEdgeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The DAG of Tasks for one World. Cycle-freedom is NOT validated here\n(that requires graph traversal, which belongs in\n``packages/execution-graph`` where it can be tested against the real\nscheduling algorithms) \u2014 this model only guarantees shape, not\nacyclicity.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/DependencyEdgeV1"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Task Ids",
+      "type": "array"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id"
+  ],
+  "title": "ExecutionGraphV1",
+  "type": "object"
+}

@@ -1,0 +1,6 @@
+{
+  "dry_run": true,
+  "owned_resources": [],
+  "orphans": [],
+  "note": "M2: wire to vultr-control list-by-tag when LIVE_PROVIDER=vultr"
+}

@@ -1,0 +1,312 @@
+{
+  "$defs": {
+    "ApplicabilityProfileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture_family": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Architecture Family"
+        },
+        "dependency_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dependency Type"
+        },
+        "deployment_model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deployment Model"
+        },
+        "identity_pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Identity Pattern"
+        },
+        "protocol": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Protocol"
+        },
+        "runtime_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runtime Class"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "statefulness": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statefulness"
+        }
+      },
+      "title": "ApplicabilityProfileV1",
+      "type": "object"
+    },
+    "ContributionPrivacyProfileV1": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation_required": {
+          "default": false,
+          "title": "Aggregation Required",
+          "type": "boolean"
+        },
+        "dp_applied": {
+          "default": false,
+          "title": "Dp Applied",
+          "type": "boolean"
+        },
+        "fields_generalized": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Generalized",
+          "type": "array"
+        },
+        "fields_hashed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Hashed",
+          "type": "array"
+        },
+        "fields_removed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Removed",
+          "type": "array"
+        },
+        "minimum_cohort": {
+          "default": 1,
+          "title": "Minimum Cohort",
+          "type": "integer"
+        },
+        "residual_leakage_assessment": {
+          "default": "UNEVALUATED",
+          "title": "Residual Leakage Assessment",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "ContributionPrivacyProfileV1",
+      "type": "object"
+    },
+    "KnowledgeAbstractionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "abstract_relations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Abstract Relations",
+          "type": "array"
+        },
+        "abstract_tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Abstract Tags",
+          "type": "array"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "KnowledgeAbstractionV1",
+      "type": "object"
+    },
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    },
+    "MeshDisclosureLevel": {
+      "enum": [
+        "PRIVATE_LOCAL",
+        "FEDERATED_AGGREGATE_ONLY",
+        "PSEUDONYMOUS_STRUCTURED",
+        "TRUSTED_GROUP",
+        "PUBLIC_SAFE"
+      ],
+      "title": "MeshDisclosureLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "abstract_pattern": {
+      "$ref": "#/$defs/KnowledgeAbstractionV1"
+    },
+    "applicability": {
+      "$ref": "#/$defs/ApplicabilityProfileV1"
+    },
+    "content_digest": {
+      "default": "",
+      "title": "Content Digest",
+      "type": "string"
+    },
+    "contributor_pseudonym": {
+      "default": "",
+      "title": "Contributor Pseudonym",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "disclosure_level": {
+      "$ref": "#/$defs/MeshDisclosureLevel",
+      "default": "PSEUDONYMOUS_STRUCTURED"
+    },
+    "evidence_strength": {
+      "default": 0.5,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Evidence Strength",
+      "type": "number"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
+    },
+    "failure_count": {
+      "default": 0,
+      "title": "Failure Count",
+      "type": "integer"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "knowledge_class": {
+      "$ref": "#/$defs/KnowledgeClass"
+    },
+    "local_validation_count": {
+      "default": 0,
+      "title": "Local Validation Count",
+      "type": "integer"
+    },
+    "privacy_profile": {
+      "$ref": "#/$defs/ContributionPrivacyProfileV1"
+    },
+    "provenance_digest": {
+      "title": "Provenance Digest",
+      "type": "string"
+    },
+    "revocation_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revocation Reference"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "knowledge_class",
+    "abstract_pattern",
+    "provenance_digest"
+  ],
+  "title": "MeshContributionV1",
+  "type": "object"
+}

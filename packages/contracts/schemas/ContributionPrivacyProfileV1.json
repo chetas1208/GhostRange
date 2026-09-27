@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "aggregation_required": {
+      "default": false,
+      "title": "Aggregation Required",
+      "type": "boolean"
+    },
+    "dp_applied": {
+      "default": false,
+      "title": "Dp Applied",
+      "type": "boolean"
+    },
+    "fields_generalized": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Fields Generalized",
+      "type": "array"
+    },
+    "fields_hashed": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Fields Hashed",
+      "type": "array"
+    },
+    "fields_removed": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Fields Removed",
+      "type": "array"
+    },
+    "minimum_cohort": {
+      "default": 1,
+      "title": "Minimum Cohort",
+      "type": "integer"
+    },
+    "residual_leakage_assessment": {
+      "default": "UNEVALUATED",
+      "title": "Residual Leakage Assessment",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "ContributionPrivacyProfileV1",
+  "type": "object"
+}

@@ -1,0 +1,70 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "compute_cost_usd": {
+      "minimum": 0,
+      "title": "Compute Cost Usd",
+      "type": "number"
+    },
+    "evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "preserved_at": {
+      "format": "date-time",
+      "title": "Preserved At",
+      "type": "string"
+    },
+    "pruned": {
+      "title": "Pruned",
+      "type": "boolean"
+    },
+    "remediation_id": {
+      "format": "uuid",
+      "title": "Remediation Id",
+      "type": "string"
+    },
+    "runtime_seconds": {
+      "minimum": 0,
+      "title": "Runtime Seconds",
+      "type": "number"
+    },
+    "scheduler_decision_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Scheduler Decision Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "termination_reason": {
+      "title": "Termination Reason",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "remediation_id",
+    "termination_reason",
+    "pruned",
+    "runtime_seconds",
+    "compute_cost_usd"
+  ],
+  "title": "HistoricalWorldV1",
+  "type": "object"
+}

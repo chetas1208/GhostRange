@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "BudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alert_threshold_pct": {
+          "default": 0.8,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Alert Threshold Pct",
+          "type": "number"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "hard_stop": {
+          "default": true,
+          "description": "If True, scheduler must refuse new spend once exhausted",
+          "title": "Hard Stop",
+          "type": "boolean"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "max_duration_seconds": {
+          "exclusiveMinimum": 0,
+          "title": "Max Duration Seconds",
+          "type": "number"
+        },
+        "max_total_cost_usd": {
+          "exclusiveMinimum": 0,
+          "title": "Max Total Cost Usd",
+          "type": "number"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "spent_cost_usd": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Spent Cost Usd",
+          "type": "number"
+        }
+      },
+      "required": [
+        "range_id",
+        "max_total_cost_usd",
+        "max_duration_seconds"
+      ],
+      "title": "BudgetV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Live budget snapshot: the frozen ``BudgetV1`` policy plus in-flight\ncommitments not yet reflected in ``BudgetV1.spent_cost_usd``.",
+  "properties": {
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "budget": {
+      "$ref": "#/$defs/BudgetV1"
+    },
+    "committed_cost_usd": {
+      "default": 0.0,
+      "description": "Cost of scheduler decisions already issued this tick/window whose spend has not yet posted to budget.spent_cost_usd.",
+      "minimum": 0,
+      "title": "Committed Cost Usd",
+      "type": "number"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "budget"
+  ],
+  "title": "BudgetStateV1",
+  "type": "object"
+}

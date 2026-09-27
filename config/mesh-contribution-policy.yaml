@@ -1,0 +1,13 @@
+# M13 GhostMesh — default sharing OFF
+sharing_enabled: false
+require_human_approval: true
+default_disclosure: PRIVATE_LOCAL
+minimum_local_validations: 1
+minimum_abstraction_tags: 3
+retention_days: 90
+allowed_federation_ids: []
+allowed_knowledge_classes:
+  - COUNTEREXAMPLE_PATTERN
+  - PRODUCTION_SURPRISE_PATTERN
+  - SEARCH_PRIOR
+  - ROLLBACK_PATTERN

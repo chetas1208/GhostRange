@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "default_data_replica": {
+      "default": "SYNTHETIC",
+      "title": "Default Data Replica",
+      "type": "string"
+    },
+    "default_external_dependency": {
+      "default": "STUB",
+      "title": "Default External Dependency",
+      "type": "string"
+    },
+    "deny_internet_egress": {
+      "default": true,
+      "title": "Deny Internet Egress",
+      "type": "boolean"
+    },
+    "reject_plaintext_secrets": {
+      "default": true,
+      "title": "Reject Plaintext Secrets",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "startup_script_mode": {
+      "default": "INSPECT",
+      "title": "Startup Script Mode",
+      "type": "string"
+    }
+  },
+  "title": "SanitizationPolicyV1",
+  "type": "object"
+}

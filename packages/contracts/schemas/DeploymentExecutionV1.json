@@ -1,0 +1,210 @@
+{
+  "$defs": {
+    "DeploymentAuthorityMode": {
+      "enum": [
+        "OBSERVE_ONLY",
+        "RECOMMEND",
+        "PREAUTHORIZED_PAUSE",
+        "PREAUTHORIZED_ROLLBACK"
+      ],
+      "title": "DeploymentAuthorityMode",
+      "type": "string"
+    },
+    "DeploymentExecutionStatus": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "PAUSED",
+        "ROLLING_BACK",
+        "COMPLETED",
+        "FAILED",
+        "ABORTED"
+      ],
+      "title": "DeploymentExecutionStatus",
+      "type": "string"
+    },
+    "ExposureKind": {
+      "enum": [
+        "PERCENTAGE",
+        "REPLICA_FRACTION",
+        "COHORT",
+        "REGION",
+        "FEATURE_FLAG",
+        "CUSTOM"
+      ],
+      "title": "ExposureKind",
+      "type": "string"
+    },
+    "ExposureV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExposureKind",
+          "default": "PERCENTAGE"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "value": {
+          "default": "0",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "title": "ExposureV1",
+      "type": "object"
+    },
+    "RolloutStageKind": {
+      "enum": [
+        "PRE_DEPLOY",
+        "INITIAL_CANARY",
+        "CANARY_10",
+        "CANARY_25",
+        "CANARY_50",
+        "FULL",
+        "HOLD",
+        "ROLLBACK",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "RolloutStageKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approval_decision_id": {
+      "format": "uuid",
+      "title": "Approval Decision Id",
+      "type": "string"
+    },
+    "approved_change_hash": {
+      "title": "Approved Change Hash",
+      "type": "string"
+    },
+    "approved_rollback_hash": {
+      "default": "",
+      "title": "Approved Rollback Hash",
+      "type": "string"
+    },
+    "approved_source_revision": {
+      "default": "",
+      "title": "Approved Source Revision",
+      "type": "string"
+    },
+    "approved_strategy_hash": {
+      "default": "",
+      "title": "Approved Strategy Hash",
+      "type": "string"
+    },
+    "authority_mode": {
+      "$ref": "#/$defs/DeploymentAuthorityMode",
+      "default": "OBSERVE_ONLY"
+    },
+    "correlation_id": {
+      "default": "",
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "current_exposure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExposureV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "current_stage": {
+      "$ref": "#/$defs/RolloutStageKind",
+      "default": "PRE_DEPLOY"
+    },
+    "environment_reference": {
+      "default": "SIMULATED_ROLLOUT",
+      "title": "Environment Reference",
+      "type": "string"
+    },
+    "executor": {
+      "default": "mock",
+      "title": "Executor",
+      "type": "string"
+    },
+    "executor_execution_id": {
+      "default": "",
+      "title": "Executor Execution Id",
+      "type": "string"
+    },
+    "executor_revision_id": {
+      "default": "",
+      "title": "Executor Revision Id",
+      "type": "string"
+    },
+    "executor_type": {
+      "default": "mock",
+      "title": "Executor Type",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observed_artifact_versions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Observed Artifact Versions",
+      "type": "array"
+    },
+    "observed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed At"
+    },
+    "promotion_candidate_id": {
+      "format": "uuid",
+      "title": "Promotion Candidate Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/DeploymentExecutionStatus",
+      "default": "PENDING"
+    }
+  },
+  "required": [
+    "promotion_candidate_id",
+    "approval_decision_id",
+    "approved_change_hash"
+  ],
+  "title": "DeploymentExecutionV1",
+  "type": "object"
+}

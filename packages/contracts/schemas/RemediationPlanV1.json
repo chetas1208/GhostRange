@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "RemediationActionKind": {
+      "enum": [
+        "config_patch",
+        "service_restart",
+        "package_update",
+        "container_image_change"
+      ],
+      "title": "RemediationActionKind",
+      "type": "string"
+    },
+    "RemediationActionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/RemediationActionKind"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "rollback_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rollback Hint"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_asset_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Target Asset Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "RemediationActionV1",
+      "type": "object"
+    },
+    "RemediationChangeType": {
+      "enum": [
+        "config_patch",
+        "middleware_policy",
+        "service_auth_config",
+        "package_update",
+        "container_image",
+        "service_restart"
+      ],
+      "title": "RemediationChangeType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/RemediationActionV1"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "change_type": {
+      "$ref": "#/$defs/RemediationChangeType"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "estimated_cost_usd": {
+      "minimum": 0,
+      "title": "Estimated Cost Usd",
+      "type": "number"
+    },
+    "estimated_runtime_seconds": {
+      "minimum": 0,
+      "title": "Estimated Runtime Seconds",
+      "type": "number"
+    },
+    "expected_effect": {
+      "title": "Expected Effect",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "potential_regressions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Potential Regressions",
+      "type": "array"
+    },
+    "preconditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Preconditions",
+      "type": "array"
+    },
+    "risk_notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Risk Notes"
+    },
+    "rollback_strategy": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rollback Strategy"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "description": "human | serverless_inference | fixture",
+      "title": "Source",
+      "type": "string"
+    },
+    "target_asset_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Target Asset Ids",
+      "type": "array"
+    },
+    "test_only": {
+      "default": false,
+      "title": "Test Only",
+      "type": "boolean"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "change_type",
+    "expected_effect",
+    "estimated_runtime_seconds",
+    "estimated_cost_usd",
+    "source"
+  ],
+  "title": "RemediationPlanV1",
+  "type": "object"
+}

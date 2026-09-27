@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "DerivationProvenanceV1": {
+      "additionalProperties": false,
+      "description": "Which file + heuristic produced one derived fact.\n\nA derived fact with no provenance entry is treated as a bug in the\nscanner, not an acceptable edge case \u2014 see repo_scanner.py.",
+      "properties": {
+        "locator": {
+          "description": "Where inside the file, e.g. 'services.auth' or 'EXPOSE 8080'",
+          "title": "Locator",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "description": "Human-readable explanation for audit display",
+          "title": "Note",
+          "type": "string"
+        },
+        "rule": {
+          "description": "Heuristic name that produced this fact, e.g. 'compose_service_block'",
+          "title": "Rule",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/DerivationSourceKind"
+        },
+        "source_path": {
+          "description": "Path relative to repo root, e.g. 'docker-compose.yml'",
+          "title": "Source Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_kind",
+        "source_path",
+        "locator",
+        "rule"
+      ],
+      "title": "DerivationProvenanceV1",
+      "type": "object"
+    },
+    "DerivationSourceKind": {
+      "enum": [
+        "docker_compose",
+        "dockerfile",
+        "kubernetes_manifest",
+        "terraform",
+        "package_manifest",
+        "openapi_spec",
+        "env_template",
+        "directory_heuristic"
+      ],
+      "title": "DerivationSourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "from_service": {
+      "title": "From Service",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "provenance": {
+      "items": {
+        "$ref": "#/$defs/DerivationProvenanceV1"
+      },
+      "title": "Provenance",
+      "type": "array"
+    },
+    "relationship": {
+      "default": "depends_on",
+      "title": "Relationship",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "to_service": {
+      "title": "To Service",
+      "type": "string"
+    }
+  },
+  "required": [
+    "from_service",
+    "to_service"
+  ],
+  "title": "DerivedDependencyEdgeV1",
+  "type": "object"
+}

@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "AgentStatus": {
+      "enum": [
+        "STARTED",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "AgentStatus",
+      "type": "string"
+    },
+    "AgentType": {
+      "enum": [
+        "INVESTIGATOR",
+        "REMEDIATOR",
+        "ADVERSARY",
+        "VERIFIER",
+        "ORCHESTRATOR"
+      ],
+      "title": "AgentType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "agent_type": {
+      "$ref": "#/$defs/AgentType"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "current_task_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Current Task Id"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "model_identifier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "e.g. 'claude-sonnet-5' \u2014 which model/policy drives this agent",
+      "title": "Model Identifier"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/AgentStatus",
+      "default": "STARTED"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "agent_type"
+  ],
+  "title": "AgentV1",
+  "type": "object"
+}

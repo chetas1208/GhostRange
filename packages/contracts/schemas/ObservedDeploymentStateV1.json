@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "artifact_digest": {
+      "default": "",
+      "title": "Artifact Digest",
+      "type": "string"
+    },
+    "config_fingerprint": {
+      "default": "",
+      "title": "Config Fingerprint",
+      "type": "string"
+    },
+    "deployment_revision": {
+      "default": "",
+      "title": "Deployment Revision",
+      "type": "string"
+    },
+    "infrastructure_fingerprint": {
+      "default": "",
+      "title": "Infrastructure Fingerprint",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_version": {
+      "default": "",
+      "title": "Service Version",
+      "type": "string"
+    },
+    "source": {
+      "default": "adapter",
+      "title": "Source",
+      "type": "string"
+    },
+    "traffic_percentage_new": {
+      "default": 0,
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Traffic Percentage New",
+      "type": "number"
+    }
+  },
+  "title": "ObservedDeploymentStateV1",
+  "type": "object"
+}

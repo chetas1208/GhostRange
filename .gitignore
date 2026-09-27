@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.egg
+
+# Node
+node_modules/
+dist/
+build/
+
+# Generated browser/test output
+test-results/
+playwright-report/
+
+# M19 evaluator-only hidden benchmarks (never ship)
+evaluation/private/
+!evaluation/private/.gitkeep
+
+# Secrets (never commit)
+.env
+.env.dev
+.env.local
+.env.production
+!.env.example
+!.env.dev.example
+!.env.production.example
+
+# Local agent coordination state
+.hacp/
+docs/ui/HACP_STATUS.md
+docs/ui/hacp-terms-events.json
+
+# SSH keypairs (never commit)
+/vultr
+/vultr.pub
+*.pem
+id_ed25519
+id_ed25519.pub
+id_rsa
+id_rsa.pub
+
+# OS/editor
+.DS_Store
+*.swp

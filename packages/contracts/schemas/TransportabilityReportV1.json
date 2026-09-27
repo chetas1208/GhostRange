@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "TransportabilityStatus": {
+      "enum": [
+        "TRANSPORTABLE",
+        "PARTIALLY_TRANSPORTABLE",
+        "NOT_TRANSPORTABLE",
+        "NOT_IDENTIFIABLE",
+        "INSUFFICIENT_INFORMATION"
+      ],
+      "title": "TransportabilityStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "differing_mechanisms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Differing Mechanisms",
+      "type": "array"
+    },
+    "limitations": {
+      "default": "",
+      "title": "Limitations",
+      "type": "string"
+    },
+    "query_id": {
+      "format": "uuid",
+      "title": "Query Id",
+      "type": "string"
+    },
+    "recommended_local_experiment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommended Local Experiment"
+    },
+    "required_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Assumptions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "shared_mechanisms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Shared Mechanisms",
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/TransportabilityStatus"
+    }
+  },
+  "required": [
+    "query_id",
+    "status"
+  ],
+  "title": "TransportabilityReportV1",
+  "type": "object"
+}

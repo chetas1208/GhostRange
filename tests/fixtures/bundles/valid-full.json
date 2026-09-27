@@ -1,0 +1,157 @@
+{
+  "bundle": {
+    "schema_version": "1",
+    "bundle_id": "74329065-6e69-4a44-86b5-393ee94e62d4",
+    "mode": "FULL",
+    "manifest": {
+      "schema_version": "1",
+      "manifest_id": "92a82f4a-7847-49be-a651-10a490cacafb",
+      "experiment": {
+        "schema_version": "1",
+        "definition": {
+          "schema_version": "1",
+          "definition_id": "auth-remediation-v1",
+          "title": "Auth remediation verification",
+          "description": "M7 fixture experiment"
+        },
+        "run_id": "35a795dd-f735-4a15-8619-8486257ba874"
+      },
+      "source_revision_id": "0910c9b4-2d8c-4fc6-b7fe-ca537359bbfa",
+      "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "twin_revision_id": "f17792b8-61d7-4c8d-a5e5-daca70c0b381",
+      "twin_fingerprint": "fp-auth-lab-1",
+      "range_spec_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "range_spec_version": "2",
+      "compiler_version": "range-compiler/v0.1",
+      "compiler_policy_version": "sanitization/v1",
+      "fidelity_profile_id": "2b7ec924-ef0f-4611-82ec-77aa70b9cda2",
+      "fidelity_report_hash": null,
+      "investigation_objective": "auth_remediation",
+      "remediation_candidates": [],
+      "selected_remediation_id": null,
+      "attack_replay_plan_id": null,
+      "attack_replay_hash": null,
+      "verification_suite_id": null,
+      "verification_suite_hash": null,
+      "scheduler_policy": "GHOSTSCHEDULER_V3",
+      "scheduler_policy_version": "ghostscheduler/v3",
+      "scheduler_config_hash": null,
+      "model_invocations": [],
+      "tool_invocations": [],
+      "infrastructure": null,
+      "budget_max_usd": null,
+      "started_at": "2026-09-26T08:40:21.670557Z",
+      "initiator": "operator@ghostrange.local",
+      "authorization_context_ref": null
+    },
+    "provenance_graph": {
+      "schema_version": "1",
+      "id": "2b0dd5b0-0c99-4dd6-9132-9cb5d1bae9ba",
+      "experiment_run_id": "35a795dd-f735-4a15-8619-8486257ba874",
+      "nodes": [
+        {
+          "schema_version": "1",
+          "id": "1b198e40-f9cd-484f-b01d-caea925b275f",
+          "kind": "SOURCE_REVISION",
+          "ref_id": "0910c9b4-2d8c-4fc6-b7fe-ca537359bbfa",
+          "digest": null,
+          "label": "source"
+        },
+        {
+          "schema_version": "1",
+          "id": "a5788254-d6a7-4dcf-bfa9-edf58aa5031e",
+          "kind": "TWIN_REVISION",
+          "ref_id": "f17792b8-61d7-4c8d-a5e5-daca70c0b381",
+          "digest": null,
+          "label": "twin"
+        },
+        {
+          "schema_version": "1",
+          "id": "a44e31b8-42d0-4616-a8fe-05e5ef1f0c10",
+          "kind": "EXPERIMENT",
+          "ref_id": "35a795dd-f735-4a15-8619-8486257ba874",
+          "digest": null,
+          "label": "experiment"
+        }
+      ],
+      "edges": [
+        {
+          "schema_version": "1",
+          "from_node_id": "a44e31b8-42d0-4616-a8fe-05e5ef1f0c10",
+          "to_node_id": "a5788254-d6a7-4dcf-bfa9-edf58aa5031e",
+          "kind": "DERIVED_FROM"
+        },
+        {
+          "schema_version": "1",
+          "from_node_id": "a5788254-d6a7-4dcf-bfa9-edf58aa5031e",
+          "to_node_id": "1b198e40-f9cd-484f-b01d-caea925b275f",
+          "kind": "DERIVED_FROM"
+        }
+      ],
+      "graph_digest": "sha256:789b9feb5c16b82a1d2db2e4b8b618144b1775342144c5803d1cb6f00466a69f"
+    },
+    "experiment_root": {
+      "schema_version": "1",
+      "manifest_digest": "sha256:5e54d7c60827cf4939c7af75f388f3b1768b25c869d26c7c2c4edfbd57631960",
+      "provenance_graph_digest": "sha256:789b9feb5c16b82a1d2db2e4b8b618144b1775342144c5803d1cb6f00466a69f",
+      "artifact_merkle_root": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
+      "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+      "root_digest": "sha256:094e4f954b44e89ce8ad18fe9f59d6632c3af901680add622a13bbf955ea3ef2"
+    },
+    "attestation": {
+      "schema_version": "1",
+      "id": "304c21cf-a6f2-47c1-9965-929ddedbfd27",
+      "envelope_type": "application/vnd.in-toto+json",
+      "payload_type": "application/vnd.ghostrange.experimentpredicate+json",
+      "subject_digest": "sha256:094e4f954b44e89ce8ad18fe9f59d6632c3af901680add622a13bbf955ea3ef2",
+      "predicate": {
+        "schema_version": "1",
+        "predicate_type": "https://ghostrange.local/attestation/experiment/v1",
+        "experiment_root": {
+          "schema_version": "1",
+          "manifest_digest": "sha256:5e54d7c60827cf4939c7af75f388f3b1768b25c869d26c7c2c4edfbd57631960",
+          "provenance_graph_digest": "sha256:789b9feb5c16b82a1d2db2e4b8b618144b1775342144c5803d1cb6f00466a69f",
+          "artifact_merkle_root": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "event_log_root": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf",
+          "claim_set_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+          "root_digest": "sha256:094e4f954b44e89ce8ad18fe9f59d6632c3af901680add622a13bbf955ea3ef2"
+        },
+        "manifest_id": "92a82f4a-7847-49be-a651-10a490cacafb",
+        "replay_level_available": "LEVEL_4"
+      },
+      "signature_b64": "g/PlQBYNndIf8scxnhZ/6gWGBNkRUVsYtiXmjGasDsyTlOljn1dBqkB/U0lWnuxfmLbsQl+fnQaHUJ9IyJlpCA==",
+      "key_id": "ghostrange-dev",
+      "signer_kind": "LOCAL_DEVELOPMENT",
+      "signed_at": "2026-09-26T08:40:21.670797Z"
+    },
+    "artifact_index": [
+      {
+        "schema_version": "1",
+        "logical_name": "artifact-0",
+        "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "size_bytes": 0,
+        "media_type": "application/octet-stream"
+      }
+    ],
+    "event_log": [
+      {
+        "type": "experiment.started",
+        "previous_event_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "event_hash": "sha256:25ebaa88154b07691bc04654268247d2123573a4dc6782f5efc7630fdfcf3eaf"
+      }
+    ],
+    "claims_digest": "sha256:9ab10f0f885c9c17b9bb160e685330f8e0891ef8f13bba2ae0d86091e62bb844",
+    "replay_level": "LEVEL_4",
+    "disclosure": {
+      "schema_version": "1",
+      "level": "INTERNAL",
+      "redact_paths": [],
+      "allow_hostname": false
+    },
+    "bundle_digest": "sha256:d28bb582e6e72b15823c610cd7425b83b1a0bcc427bb7737fe9084faaa3ad6f0"
+  },
+  "trusted_public_keys": {
+    "ghostrange-dev": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEADaKgKpiU4kwdYPbDwXXx+8+vCGCf2Qhmt74BBNgM46Q=\n-----END PUBLIC KEY-----\n"
+  }
+}

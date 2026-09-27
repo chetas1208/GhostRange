@@ -1,0 +1,69 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "consecutive_failures_required": {
+      "default": 2,
+      "minimum": 1,
+      "title": "Consecutive Failures Required",
+      "type": "integer"
+    },
+    "evaluation": {
+      "title": "Evaluation",
+      "type": "string"
+    },
+    "failure_action": {
+      "default": "HOLD",
+      "title": "Failure Action",
+      "type": "string"
+    },
+    "invariant_id": {
+      "title": "Invariant Id",
+      "type": "string"
+    },
+    "observable": {
+      "title": "Observable",
+      "type": "string"
+    },
+    "promotion_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Promotion Id"
+    },
+    "required": {
+      "default": true,
+      "title": "Required",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "severity": {
+      "default": "HIGH",
+      "title": "Severity",
+      "type": "string"
+    },
+    "window_seconds": {
+      "default": 300,
+      "title": "Window Seconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "invariant_id",
+    "observable",
+    "evaluation"
+  ],
+  "title": "RuntimeInvariantV1",
+  "type": "object"
+}

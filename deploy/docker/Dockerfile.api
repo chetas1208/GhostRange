@@ -1,0 +1,60 @@
+# syntax=docker/dockerfile:1
+FROM python:3.12-slim AS base
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+WORKDIR /app
+
+FROM base AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends git build-essential \
+    && rm -rf /var/lib/apt/lists/*
+COPY packages packages
+COPY apps/api apps/api
+COPY ranges ranges
+COPY deploy/worker deploy/worker
+RUN pip install --upgrade pip && pip install \
+    -e "packages/contracts[dev]" \
+    -e "packages/events[store]" \
+    -e packages/range-compiler \
+    -e packages/range-runtime \
+    -e packages/range-iac \
+    -e packages/vultr-control \
+    -e packages/netbird-control \
+    -e packages/cost \
+    -e packages/scheduler \
+    -e "packages/evidence[vultr]" \
+    -e packages/policy-check \
+    -e packages/ghostledger \
+    -e packages/adversarial-verifier \
+    -e packages/ghostdirector \
+    -e packages/execution-graph \
+    -e packages/adversary-adapter \
+    -e packages/ghostgate \
+    -e packages/ghostwatch \
+    -e packages/ghostmesh \
+    -e packages/ghostcausal \
+    -e packages/ghostshield \
+    -e packages/ghostevolve \
+    -e packages/ghostarena \
+    -e packages/ghostruntime \
+    -e packages/worker-runtime \
+    -e "apps/api[store]"
+
+FROM base AS runtime
+RUN useradd --create-home --uid 10001 appuser
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY packages packages
+COPY apps/api apps/api
+COPY ranges ranges
+COPY deploy/worker deploy/worker
+RUN mkdir -p /app/evaluation/private && chown -R appuser:appuser /app/evaluation
+ENV GHOSTRANGE_REPO_ROOT=/app \
+    GHOSTRANGE_API_HOST=0.0.0.0 \
+    GHOSTRANGE_API_PORT=8000
+USER appuser
+EXPOSE 8000
+HEALTHCHECK --interval=15s --timeout=5s --retries=5 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"
+CMD ["ghostrange-api"]

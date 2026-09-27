@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "CausalClaimLifecycle": {
+      "enum": [
+        "PROPOSED",
+        "OBSERVATIONAL",
+        "INTERVENTION_SUPPORTED",
+        "COUNTERFACTUAL_SUPPORTED",
+        "TRANSPORTABLE",
+        "STALE",
+        "REFUTED",
+        "INCONCLUSIVE"
+      ],
+      "title": "CausalClaimLifecycle",
+      "type": "string"
+    },
+    "CausalValidityStatus": {
+      "enum": [
+        "OBSERVATIONAL_ONLY",
+        "ASSUMPTION_DEPENDENT",
+        "INTERVENTION_SUPPORTED",
+        "COUNTERFACTUALLY_SUPPORTED",
+        "TRANSPORTABLE_UNDER_ASSUMPTIONS",
+        "NOT_IDENTIFIABLE",
+        "CONTRADICTED",
+        "INCONCLUSIVE"
+      ],
+      "title": "CausalValidityStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumption_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumption Ids",
+      "type": "array"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "lifecycle": {
+      "$ref": "#/$defs/CausalClaimLifecycle",
+      "default": "PROPOSED"
+    },
+    "linked_security_claim_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Linked Security Claim Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "statement": {
+      "title": "Statement",
+      "type": "string"
+    },
+    "validity": {
+      "$ref": "#/$defs/CausalValidityStatus",
+      "default": "OBSERVATIONAL_ONLY"
+    }
+  },
+  "required": [
+    "statement"
+  ],
+  "title": "CausalClaimV1",
+  "type": "object"
+}

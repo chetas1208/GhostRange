@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assumption_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumption Ids",
+      "type": "array"
+    },
+    "cause_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Cause Ids",
+      "type": "array"
+    },
+    "domains_tested": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Domains Tested",
+      "type": "array"
+    },
+    "effect_id": {
+      "title": "Effect Id",
+      "type": "string"
+    },
+    "invariance_evidence": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Invariance Evidence",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "violations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Violations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "cause_ids",
+    "effect_id"
+  ],
+  "title": "InvariantMechanismV1",
+  "type": "object"
+}

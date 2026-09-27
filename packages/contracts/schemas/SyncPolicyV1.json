@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "SourceWatchMode": {
+      "enum": [
+        "MANUAL",
+        "ON_IMPORT",
+        "SCHEDULED"
+      ],
+      "title": "SourceWatchMode",
+      "type": "string"
+    },
+    "SyncDecision": {
+      "enum": [
+        "IGNORE",
+        "RECORD_ONLY",
+        "INVALIDATE",
+        "INCREMENTAL_SYNC",
+        "FULL_SYNC"
+      ],
+      "title": "SyncDecision",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "critical_impact_decision": {
+      "$ref": "#/$defs/SyncDecision",
+      "default": "FULL_SYNC"
+    },
+    "high_impact_decision": {
+      "$ref": "#/$defs/SyncDecision",
+      "default": "INCREMENTAL_SYNC"
+    },
+    "low_impact_decision": {
+      "$ref": "#/$defs/SyncDecision",
+      "default": "RECORD_ONLY"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "unknown_impact_on_required_fidelity": {
+      "$ref": "#/$defs/SyncDecision",
+      "default": "INVALIDATE"
+    },
+    "watch_mode": {
+      "$ref": "#/$defs/SourceWatchMode",
+      "default": "ON_IMPORT"
+    }
+  },
+  "title": "SyncPolicyV1",
+  "type": "object"
+}

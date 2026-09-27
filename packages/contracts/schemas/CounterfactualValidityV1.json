@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "CausalValidityStatus": {
+      "enum": [
+        "OBSERVATIONAL_ONLY",
+        "ASSUMPTION_DEPENDENT",
+        "INTERVENTION_SUPPORTED",
+        "COUNTERFACTUALLY_SUPPORTED",
+        "TRANSPORTABLE_UNDER_ASSUMPTIONS",
+        "NOT_IDENTIFIABLE",
+        "CONTRADICTED",
+        "INCONCLUSIVE"
+      ],
+      "title": "CausalValidityStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "counterfactual_id": {
+      "format": "uuid",
+      "title": "Counterfactual Id",
+      "type": "string"
+    },
+    "experimental_corroboration": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Experimental Corroboration"
+    },
+    "identifiable": {
+      "default": false,
+      "title": "Identifiable",
+      "type": "boolean"
+    },
+    "model_support": {
+      "$ref": "#/$defs/CausalValidityStatus",
+      "default": "ASSUMPTION_DEPENDENT"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "uncertainty_notes": {
+      "default": "",
+      "title": "Uncertainty Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "counterfactual_id"
+  ],
+  "title": "CounterfactualValidityV1",
+  "type": "object"
+}

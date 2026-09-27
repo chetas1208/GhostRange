@@ -1,0 +1,17 @@
+[project]
+name = "ghostrange-worker-runtime"
+version = "0.1.0"
+description = "GhostRange ephemeral worker agent (poll control plane, run leased tasks)"
+requires-python = ">=3.11"
+dependencies = ["httpx>=0.27"]
+
+[project.scripts]
+ghostrange-worker = "ghostrange_worker.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_worker*"]

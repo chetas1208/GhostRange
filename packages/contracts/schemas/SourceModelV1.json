@@ -1,0 +1,275 @@
+{
+  "$defs": {
+    "SourceFileRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "byte_size": {
+          "minimum": 0,
+          "title": "Byte Size",
+          "type": "integer"
+        },
+        "content_hash": {
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "content_hash",
+        "byte_size"
+      ],
+      "title": "SourceFileRefV1",
+      "type": "object"
+    },
+    "SourceResourceRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "construct_name": {
+          "title": "Construct Name",
+          "type": "string"
+        },
+        "construct_type": {
+          "title": "Construct Type",
+          "type": "string"
+        },
+        "raw_attributes": {
+          "additionalProperties": true,
+          "title": "Raw Attributes",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "secret_reference_only": {
+          "default": false,
+          "title": "Secret Reference Only",
+          "type": "boolean"
+        },
+        "source_location": {
+          "description": "file:line or AST path",
+          "title": "Source Location",
+          "type": "string"
+        }
+      },
+      "required": [
+        "construct_type",
+        "construct_name",
+        "source_location"
+      ],
+      "title": "SourceResourceRecordV1",
+      "type": "object"
+    },
+    "SourceType": {
+      "enum": [
+        "docker_compose",
+        "terraform",
+        "opentofu",
+        "terraform_plan_json",
+        "kubernetes",
+        "ghostrange_blueprint",
+        "inventory_json"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "SourceWarningV1": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Location"
+        },
+        "status": {
+          "$ref": "#/$defs/UnsupportedConstructStatus",
+          "default": "APPROXIMATED"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "SourceWarningV1",
+      "type": "object"
+    },
+    "UnsupportedConstructStatus": {
+      "enum": [
+        "SUPPORTED",
+        "APPROXIMATED",
+        "STUBBED",
+        "IGNORED_OPTIONAL",
+        "UNSUPPORTED_REQUIRED"
+      ],
+      "title": "UnsupportedConstructStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "configuration_references": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Configuration References",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dependencies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/SourceFileRefV1"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "images": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Images",
+      "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Metadata",
+      "type": "object"
+    },
+    "networks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Networks",
+      "type": "array"
+    },
+    "parser_id": {
+      "title": "Parser Id",
+      "type": "string"
+    },
+    "parser_version": {
+      "title": "Parser Version",
+      "type": "string"
+    },
+    "resources": {
+      "items": {
+        "$ref": "#/$defs/SourceResourceRecordV1"
+      },
+      "title": "Resources",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "secrets_references": {
+      "description": "Names/paths only \u2014 never secret values",
+      "items": {
+        "type": "string"
+      },
+      "title": "Secrets References",
+      "type": "array"
+    },
+    "services": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Services",
+      "type": "array"
+    },
+    "source_type": {
+      "$ref": "#/$defs/SourceType"
+    },
+    "source_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Version"
+    },
+    "variables": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Variables",
+      "type": "object"
+    },
+    "volumes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Volumes",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/SourceWarningV1"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_type",
+    "parser_id",
+    "parser_version"
+  ],
+  "title": "SourceModelV1",
+  "type": "object"
+}

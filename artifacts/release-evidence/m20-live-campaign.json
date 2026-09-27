@@ -1,0 +1,213 @@
+{
+  "captured_at": "2026-09-27T09:46:35.350Z",
+  "api_url": "http://45-76-248-45.nip.io",
+  "elapsed_ms": 268017,
+  "campaign": {
+    "campaign": {
+      "schema_version": "1",
+      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
+      "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+      "investigation_id": "66790862-a989-46a8-b57a-0a6e7fc2a803",
+      "phase": "FAILED",
+      "source_input_ref": "/app/ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml",
+      "twin_revision_id": "6ea54eeb-585d-5e97-a9fe-7748d81cee12",
+      "correlation_id": "3bd9f6e8d972beb6",
+      "deploy_sha": "prod-v4-worker",
+      "live_mode": "live",
+      "created_at": "2026-09-27T09:42:07.720555Z",
+      "completed_at": "2026-09-27T09:42:07.720636Z"
+    },
+    "investigation_id": "66790862-a989-46a8-b57a-0a6e7fc2a803",
+    "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "phases": [
+      "compile:nodes=5",
+      "director:stop=None",
+      "director_dag:nodes=1",
+      "scheduler:actions=0",
+      "adversarial:COUNTEREXAMPLE_FOUND",
+      "ledger:verified=True",
+      "teardown:LIVE_NOT_IMPLEMENTED_IN_M10_SLICE"
+    ],
+    "benchmark": {
+      "compile_ms": 11,
+      "director_ms": 1,
+      "scheduler_ms": 0,
+      "adversarial_ms": 2,
+      "ledger_ms": 1,
+      "total_ms": 17,
+      "experiments_run": 2,
+      "director_decisions": 2,
+      "scheduler_decisions": 1,
+      "counterexamples_confirmed": 1,
+      "bundle_verified": true,
+      "live_mode": "live",
+      "correlation_id": "3bd9f6e8d972beb6"
+    },
+    "report": {
+      "schema_version": "1",
+      "report_id": "4fd4ef1a-9e03-46f3-a4f7-4dae524968e3",
+      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
+      "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+      "incident_summary": "Controlled auth/session incident (auth-lab compose input)",
+      "hypothesis_count": 3,
+      "hypotheses_refuted": 1,
+      "experiments_run": 2,
+      "scheduler_decisions": 1,
+      "counterexamples_confirmed": 1,
+      "remediation_survivors": 1,
+      "remediation_refuted": 1,
+      "bundle_digest": "sha256:d4d3f0440f01b4c67e92bb4f53131e5a65ac6b33134d0a2de81226a3b8726b67",
+      "arena_recommendation": "QUALIFIED",
+      "cost_usd_estimate": 15,
+      "limitations": [
+        "M20 slice: GhostGate/GhostWatch/Shield/runtime restart not in single HTTP call",
+        "Live worker step optional; default path is local mock compute"
+      ],
+      "phases": [
+        "compile:nodes=5",
+        "director:stop=None",
+        "director_dag:nodes=1",
+        "scheduler:actions=0",
+        "adversarial:COUNTEREXAMPLE_FOUND",
+        "ledger:verified=True",
+        "teardown:LIVE_NOT_IMPLEMENTED_IN_M10_SLICE"
+      ],
+      "generated_at": "2026-09-27T09:42:07.723366Z"
+    },
+    "evidence_bundle": {
+      "schema_version": "1",
+      "bundle_id": "c13ed64e-731c-45ab-aa5d-135123695bdd",
+      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
+      "manifest_digest": "sha256:d4d3f0440f01b4c67e92bb4f53131e5a65ac6b33134d0a2de81226a3b8726b67",
+      "claims": [
+        {
+          "kind": "incident",
+          "statement": "Controlled auth/session incident (auth-lab compose input)",
+          "provenance": "auth_incident_scenario"
+        }
+      ],
+      "event_summary_digest": "45bc72d5ed2a3400ec3cf3370c9c547142c2359c74459ba671d076f10fcbca9d",
+      "scheduler_decision_count": 1,
+      "verification_results": {
+        "adversarial_phase": "COUNTEREXAMPLE_FOUND",
+        "ledger_verified": true
+      },
+      "authorization_evidence": {},
+      "arena_qualification": "QUALIFIED",
+      "checksums": {
+        "event_summary": "45bc72d5ed2a3400ec3cf3370c9c547142c2359c74459ba671d076f10fcbca9d"
+      }
+    },
+    "reproduction_manifest": {
+      "schema_version": "1",
+      "manifest_id": "a3728de3-cd83-4847-a7a2-79fe06e68b7b",
+      "campaign_id": "9e281e5e-63f6-4205-8e7d-fc8eaa2ac98a",
+      "deploy_sha": "prod-v4-worker",
+      "compose_path": "/app/ranges/ghostrange-auth-lab-v1/docker/vm-1/docker-compose.yml",
+      "director_policy": "GHOSTDIRECTOR_V1",
+      "scheduler_policy": "GHOSTSCHEDULER_V3",
+      "ghostshield_mode": "ENFORCE",
+      "inference_model": "llama-3.1-8b-instruct",
+      "nondeterministic_components": [
+        "model_inference",
+        "provider_latency"
+      ],
+      "seed_notes": "Director simulator uses hidden true_mechanism=session_refresh_cache"
+    },
+    "arena_recommendation": "QUALIFIED",
+    "owned_workers": [],
+    "live_worker_outcome": "not_attempted",
+    "errors": [
+      "live teardown must use coordinated lease + vultr-control",
+      "worker_benchmark:RuntimeError"
+    ],
+    "release_maturity": "RESEARCH_PROTOTYPE"
+  },
+  "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+  "event_sequence": 17,
+  "cost_snapshot_event": false,
+  "cost": {
+    "campaign_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "semantic_type": "ACCRUED_ESTIMATE",
+    "confidence": "PARTIAL",
+    "categories": {
+      "COMPUTE_EPHEMERAL": 0,
+      "INFERENCE": 0
+    },
+    "unknown_components": [
+      "no metered resources yet"
+    ],
+    "total_known_usd_micros": 0,
+    "total_projected_usd_micros": 0,
+    "total_provider_reported_usd_micros": null,
+    "total_final_usd_micros": null,
+    "finalized": false,
+    "price_snapshot_ids": [],
+    "display": {
+      "semantic_type": "ACCRUED_ESTIMATE",
+      "known_total": "$0.00",
+      "finalized": false,
+      "unknown_components": [
+        "no metered resources yet"
+      ]
+    }
+  },
+  "reconciliation": {
+    "campaign_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "calculated_usd_micros": 0,
+    "provider_reported_usd_micros": null,
+    "delta_usd_micros": null,
+    "status": "PROVIDER_UNAVAILABLE",
+    "policy_snapshot": "vultr_one_hour_minimum_v1",
+    "note": "Vultr API does not expose invoice-level campaign totals; use CALCULATED as authoritative."
+  },
+  "timing": {
+    "range_id": "232dc89f-f664-4ea0-afff-8565ffbbecb6",
+    "benchmark_decomposition": {
+      "provisioning_ms": 3273,
+      "boot_ms": 3273,
+      "execution_ms": 0,
+      "verification_ms": 0,
+      "teardown_ms": 0,
+      "total_ms": 3309,
+      "estimated_cost_usd": 0,
+      "event_count": 4,
+      "evidence_artifacts": 0,
+      "scheduler_decisions": 0,
+      "live_provider": "mock"
+    },
+    "task_events": [],
+    "operation_type": "M2_RUN_TOTAL",
+    "historical": {
+      "operation_type": "M2_RUN_TOTAL",
+      "sample_count": 0,
+      "last_ms": null,
+      "min_ms": null,
+      "max_ms": null,
+      "p50_ms": null,
+      "p90_ms": null,
+      "p95_ms": null,
+      "estimate_confidence": "LOW_SAMPLE_COUNT"
+    },
+    "active_estimate": {
+      "estimated_total_ms": null,
+      "estimated_remaining_ms": null,
+      "estimate_basis": "INSUFFICIENT_DATA",
+      "sample_count": 0
+    },
+    "estimate_source": "INSUFFICIENT_DATA"
+  },
+  "event_names": [
+    "campaign.phase",
+    "compute.requested",
+    "director.decision",
+    "ghostledger.sealed",
+    "golden_path.phase",
+    "range.authorized",
+    "range.requested",
+    "range.validated",
+    "scheduler.plan",
+    "world.provisioning",
+    "world.requested"
+  ]
+}

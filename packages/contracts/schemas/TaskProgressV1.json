@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "description": "Live telemetry for one currently-RUNNING task, re-estimated as it\nexecutes (the Pollux-style \"don't trust the static upfront estimate\"\nargument from ``SCHEDULING.md`` \u00a75). ``remaining_*`` fields are what\n``ADAPTIVE_COMPUTE.md`` \u00a73.1's stopping function calls ``g_hat(t)``/\n``c_hat(t)`` \u2014 explicitly *remaining*, not total-so-far, so sunk cost\nnever enters the stop/continue comparison.",
+  "properties": {
+    "cost_spent_usd": {
+      "minimum": 0,
+      "title": "Cost Spent Usd",
+      "type": "number"
+    },
+    "elapsed_seconds": {
+      "minimum": 0,
+      "title": "Elapsed Seconds",
+      "type": "number"
+    },
+    "evidence_accumulated": {
+      "default": 0.0,
+      "description": "Cumulative realized evidence gain observed so far.",
+      "minimum": 0,
+      "title": "Evidence Accumulated",
+      "type": "number"
+    },
+    "remaining_cost_estimate_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Live re-estimate of remaining cost to completion (c_hat(t)). Falls back to (task.estimated_cost_usd - cost_spent_usd), floored at 0, when not supplied.",
+      "title": "Remaining Cost Estimate Usd"
+    },
+    "remaining_evidence_gain_estimate": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Live re-estimate of remaining expected evidence gain (g_hat(t)). Falls back to task.expected_evidence_gain when not supplied.",
+      "title": "Remaining Evidence Gain Estimate"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "started_at",
+    "elapsed_seconds",
+    "cost_spent_usd"
+  ],
+  "title": "TaskProgressV1",
+  "type": "object"
+}

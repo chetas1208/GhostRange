@@ -1,0 +1,22 @@
+{
+  "unsafe_advance_count": 0,
+  "results": [
+    {
+      "scenario": "good-canary",
+      "unsafe_advance": false,
+      "missed_advance": false
+    },
+    {
+      "scenario": "bad-security",
+      "unsafe_advance": false
+    },
+    {
+      "scenario": "unapproved-artifact",
+      "unsafe_advance": false
+    },
+    {
+      "scenario": "missing-telemetry",
+      "unsafe_advance": false
+    }
+  ]
+}

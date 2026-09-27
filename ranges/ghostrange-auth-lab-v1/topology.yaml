@@ -1,0 +1,71 @@
+# ghostrange-auth-lab-v1 — RangeTopologyPlanV1 (PHYSICAL placement + reachability).
+#
+# This is the PHYSICAL/network half of the range. It is NOT part of the frozen
+# ghostrange_contracts schema (packages/range-iac/ghostrange_range_iac/models.py
+# defines RangeTopologyPlanV1) precisely so that GhostScheduler can later move
+# `gw01`/`api01`/`auth01`/`db01` onto different physical VMs by editing only this
+# file -- rangespec.yaml (the LOGICAL description of the range) never has to change.
+#
+# M2 physical layout: all four logical assets consolidated onto one physical Vultr
+# Compute instance ("vm-1"), per the M2 task brief's "simplest thing that's honest
+# and reproducible" guidance -- not because the RangeSpec only has one asset.
+#
+# See docs/adr/ADR-M2-RANGE-PROVISIONING.md for why the edges below compile to only
+# one real Vultr firewall rule (INTERNET -> gw01) even though four edges are
+# declared: the other three all resolve to the same physical group (vm-1), so they
+# never touch the Vultr network fabric -- they're just docker-compose's own network
+# (see docker/vm-1/docker-compose.yml's `authlab-net`).
+
+schema_version: "1"
+range_spec_id: "112ab381-173f-46f3-9e81-772345e47118"
+range_name: "ghostrange-auth-lab-v1"
+
+physical_groups:
+  - id: "vm-1"
+    asset_ids:
+      - "c0c521e9-2980-498e-880e-f3e1cbb29d3b"  # gw01 (gateway)
+      - "7826d301-e013-4a34-9f6f-fd4b263f1a75"  # api01 (api)
+      - "2dee3e2c-cb35-4de2-a979-46e22b13331e"  # auth01 (auth)
+      - "a593ab48-d8fa-458a-b559-2b535d687b28"  # db01 (data store)
+    region: "ewr"          # Newark, NJ
+    plan: "vc2-2c-4gb"      # 2 vCPU / 4GB — enough headroom for 4 lightweight containers
+    os_id: 1743             # Ubuntu 22.04 LTS x64 — NEEDS VERIFICATION against `GET /v2/os`
+                             # before real provisioning; Vultr os_id catalog values can drift
+                             # (see docs/research/VULTR.md's own NEEDS VERIFICATION convention).
+    default_snapshot_id: null   # forks supply this at compile time (compile_range(..., snapshot_map=...))
+    needs_public_ip: true       # derived independently from the INTERNET edge below; compiler
+                                 # raises TopologyMismatchError if these two ever disagree
+
+edges:
+  # Public ingress: the only edge that crosses the actual Vultr network fabric for
+  # M2's single-physical-group layout, so it's the only one that compiles to a real
+  # firewall rule.
+  - from_asset: "INTERNET"
+    to_asset: "gw01"
+    port: 80
+    protocol: "tcp"
+    description: "test origin / demo traffic reaching the gateway"
+
+  # Everything below is same-host (both ends live on vm-1) for M2 — these compile to
+  # `same_host_no_rule_needed` (docker-compose's own `authlab-net` handles them, see
+  # docker/vm-1/docker-compose.yml). They are still declared explicitly because the
+  # LOGICAL topology doesn't know or care that they're currently co-located — a v2
+  # topology.yaml that splits these across physical VMs would turn these into real
+  # cross_host_firewall_rule entries with zero change to rangespec.yaml.
+  - from_asset: "gw01"
+    to_asset: "api01"
+    port: 8080
+    protocol: "tcp"
+    description: "gateway reverse-proxies to the api tier"
+
+  - from_asset: "api01"
+    to_asset: "auth01"
+    port: 8090
+    protocol: "tcp"
+    description: "api calls auth to verify credentials"
+
+  - from_asset: "auth01"
+    to_asset: "db01"
+    port: 5432
+    protocol: "tcp"
+    description: "auth reads/writes the data store"

@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "cpu_fragmentation": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Cpu Fragmentation",
+      "type": "number"
+    },
+    "gpu_fragmentation": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Gpu Fragmentation",
+      "type": "number"
+    },
+    "placement_failure_rate": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Placement Failure Rate",
+      "type": "number"
+    },
+    "ram_fragmentation": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Ram Fragmentation",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "FragmentationMetricsV1",
+  "type": "object"
+}

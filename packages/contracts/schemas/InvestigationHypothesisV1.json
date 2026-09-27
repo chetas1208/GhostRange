@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    },
+    "CandidateOrigin": {
+      "enum": [
+        "RULE",
+        "MODEL",
+        "COUNTEREXAMPLE",
+        "HUMAN",
+        "DRIFT",
+        "VERIFICATION_GAP",
+        "FIDELITY_GAP"
+      ],
+      "title": "CandidateOrigin",
+      "type": "string"
+    },
+    "InvestigationHypothesisStatus": {
+      "enum": [
+        "PROPOSED",
+        "ACTIVE",
+        "SUPPORTED",
+        "WEAKENED",
+        "REFUTED",
+        "UNRESOLVED"
+      ],
+      "title": "InvestigationHypothesisStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "M9 investigation hypothesis \u2014 not the incident ``HypothesisV1`` in hypothesis.py.",
+  "properties": {
+    "contradicting_evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Contradicting Evidence Ids",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "hypothesis_type": {
+      "default": "ROOT_CAUSE",
+      "title": "Hypothesis Type",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "investigation_id": {
+      "format": "uuid",
+      "title": "Investigation Id",
+      "type": "string"
+    },
+    "origin": {
+      "$ref": "#/$defs/CandidateOrigin",
+      "default": "RULE"
+    },
+    "priority": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "MEDIUM"
+    },
+    "related_assumption_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Related Assumption Ids",
+      "type": "array"
+    },
+    "related_claim_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Related Claim Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "statement": {
+      "title": "Statement",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/InvestigationHypothesisStatus",
+      "default": "PROPOSED"
+    },
+    "supporting_evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Supporting Evidence Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "investigation_id",
+    "statement"
+  ],
+  "title": "InvestigationHypothesisV1",
+  "type": "object"
+}

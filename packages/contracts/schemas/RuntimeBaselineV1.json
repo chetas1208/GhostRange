@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "auth_denial_rate_min": {
+      "default": 0.0,
+      "title": "Auth Denial Rate Min",
+      "type": "number"
+    },
+    "error_rate_max": {
+      "default": 0.01,
+      "title": "Error Rate Max",
+      "type": "number"
+    },
+    "latency_p95_ms_max": {
+      "default": 500.0,
+      "title": "Latency P95 Ms Max",
+      "type": "number"
+    },
+    "period_label": {
+      "title": "Period Label",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_version": {
+      "title": "Service Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "period_label",
+    "service_version"
+  ],
+  "title": "RuntimeBaselineV1",
+  "type": "object"
+}

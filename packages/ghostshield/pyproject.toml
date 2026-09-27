@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-ghostshield"
+version = "0.1.0"
+description = "M17 GhostShield — policy engine and execution gateway"
+requires-python = ">=3.11"
+dependencies = ["ghostrange-contracts"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_ghostshield*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

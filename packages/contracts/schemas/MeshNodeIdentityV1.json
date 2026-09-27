@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "display_pseudonym": {
+      "default": "",
+      "title": "Display Pseudonym",
+      "type": "string"
+    },
+    "federation_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Federation Ids",
+      "type": "array"
+    },
+    "node_id": {
+      "title": "Node Id",
+      "type": "string"
+    },
+    "public_key_fingerprint": {
+      "title": "Public Key Fingerprint",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "node_id",
+    "public_key_fingerprint"
+  ],
+  "title": "MeshNodeIdentityV1",
+  "type": "object"
+}

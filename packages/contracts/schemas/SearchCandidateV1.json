@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "MutationKind": {
+      "enum": [
+        "HEADER",
+        "PARAMETER",
+        "PATH",
+        "BODY",
+        "IDENTITY_STATE",
+        "REQUEST_SEQUENCE",
+        "TIMING",
+        "DEPENDENCY_RESPONSE",
+        "CONFIGURATION"
+      ],
+      "title": "MutationKind",
+      "type": "string"
+    },
+    "MutationOperatorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "$ref": "#/$defs/SearchArmKind"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/MutationKind"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "policy_ref": {
+          "default": "search-policy/v1",
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "arm"
+      ],
+      "title": "MutationOperatorV1",
+      "type": "object"
+    },
+    "SearchArmKind": {
+      "enum": [
+        "HEADER_MUTATION",
+        "IDENTITY_STATE",
+        "SEQUENCE_MUTATION",
+        "TIMING",
+        "PATH_VARIATION",
+        "DEPENDENCY_VARIATION",
+        "PARAMETER_MUTATION"
+      ],
+      "title": "SearchArmKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Typed executable search step \u2014 LLM output must validate into this.",
+  "properties": {
+    "action_sequence": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "minItems": 1,
+      "title": "Action Sequence",
+      "type": "array"
+    },
+    "arm": {
+      "$ref": "#/$defs/SearchArmKind"
+    },
+    "fingerprint": {
+      "title": "Fingerprint",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "operators": {
+      "items": {
+        "$ref": "#/$defs/MutationOperatorV1"
+      },
+      "minItems": 1,
+      "title": "Operators",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "world_asset_id": {
+      "description": "Authorized range asset ref, not arbitrary URL",
+      "title": "World Asset Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fingerprint",
+    "world_asset_id",
+    "arm",
+    "operators",
+    "action_sequence"
+  ],
+  "title": "SearchCandidateV1",
+  "type": "object"
+}

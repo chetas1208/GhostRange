@@ -1,0 +1,57 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "allowed_actions": {
+      "description": "Allowlist of action identifiers permitted under this policy; empty means nothing is permitted by default (explicit deny-by-default)",
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Actions",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "denied_actions": {
+      "description": "Explicit denylist; always takes precedence over allowed_actions",
+      "items": {
+        "type": "string"
+      },
+      "title": "Denied Actions",
+      "type": "array"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "require_range_ownership_token": {
+      "default": true,
+      "description": "If True, every action under this policy must present a valid range-ownership token proving the target environment is GhostRange-owned",
+      "title": "Require Range Ownership Token",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "PolicyV1",
+  "type": "object"
+}

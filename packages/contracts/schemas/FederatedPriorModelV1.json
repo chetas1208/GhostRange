@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "description": "Experimental \u2014 ranks what to test; never security claims.",
+  "properties": {
+    "feature_schema_version": {
+      "default": "1",
+      "title": "Feature Schema Version",
+      "type": "string"
+    },
+    "model_id": {
+      "title": "Model Id",
+      "type": "string"
+    },
+    "rank_weights": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Rank Weights",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "training_round": {
+      "default": 0,
+      "title": "Training Round",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "model_id"
+  ],
+  "title": "FederatedPriorModelV1",
+  "type": "object"
+}

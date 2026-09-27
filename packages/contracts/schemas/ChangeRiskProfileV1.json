@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "RiskLevel": {
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "UNKNOWN"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "affected_component_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Component Ids",
+      "type": "array"
+    },
+    "availability_risk": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "MEDIUM"
+    },
+    "blast_radius": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "MEDIUM"
+    },
+    "data_impact": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "NONE"
+    },
+    "dependency_depth": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "LOW"
+    },
+    "identity_impact": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "HIGH"
+    },
+    "network_impact": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "LOW"
+    },
+    "observability_gap": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "LOW"
+    },
+    "reversibility": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "MEDIUM"
+    },
+    "rollback_complexity": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "LOW"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "statefulness": {
+      "$ref": "#/$defs/RiskLevel",
+      "default": "LOW"
+    }
+  },
+  "title": "ChangeRiskProfileV1",
+  "type": "object"
+}

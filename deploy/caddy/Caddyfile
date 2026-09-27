@@ -1,0 +1,29 @@
+{
+	admin off
+	email admin@45-76-248-45.nip.io
+}
+
+45-76-248-45.nip.io, 45.76.248.45.sslip.io, :80 {
+	encode gzip
+
+	handle /api/* {
+		uri strip_prefix /api
+		reverse_proxy api:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle /v1/* {
+		reverse_proxy api:8000 {
+			flush_interval -1
+		}
+	}
+
+	handle /health* {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:8080
+	}
+}

@@ -1,0 +1,113 @@
+{
+  "$defs": {
+    "CausalInterventionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "cost_usd_estimate": {
+          "default": 0.5,
+          "title": "Cost Usd Estimate",
+          "type": "number"
+        },
+        "expected_mechanism": {
+          "default": "",
+          "title": "Expected Mechanism",
+          "type": "string"
+        },
+        "intervention_id": {
+          "format": "uuid",
+          "title": "Intervention Id",
+          "type": "string"
+        },
+        "preconditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "safety_classification": {
+          "default": "RANGE_BOUND",
+          "title": "Safety Classification",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "scope": {
+          "default": "DISPOSABLE_WORLD",
+          "title": "Scope",
+          "type": "string"
+        },
+        "variable_id": {
+          "title": "Variable Id",
+          "type": "string"
+        },
+        "world_label": {
+          "default": "",
+          "title": "World Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "variable_id",
+        "action"
+      ],
+      "title": "CausalInterventionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_mechanisms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Candidate Mechanisms",
+      "type": "array"
+    },
+    "causal_discrimination_value": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Causal Discrimination Value",
+      "type": "number"
+    },
+    "cost_usd_estimate": {
+      "default": 0.0,
+      "title": "Cost Usd Estimate",
+      "type": "number"
+    },
+    "identification_objective": {
+      "default": "",
+      "title": "Identification Objective",
+      "type": "string"
+    },
+    "interventions": {
+      "items": {
+        "$ref": "#/$defs/CausalInterventionV1"
+      },
+      "title": "Interventions",
+      "type": "array"
+    },
+    "proposal_id": {
+      "format": "uuid",
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "CausalExperimentProposalV1",
+  "type": "object"
+}

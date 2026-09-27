@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate_id": {
+      "format": "uuid",
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "knowledge_class": {
+      "$ref": "#/$defs/KnowledgeClass"
+    },
+    "local_source_ref": {
+      "title": "Local Source Ref",
+      "type": "string"
+    },
+    "raw_internal_summary": {
+      "additionalProperties": true,
+      "title": "Raw Internal Summary",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "knowledge_class",
+    "local_source_ref"
+  ],
+  "title": "MeshCandidateKnowledgeV1",
+  "type": "object"
+}

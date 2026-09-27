@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "PlacementAlternativeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "estimated_hourly_cost_usd": {
+          "minimum": 0,
+          "title": "Estimated Hourly Cost Usd",
+          "type": "number"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "resource_fidelity_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Resource Fidelity Score",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "vm_count": {
+          "minimum": 1,
+          "title": "Vm Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "label",
+        "vm_count",
+        "estimated_hourly_cost_usd",
+        "resource_fidelity_score",
+        "explanation"
+      ],
+      "title": "PlacementAlternativeV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "alternatives": {
+      "items": {
+        "$ref": "#/$defs/PlacementAlternativeV1"
+      },
+      "title": "Alternatives",
+      "type": "array"
+    },
+    "asset_to_vm": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Asset To Vm",
+      "type": "object"
+    },
+    "blueprint_id": {
+      "format": "uuid",
+      "title": "Blueprint Id",
+      "type": "string"
+    },
+    "estimated_build_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Estimated Build Seconds",
+      "type": "number"
+    },
+    "estimated_hourly_cost_usd": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Estimated Hourly Cost Usd",
+      "type": "number"
+    },
+    "estimated_startup_seconds": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Estimated Startup Seconds",
+      "type": "number"
+    },
+    "explanation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Explanation"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "placement_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Placement Hash"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selected_vm_count": {
+      "minimum": 1,
+      "title": "Selected Vm Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "blueprint_id",
+    "selected_vm_count"
+  ],
+  "title": "PlacementPlanV1",
+  "type": "object"
+}

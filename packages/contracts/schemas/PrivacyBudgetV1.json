@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "consumed": {
+      "default": 0.0,
+      "title": "Consumed",
+      "type": "number"
+    },
+    "delta": {
+      "default": 0.0,
+      "title": "Delta",
+      "type": "number"
+    },
+    "epsilon": {
+      "default": 0.0,
+      "title": "Epsilon",
+      "type": "number"
+    },
+    "mechanism": {
+      "default": "",
+      "title": "Mechanism",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope": {
+      "default": "",
+      "title": "Scope",
+      "type": "string"
+    }
+  },
+  "title": "PrivacyBudgetV1",
+  "type": "object"
+}

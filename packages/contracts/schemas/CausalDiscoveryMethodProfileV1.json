@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "CausalAssumptionKind": {
+      "enum": [
+        "NO_UNMEASURED_CONFOUNDING",
+        "CAUSAL_SUFFICIENCY",
+        "MECHANISM_INVARIANCE",
+        "POSITIVITY",
+        "CONSISTENCY",
+        "SUTVA_LIKE",
+        "TEMPORAL_ORDER",
+        "NO_INTERFERENCE",
+        "MEASUREMENT_RELIABILITY",
+        "SELECTION_MODEL",
+        "LATENT_VARIABLE_ALLOWED",
+        "DOMAIN_SHIFT_ASSUMPTION"
+      ],
+      "title": "CausalAssumptionKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumptions": {
+      "items": {
+        "$ref": "#/$defs/CausalAssumptionKind"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "data_type": {
+      "default": "multivariate_observational",
+      "title": "Data Type",
+      "type": "string"
+    },
+    "failure_modes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failure Modes",
+      "type": "array"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "requires_interventions": {
+      "default": false,
+      "title": "Requires Interventions",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "supports_latent_confounding": {
+      "default": false,
+      "title": "Supports Latent Confounding",
+      "type": "boolean"
+    },
+    "supports_temporal_data": {
+      "default": false,
+      "title": "Supports Temporal Data",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "method"
+  ],
+  "title": "CausalDiscoveryMethodProfileV1",
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "additionalProperties": false,
+  "description": "Governs whether/how this Task may be run speculatively (started\nbefore its full dependency chain is confirmed valuable) per the\nSpeculative Execution research track.",
+  "properties": {
+    "cancel_on_primary_success": {
+      "default": true,
+      "title": "Cancel On Primary Success",
+      "type": "boolean"
+    },
+    "enabled": {
+      "default": false,
+      "title": "Enabled",
+      "type": "boolean"
+    },
+    "max_speculative_branches": {
+      "default": 1,
+      "maximum": 16,
+      "minimum": 0,
+      "title": "Max Speculative Branches",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "SpeculationPolicyV1",
+  "type": "object"
+}

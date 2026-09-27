@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "KnowledgeClass": {
+      "enum": [
+        "COUNTEREXAMPLE_PATTERN",
+        "REMEDIATION_PATTERN",
+        "VERIFICATION_TEMPLATE",
+        "EXPERIMENT_TEMPLATE",
+        "SEARCH_PRIOR",
+        "SCHEDULER_PRIOR",
+        "FAILURE_PATTERN",
+        "ROLLBACK_PATTERN",
+        "PRODUCTION_SURPRISE_PATTERN",
+        "FIDELITY_LESSON"
+      ],
+      "title": "KnowledgeClass",
+      "type": "string"
+    },
+    "MeshDisclosureLevel": {
+      "enum": [
+        "PRIVATE_LOCAL",
+        "FEDERATED_AGGREGATE_ONLY",
+        "PSEUDONYMOUS_STRUCTURED",
+        "TRUSTED_GROUP",
+        "PUBLIC_SAFE"
+      ],
+      "title": "MeshDisclosureLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allowed_federation_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Federation Ids",
+      "type": "array"
+    },
+    "allowed_knowledge_classes": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeClass"
+      },
+      "title": "Allowed Knowledge Classes",
+      "type": "array"
+    },
+    "default_disclosure": {
+      "$ref": "#/$defs/MeshDisclosureLevel",
+      "default": "PRIVATE_LOCAL"
+    },
+    "minimum_abstraction_tags": {
+      "default": 2,
+      "title": "Minimum Abstraction Tags",
+      "type": "integer"
+    },
+    "minimum_local_validations": {
+      "default": 1,
+      "title": "Minimum Local Validations",
+      "type": "integer"
+    },
+    "require_human_approval": {
+      "default": true,
+      "title": "Require Human Approval",
+      "type": "boolean"
+    },
+    "retention_days": {
+      "default": 90,
+      "title": "Retention Days",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sharing_enabled": {
+      "default": false,
+      "title": "Sharing Enabled",
+      "type": "boolean"
+    }
+  },
+  "title": "MeshContributionPolicyV1",
+  "type": "object"
+}

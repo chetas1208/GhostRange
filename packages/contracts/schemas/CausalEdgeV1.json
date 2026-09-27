@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "CausalEdgeKind": {
+      "enum": [
+        "CAUSES",
+        "POSSIBLY_CAUSES",
+        "CONFOUNDED_WITH",
+        "MEDIATES",
+        "MODIFIES_EFFECT",
+        "SELECTION_DEPENDS_ON"
+      ],
+      "title": "CausalEdgeKind",
+      "type": "string"
+    },
+    "CausalEdgeOrigin": {
+      "enum": [
+        "TOPOLOGY_DERIVED",
+        "MODEL_PROPOSED",
+        "MESH_PRIOR",
+        "OBSERVATION_INFERRED",
+        "INTERVENTION_SUPPORTED"
+      ],
+      "title": "CausalEdgeOrigin",
+      "type": "string"
+    },
+    "CausalEdgeStatus": {
+      "enum": [
+        "HYPOTHESIZED",
+        "OBSERVATION_SUPPORTED",
+        "INTERVENTION_SUPPORTED",
+        "REFUTED",
+        "UNIDENTIFIED"
+      ],
+      "title": "CausalEdgeStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumption_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumption Ids",
+      "type": "array"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "kind": {
+      "$ref": "#/$defs/CausalEdgeKind",
+      "default": "POSSIBLY_CAUSES"
+    },
+    "origin": {
+      "$ref": "#/$defs/CausalEdgeOrigin",
+      "default": "OBSERVATION_INFERRED"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "title": "Source Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/CausalEdgeStatus",
+      "default": "HYPOTHESIZED"
+    },
+    "target_id": {
+      "title": "Target Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "target_id"
+  ],
+  "title": "CausalEdgeV1",
+  "type": "object"
+}

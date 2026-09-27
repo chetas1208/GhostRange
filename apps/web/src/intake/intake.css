@@ -1,0 +1,149 @@
+/* Investigation intake screen — one restrained entry point, not a 3D scene.
+   Reuses the app's dark/mono visual language (see ../styles/tokens.css)
+   without touching the existing Multiverse/Execution/Evidence chrome. */
+
+.gr-intake-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gr-void, #0a0a0c);
+  font-family: var(--gr-font-sans, system-ui, sans-serif);
+  color: var(--gr-text, #c8cdd6);
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.gr-intake-panel {
+  width: min(480px, 100%);
+  background: var(--gr-graphite, #141418);
+  border: 1px solid #334155;
+  padding: 32px;
+}
+
+.gr-intake-brand {
+  font-family: var(--gr-font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gr-electric, #60a5fa);
+  margin-bottom: 12px;
+}
+
+.gr-intake-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 8px;
+}
+
+.gr-intake-sub {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gr-text-muted, #64748b);
+  margin: 0 0 24px;
+}
+
+.gr-intake-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.gr-intake-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.gr-intake-field span {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gr-text-muted, #64748b);
+  font-size: 10px;
+}
+
+.gr-intake-field input,
+.gr-intake-field textarea {
+  background: #0f0f12;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-family: var(--gr-font-sans, system-ui, sans-serif);
+  resize: vertical;
+}
+
+.gr-intake-field input:focus,
+.gr-intake-field textarea:focus {
+  outline: none;
+  border-color: var(--gr-electric, #60a5fa);
+}
+
+.gr-intake-error {
+  font-size: 12px;
+  color: var(--gr-failure, #f87171);
+  border: 1px solid var(--gr-failure, #f87171);
+  padding: 8px 10px;
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.gr-intake-submit {
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  padding: 12px 16px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gr-intake-submit:hover:not(:disabled) {
+  border-color: var(--gr-electric, #60a5fa);
+  color: var(--gr-electric, #60a5fa);
+}
+
+.gr-intake-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gr-intake-narration ul {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--gr-font-mono, ui-monospace, monospace);
+  font-size: 13px;
+}
+
+.gr-intake-narration li {
+  color: var(--gr-mint, #6ee7b7);
+  opacity: 0;
+  animation: gr-intake-line-in 0.4s ease-out forwards;
+}
+
+@keyframes gr-intake-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-intake-narration li {
+    animation: none;
+    opacity: 1;
+  }
+}

@@ -1,0 +1,63 @@
+# Local dev infra for GhostRange M2 backend work: Postgres (Decisions.md #6)
+# + Redis/Valkey (Decisions.md #4).
+#
+# Ownership / coordination note (Agent 08, event/persistence): this is the
+# ONLY docker-compose file in the repo as of M2 wave 1 (checked: none
+# existed under infra/ or elsewhere before this file was added). It exists
+# at the repo root, not under infra/ (owned by Agent 03/range-iac) or
+# packages/events/ (this agent's own row), specifically so it can be a
+# SHARED piece of local-dev infra rather than something each backend
+# package reinvents.
+#
+# If Agent 04 (range-runtime), Agent 09 (evidence), or Agent 10 (scheduler)
+# also need Postgres: reuse the SAME `postgres` service/database below
+# (one Postgres instance, multiple tables/schemas — `event_log` lives in
+# its own tables, doesn't collide with anything else) rather than adding a
+# second compose file or a second Postgres container. Coordinate through
+# the lead agent before adding a second docker-compose file anywhere in
+# this repo.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d --wait
+#   docker compose -f docker-compose.dev.yml down          # keep volumes
+#   docker compose -f docker-compose.dev.yml down -v       # wipe data too
+#
+# Connection strings used by packages/events/ghostrange_events/store:
+#   POSTGRES_DSN=postgresql://ghostrange:ghostrange@localhost:5432/ghostrange
+#   REDIS_URL=redis://localhost:6379/0
+# (see .env.dev.example at repo root)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ghostrange-postgres-dev
+    environment:
+      POSTGRES_USER: ghostrange
+      POSTGRES_PASSWORD: ghostrange
+      POSTGRES_DB: ghostrange
+    ports:
+      - "5432:5432"
+    volumes:
+      - ghostrange_postgres_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ghostrange -d ghostrange"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  # Valkey (Redis-protocol-compatible), matching the eventual Vultr Managed
+  # Valkey target (ADR-011 Context) rather than upstream Redis specifically
+  # — same wire protocol, same redis-py client works against either.
+  valkey:
+    image: valkey/valkey:7-alpine
+    container_name: ghostrange-valkey-dev
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  ghostrange_postgres_dev:

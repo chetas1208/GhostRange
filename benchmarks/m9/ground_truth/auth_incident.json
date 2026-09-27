@@ -1,0 +1,8 @@
+{
+  "scenario_id": "CHEAP_DISCRIMINATOR",
+  "true_mechanism": "session_refresh_cache",
+  "initial_hypotheses": ["middleware_order", "identity_cache", "gateway_routing"],
+  "cheap_discriminator_test_id": "middleware_order_probe",
+  "hidden_mechanism_not_in_initial_set": true,
+  "notes": "Evaluation harness only — GhostDirector must not read this file."
+}

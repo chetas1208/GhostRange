@@ -1,0 +1,52 @@
+{
+  "$defs": {
+    "ReasoningBudgetLevel": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "ReasoningBudgetLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "iterations": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Iterations",
+      "type": "integer"
+    },
+    "level": {
+      "$ref": "#/$defs/ReasoningBudgetLevel",
+      "default": "MEDIUM"
+    },
+    "max_tokens": {
+      "default": 2048,
+      "minimum": 0,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "num_samples": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Num Samples",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verification_calls": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Verification Calls",
+      "type": "integer"
+    }
+  },
+  "title": "ReasoningBudgetV1",
+  "type": "object"
+}

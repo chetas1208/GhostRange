@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "gpu_usd_per_hour": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Gpu Usd Per Hour",
+      "type": "object"
+    },
+    "model_version": {
+      "default": "compute-cost/v1",
+      "title": "Model Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "serverless_usd_per_1k_tokens": {
+      "default": 0.002,
+      "minimum": 0,
+      "title": "Serverless Usd Per 1K Tokens",
+      "type": "number"
+    },
+    "worker_usd_per_hour": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Worker Usd Per Hour",
+      "type": "object"
+    }
+  },
+  "title": "ComputeCostModelV1",
+  "type": "object"
+}

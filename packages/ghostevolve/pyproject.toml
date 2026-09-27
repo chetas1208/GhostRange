@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-ghostevolve"
+version = "0.1.0"
+description = "M18 GhostEvolve — experience store, candidates, evaluation, promotion"
+requires-python = ">=3.11"
+dependencies = [
+  "ghostrange-contracts",
+  "ghostrange-ghostarena",
+  "ghostrange-ghostshield",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_ghostevolve*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

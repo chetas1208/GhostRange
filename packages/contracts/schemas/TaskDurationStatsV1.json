@@ -1,0 +1,53 @@
+{
+  "$defs": {
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Rolling per-``TaskType`` duration statistics, used for relative\n(peer-cohort) straggler detection per ``SPECULATION.md`` \u00a7B rather than\na single global absolute timeout.",
+  "properties": {
+    "p50_seconds": {
+      "minimum": 0,
+      "title": "P50 Seconds",
+      "type": "number"
+    },
+    "p90_seconds": {
+      "minimum": 0,
+      "title": "P90 Seconds",
+      "type": "number"
+    },
+    "sample_count": {
+      "minimum": 0,
+      "title": "Sample Count",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_type": {
+      "$ref": "#/$defs/TaskType"
+    }
+  },
+  "required": [
+    "task_type",
+    "p50_seconds",
+    "p90_seconds",
+    "sample_count"
+  ],
+  "title": "TaskDurationStatsV1",
+  "type": "object"
+}

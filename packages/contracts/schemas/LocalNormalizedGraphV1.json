@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "description": "Privacy-safe local features for applicability \u2014 no hostnames.",
+  "properties": {
+    "capability_flags": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Capability Flags",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    }
+  },
+  "title": "LocalNormalizedGraphV1",
+  "type": "object"
+}

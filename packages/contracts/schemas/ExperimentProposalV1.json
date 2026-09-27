@@ -1,0 +1,231 @@
+{
+  "$defs": {
+    "BeliefLevel": {
+      "enum": [
+        "UNKNOWN",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "BeliefLevel",
+      "type": "string"
+    },
+    "CandidateOrigin": {
+      "enum": [
+        "RULE",
+        "MODEL",
+        "COUNTEREXAMPLE",
+        "HUMAN",
+        "DRIFT",
+        "VERIFICATION_GAP",
+        "FIDELITY_GAP"
+      ],
+      "title": "CandidateOrigin",
+      "type": "string"
+    },
+    "ExpectedOutcomeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_value": {
+          "title": "Expected Value"
+        },
+        "if_hypothesis_id": {
+          "format": "uuid",
+          "title": "If Hypothesis Id",
+          "type": "string"
+        },
+        "observation_key": {
+          "title": "Observation Key",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "if_hypothesis_id",
+        "observation_key",
+        "expected_value"
+      ],
+      "title": "ExpectedOutcomeV1",
+      "type": "object"
+    },
+    "ExperimentOperatorKind": {
+      "enum": [
+        "REPLAY_ATTACK",
+        "APPLY_CONTROLLED_CONFIG_VARIATION",
+        "CHANGE_SYNTHETIC_IDENTITY_STATE",
+        "CHANGE_STUB_RESPONSE",
+        "RESTART_RANGE_SERVICE",
+        "APPLY_REMEDIATION",
+        "RUN_REGRESSION",
+        "RUN_COUNTEREXAMPLE_SEARCH",
+        "COMPARE_WORLDS",
+        "COLLECT_OBSERVATION"
+      ],
+      "title": "ExperimentOperatorKind",
+      "type": "string"
+    },
+    "ExperimentOperatorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExperimentOperatorKind"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_asset_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Asset Id"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ExperimentOperatorV1",
+      "type": "object"
+    },
+    "WorldExperimentalState": {
+      "enum": [
+        "CLEAN",
+        "MODIFIED",
+        "CONTAMINATED",
+        "RESET_REQUIRED"
+      ],
+      "title": "WorldExperimentalState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "depends_on_experiment_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Depends On Experiment Ids",
+      "type": "array"
+    },
+    "discriminating_power": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "MEDIUM"
+    },
+    "estimated_cost_usd": {
+      "minimum": 0,
+      "title": "Estimated Cost Usd",
+      "type": "number"
+    },
+    "estimated_runtime_sec": {
+      "minimum": 0,
+      "title": "Estimated Runtime Sec",
+      "type": "number"
+    },
+    "expected_outcomes": {
+      "items": {
+        "$ref": "#/$defs/ExpectedOutcomeV1"
+      },
+      "title": "Expected Outcomes",
+      "type": "array"
+    },
+    "fingerprint": {
+      "default": "",
+      "title": "Fingerprint",
+      "type": "string"
+    },
+    "hypotheses_tested": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Hypotheses Tested",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "investigation_id": {
+      "format": "uuid",
+      "title": "Investigation Id",
+      "type": "string"
+    },
+    "objective": {
+      "title": "Objective",
+      "type": "string"
+    },
+    "operators": {
+      "items": {
+        "$ref": "#/$defs/ExperimentOperatorV1"
+      },
+      "minItems": 1,
+      "title": "Operators",
+      "type": "array"
+    },
+    "origin": {
+      "$ref": "#/$defs/CandidateOrigin",
+      "default": "RULE"
+    },
+    "parallelizable": {
+      "default": true,
+      "title": "Parallelizable",
+      "type": "boolean"
+    },
+    "required_fidelity": {
+      "default": "standard",
+      "title": "Required Fidelity",
+      "type": "string"
+    },
+    "required_world_state": {
+      "$ref": "#/$defs/WorldExperimentalState",
+      "default": "CLEAN"
+    },
+    "risk": {
+      "$ref": "#/$defs/BeliefLevel",
+      "default": "LOW"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "uncertainties_targeted": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Uncertainties Targeted",
+      "type": "array"
+    }
+  },
+  "required": [
+    "investigation_id",
+    "objective",
+    "operators",
+    "estimated_cost_usd",
+    "estimated_runtime_sec"
+  ],
+  "title": "ExperimentProposalV1",
+  "type": "object"
+}

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-ghostruntime"
+version = "0.1.0"
+description = "M16 GhostRuntime — durable campaign recovery substrate"
+requires-python = ">=3.11"
+dependencies = [
+    "ghostrange-contracts",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_ghostruntime*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

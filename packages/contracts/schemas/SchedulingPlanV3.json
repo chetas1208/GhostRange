@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "CostEstimateKind": {
+      "enum": [
+        "ESTIMATED",
+        "MEASURED",
+        "BILLED"
+      ],
+      "title": "CostEstimateKind",
+      "type": "string"
+    },
+    "InferenceRoute": {
+      "enum": [
+        "VULTR_SERVERLESS",
+        "LOCAL_CPU_MODEL",
+        "LOCAL_GPU_MODEL",
+        "DETERMINISTIC_NO_MODEL"
+      ],
+      "title": "InferenceRoute",
+      "type": "string"
+    },
+    "PlanActionV1": {
+      "additionalProperties": false,
+      "description": "One explainable scheduler action.",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/SchedulerActionKind"
+        },
+        "confidence": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "constraints_considered": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Constraints Considered",
+          "type": "array"
+        },
+        "cost_kind": {
+          "$ref": "#/$defs/CostEstimateKind",
+          "default": "ESTIMATED"
+        },
+        "decision_id": {
+          "format": "uuid",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "estimated_benefit": {
+          "default": 0.0,
+          "title": "Estimated Benefit",
+          "type": "number"
+        },
+        "estimated_cost_usd": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Estimated Cost Usd",
+          "type": "number"
+        },
+        "estimated_latency_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Estimated Latency Seconds",
+          "type": "number"
+        },
+        "inference_route": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InferenceRoute"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "input_features": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Input Features",
+          "type": "object"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        },
+        "policy_version": {
+          "default": "ghostscheduler/v3",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "priority_delta": {
+          "default": 0,
+          "title": "Priority Delta",
+          "type": "integer"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/ReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "resource_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResourceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target_id": {
+          "description": "task, worker, world, or branch id",
+          "format": "uuid",
+          "title": "Target Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "worker_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Worker Id"
+        }
+      },
+      "required": [
+        "action",
+        "target_id",
+        "reason_codes"
+      ],
+      "title": "PlanActionV1",
+      "type": "object"
+    },
+    "ReasonCode": {
+      "description": "Machine-readable justification codes attached to a SchedulerDecision.\n\nThese are consumed by the frontend to render *why* the scheduler did\nsomething (not just what it did), and by evaluation tooling to check\nthe scheduler is making decisions for the reasons it claims. Fixed\nvocabulary, no free-text reason may substitute for these on the\ndecision itself (``reason_codes``); free text belongs in\n``SchedulerDecisionV1.notes`` if ever needed.",
+      "enum": [
+        "DEPENDENCY_CRITICAL",
+        "HIGH_ASSET_RISK",
+        "HIGH_UNCERTAINTY",
+        "CHEAP_INFORMATION_GAIN",
+        "STRAGGLER_DETECTED",
+        "GPU_ACCELERATION_EXPECTED",
+        "GPU_NOT_JUSTIFIED",
+        "BRANCH_LOW_VALUE",
+        "BUDGET_EXHAUSTED",
+        "MARGINAL_GAIN_LOW",
+        "BRANCH_HIGH_UNCERTAINTY",
+        "BRANCH_HIGH_RISK",
+        "BRANCH_VERIFICATION_NEAR_COMPLETE",
+        "BRANCH_EARLY_FAILURE",
+        "BRANCH_LOW_EXPECTED_VALUE",
+        "PARALLEL_WORLD_SAFE",
+        "PARALLEL_TASK_SAFE",
+        "SCALE_OUT_QUEUE_PRESSURE",
+        "SCALE_OUT_CRITICAL_PATH",
+        "SCALE_IN_IDLE_CAPACITY",
+        "SPECULATION_STRAGGLER",
+        "SPECULATION_HIGH_VALUE_BRANCH",
+        "PRUNE_REMEDIATION_FAILED",
+        "PRUNE_REGRESSION_FAILED",
+        "PRUNE_LOW_VALUE",
+        "PRUNE_BUDGET_PRESSURE",
+        "CONTINUE_NEEDS_EVIDENCE",
+        "CONTINUE_ALTERNATIVE_PATH_UNTESTED",
+        "STOP_SUFFICIENT_VERIFICATION",
+        "STOP_MARGINAL_GAIN_LOW",
+        "WORLD_TERMINATION_APPROVED",
+        "CPU_SUFFICIENT"
+      ],
+      "title": "ReasonCode",
+      "type": "string"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    },
+    "SchedulerActionKind": {
+      "enum": [
+        "PLACE_TASK",
+        "CHANGE_PRIORITY",
+        "PROVISION_WORKER",
+        "DRAIN_WORKER",
+        "TERMINATE_WORKER",
+        "SPECULATE_TASK",
+        "CANCEL_TASK",
+        "CONTINUE_BRANCH",
+        "PRUNE_BRANCH",
+        "STOP_EXPLORATION",
+        "ROUTE_INFERENCE",
+        "DEFER_TASK"
+      ],
+      "title": "SchedulerActionKind",
+      "type": "string"
+    },
+    "SchedulerPolicyId": {
+      "enum": [
+        "STATIC_SERIAL",
+        "STATIC_EQUAL_PARALLEL",
+        "FIXED_POOL",
+        "FIRST_FIT",
+        "COST_MIN",
+        "GHOSTSCHEDULER_V3",
+        "FIXED_POOL_SAFE"
+      ],
+      "title": "SchedulerPolicyId",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/PlanActionV1"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "planning_duration_ms": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Planning Duration Ms",
+      "type": "number"
+    },
+    "policy_id": {
+      "$ref": "#/$defs/SchedulerPolicyId"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "3",
+      "default": "3",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id",
+    "policy_id"
+  ],
+  "title": "SchedulingPlanV3",
+  "type": "object"
+}

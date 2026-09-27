@@ -1,0 +1,35 @@
+{
+  "additionalProperties": false,
+  "description": "Code-level provenance for an ``AuditRecordV1``: which package/version\nissued the request and which DAG node it was for.",
+  "properties": {
+    "dag_node_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dag Node Id"
+    },
+    "package": {
+      "minLength": 1,
+      "title": "Package",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "package",
+    "version"
+  ],
+  "title": "ProvenanceRef",
+  "type": "object"
+}

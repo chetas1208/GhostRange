@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "IncidentDescriptorV1": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description"
+      ],
+      "title": "IncidentDescriptorV1",
+      "type": "object"
+    },
+    "InvestigationConstraintsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "live_production_actions": {
+          "default": false,
+          "title": "Live Production Actions",
+          "type": "boolean"
+        },
+        "max_cost_usd": {
+          "default": 1.0,
+          "minimum": 0,
+          "title": "Max Cost Usd",
+          "type": "number"
+        },
+        "max_workers": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Max Workers",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "InvestigationConstraintsV1",
+      "type": "object"
+    },
+    "SystemSourceRefV1": {
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "default": "main",
+          "title": "Branch",
+          "type": "string"
+        },
+        "repository_url": {
+          "title": "Repository Url",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository_url"
+      ],
+      "title": "SystemSourceRefV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "constraints": {
+      "$ref": "#/$defs/InvestigationConstraintsV1"
+    },
+    "evidence": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "incident": {
+      "$ref": "#/$defs/IncidentDescriptorV1"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "system": {
+      "$ref": "#/$defs/SystemSourceRefV1"
+    }
+  },
+  "required": [
+    "case_id",
+    "incident",
+    "system"
+  ],
+  "title": "InvestigationIntakeV1",
+  "type": "object"
+}

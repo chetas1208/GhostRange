@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "abstract_relations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstract Relations",
+      "type": "array"
+    },
+    "abstract_tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstract Tags",
+      "type": "array"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "KnowledgeAbstractionV1",
+  "type": "object"
+}

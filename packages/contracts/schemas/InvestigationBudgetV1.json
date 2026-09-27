@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "max_cpu_workers": {
+      "default": 5,
+      "minimum": 0,
+      "title": "Max Cpu Workers",
+      "type": "integer"
+    },
+    "max_gpu_workers": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Max Gpu Workers",
+      "type": "integer"
+    },
+    "max_model_cost_usd": {
+      "default": 1.0,
+      "minimum": 0,
+      "title": "Max Model Cost Usd",
+      "type": "number"
+    },
+    "max_runtime_seconds": {
+      "exclusiveMinimum": 0,
+      "title": "Max Runtime Seconds",
+      "type": "number"
+    },
+    "max_total_cost_usd": {
+      "exclusiveMinimum": 0,
+      "title": "Max Total Cost Usd",
+      "type": "number"
+    },
+    "max_worlds": {
+      "default": 3,
+      "maximum": 5,
+      "minimum": 1,
+      "title": "Max Worlds",
+      "type": "integer"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "reserved_usd": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Reserved Usd",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "spent_usd": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Spent Usd",
+      "type": "number"
+    }
+  },
+  "required": [
+    "range_id",
+    "max_total_cost_usd",
+    "max_runtime_seconds"
+  ],
+  "title": "InvestigationBudgetV1",
+  "type": "object"
+}

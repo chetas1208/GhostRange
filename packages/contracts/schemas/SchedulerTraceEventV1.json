@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "title": "Kind",
+      "type": "string"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "title": "Payload",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "timestamp_ms": {
+      "title": "Timestamp Ms",
+      "type": "number"
+    }
+  },
+  "required": [
+    "timestamp_ms",
+    "kind"
+  ],
+  "title": "SchedulerTraceEventV1",
+  "type": "object"
+}

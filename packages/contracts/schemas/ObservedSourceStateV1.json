@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "config_fingerprint": {
+      "title": "Config Fingerprint",
+      "type": "string"
+    },
+    "note": {
+      "default": "Not auto-committed to Git source-of-truth",
+      "title": "Note",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_version": {
+      "title": "Service Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "config_fingerprint",
+    "service_version"
+  ],
+  "title": "ObservedSourceStateV1",
+  "type": "object"
+}

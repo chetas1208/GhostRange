@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "locally_minimal": {
+      "default": false,
+      "title": "Locally Minimal",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "variable_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Variable Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "variable_ids",
+    "description"
+  ],
+  "title": "MinimalInterventionCandidateV1",
+  "type": "object"
+}

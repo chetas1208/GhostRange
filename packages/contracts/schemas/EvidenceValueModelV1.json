@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "description": "Optional exploration only \u2014 mandatory tests ignore this model.",
+  "properties": {
+    "coverage_weight": {
+      "default": 0.25,
+      "title": "Coverage Weight",
+      "type": "number"
+    },
+    "model_version": {
+      "default": "evidence-value/v1",
+      "title": "Model Version",
+      "type": "string"
+    },
+    "novelty_weight": {
+      "default": 0.25,
+      "title": "Novelty Weight",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "uncertainty_reduction_weight": {
+      "default": 0.35,
+      "title": "Uncertainty Reduction Weight",
+      "type": "number"
+    },
+    "verification_importance_weight": {
+      "default": 0.15,
+      "title": "Verification Importance Weight",
+      "type": "number"
+    }
+  },
+  "title": "EvidenceValueModelV1",
+  "type": "object"
+}

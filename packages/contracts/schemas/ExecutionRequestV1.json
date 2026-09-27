@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "AbilityCategory": {
+      "description": "MITRE-tactic-shaped allowlist of *what kind* of action a\n``RangeOwnershipTokenV1`` authorizes, independent of *which* target.\n\nThis is the ``capabilities`` vocabulary named in\n``docs/security/EXECUTION_POLICY.md`` \u00a72 and the ``action_category``\nfield on ``ExecutionRequestV1`` (``policy.py``) \u2014 a fixed, closed\nvocabulary on purpose: a token's capability list is checked with\n``in``, never with free-text string matching, so there is nothing an\ninjected instruction could be \"close enough\" to.",
+      "enum": [
+        "RECON",
+        "EXPLOIT",
+        "PERSISTENCE",
+        "EXFIL_SIM",
+        "PROVISION",
+        "TEARDOWN"
+      ],
+      "title": "AbilityCategory",
+      "type": "string"
+    },
+    "TargetRef": {
+      "additionalProperties": false,
+      "description": "A single execution target, scoped to exactly one range.\n\nDeliberately NOT free text with no constraint: ``host_or_ip`` must be a\nplausible bare hostname or IPv4/IPv6 literal (no scheme, no path, no\nwhitespace, no shell/URL metacharacters) so this type can never itself\nbecome an injection vector even before the *semantic* check (\"is this\nactually in the range's registry\") runs in policy-check. The semantic\ncheck is the real security property (enforced by\n``packages/policy-check``, re-derived from its own registry on every\ncall) \u2014 this pattern constraint is defense-in-depth, not a substitute\nfor it.",
+      "properties": {
+        "host_or_ip": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "Host Or Ip",
+          "type": "string"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "range_id",
+        "host_or_ip"
+      ],
+      "title": "TargetRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The concrete input to ``authorize()`` (EXECUTION_POLICY.md \u00a73.1-3.2).\n\n``target_refs`` is fixed at DAG-compile time by execution-graph, never\nwidened by agent reasoning about a specific node (T10). ``params`` is\nability-parameter-only: the validator below rejects any key that looks\nlike it is smuggling a target/host/URL through the parameters channel,\nas a second, independent backstop alongside ``target_refs`` being the\nonly sanctioned way a target enters a request.",
+  "properties": {
+    "ability_ref": {
+      "description": "Must resolve against the reviewed CALDERA ability catalog (T11) \u2014 never an inline/novel ability body.",
+      "minLength": 1,
+      "title": "Ability Ref",
+      "type": "string"
+    },
+    "action_category": {
+      "$ref": "#/$defs/AbilityCategory"
+    },
+    "params": {
+      "additionalProperties": true,
+      "title": "Params",
+      "type": "object"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "request_id": {
+      "format": "uuid",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requested_at": {
+      "format": "date-time",
+      "title": "Requested At",
+      "type": "string"
+    },
+    "requested_by": {
+      "description": "Agent tool-call id / task provenance string for the audit trail",
+      "title": "Requested By",
+      "type": "string"
+    },
+    "resource_cost": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Resource Cost",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_refs": {
+      "items": {
+        "$ref": "#/$defs/TargetRef"
+      },
+      "minItems": 1,
+      "title": "Target Refs",
+      "type": "array"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "world_id",
+    "range_id",
+    "target_refs",
+    "action_category",
+    "ability_ref",
+    "requested_by"
+  ],
+  "title": "ExecutionRequestV1",
+  "type": "object"
+}

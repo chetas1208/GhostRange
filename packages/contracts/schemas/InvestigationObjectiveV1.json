@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "investigation_kind": {
+      "default": "auth_remediation",
+      "description": "Rule-map key, e.g. auth_remediation, gpu_isolation",
+      "title": "Investigation Kind",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ],
+  "title": "InvestigationObjectiveV1",
+  "type": "object"
+}

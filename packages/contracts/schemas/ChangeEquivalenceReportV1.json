@@ -1,0 +1,44 @@
+{
+  "$defs": {
+    "EquivalenceStatus": {
+      "enum": [
+        "EXACT",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MATERIAL_DIFFERENCE",
+        "NOT_COMPARABLE",
+        "UNKNOWN"
+      ],
+      "title": "EquivalenceStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dimensions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/EquivalenceStatus"
+      },
+      "title": "Dimensions",
+      "type": "object"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "overall": {
+      "$ref": "#/$defs/EquivalenceStatus",
+      "default": "UNKNOWN"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "ChangeEquivalenceReportV1",
+  "type": "object"
+}

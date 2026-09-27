@@ -1,0 +1,31 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "database_change_requires": {
+      "default": 2,
+      "minimum": 1,
+      "title": "Database Change Requires",
+      "type": "integer"
+    },
+    "identity_change_requires": {
+      "default": 2,
+      "minimum": 1,
+      "title": "Identity Change Requires",
+      "type": "integer"
+    },
+    "required_approvals": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Required Approvals",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "ApprovalPolicyV1",
+  "type": "object"
+}

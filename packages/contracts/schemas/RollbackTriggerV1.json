@@ -1,0 +1,35 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "condition": {
+      "title": "Condition",
+      "type": "string"
+    },
+    "debounce_windows": {
+      "default": 2,
+      "title": "Debounce Windows",
+      "type": "integer"
+    },
+    "immediate_on_critical": {
+      "default": true,
+      "title": "Immediate On Critical",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "trigger_id": {
+      "title": "Trigger Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "trigger_id",
+    "condition"
+  ],
+  "title": "RollbackTriggerV1",
+  "type": "object"
+}

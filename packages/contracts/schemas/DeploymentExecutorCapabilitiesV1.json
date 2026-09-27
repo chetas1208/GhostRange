@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "ExecutorCapability": {
+      "enum": [
+        "OBSERVE_STATUS",
+        "OBSERVE_REVISION",
+        "OBSERVE_STAGE",
+        "OBSERVE_HEALTH",
+        "OBSERVE_METRICS",
+        "REQUEST_PAUSE",
+        "REQUEST_RESUME",
+        "REQUEST_ROLLBACK",
+        "REQUEST_APPROVED_PROMOTION"
+      ],
+      "title": "ExecutorCapability",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adapter_id": {
+      "title": "Adapter Id",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/ExecutorCapability"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "environment_label": {
+      "default": "SIMULATED",
+      "title": "Environment Label",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "adapter_id"
+  ],
+  "title": "DeploymentExecutorCapabilitiesV1",
+  "type": "object"
+}

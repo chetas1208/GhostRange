@@ -1,0 +1,97 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "bootstrap_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bootstrap Version"
+    },
+    "image_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Digest"
+    },
+    "image_or_snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Or Snapshot Id"
+    },
+    "instance_template_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Instance Template Id"
+    },
+    "placement_plan_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Placement Plan Hash"
+    },
+    "region": {
+      "title": "Region",
+      "type": "string"
+    },
+    "resource_class": {
+      "title": "Resource Class",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "vpc_config_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vpc Config Hash"
+    }
+  },
+  "required": [
+    "region",
+    "resource_class"
+  ],
+  "title": "InfrastructureRecordV1",
+  "type": "object"
+}

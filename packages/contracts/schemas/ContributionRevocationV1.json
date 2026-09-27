@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "contribution_id": {
+      "format": "uuid",
+      "title": "Contribution Id",
+      "type": "string"
+    },
+    "reason": {
+      "default": "",
+      "title": "Reason",
+      "type": "string"
+    },
+    "revoked_at": {
+      "format": "date-time",
+      "title": "Revoked At",
+      "type": "string"
+    },
+    "revoker_node_id": {
+      "title": "Revoker Node Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contribution_id",
+    "revoker_node_id"
+  ],
+  "title": "ContributionRevocationV1",
+  "type": "object"
+}

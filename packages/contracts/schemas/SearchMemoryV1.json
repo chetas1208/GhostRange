@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "ObservationNoveltyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "is_novel": {
+          "default": false,
+          "title": "Is Novel",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "signals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signals",
+          "type": "array"
+        }
+      },
+      "required": [
+        "score"
+      ],
+      "title": "ObservationNoveltyV1",
+      "type": "object"
+    },
+    "SearchArmKind": {
+      "enum": [
+        "HEADER_MUTATION",
+        "IDENTITY_STATE",
+        "SEQUENCE_MUTATION",
+        "TIMING",
+        "PATH_VARIATION",
+        "DEPENDENCY_VARIATION",
+        "PARAMETER_MUTATION"
+      ],
+      "title": "SearchArmKind",
+      "type": "string"
+    },
+    "SearchMemoryEntryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "$ref": "#/$defs/SearchArmKind"
+        },
+        "candidate_fingerprint": {
+          "title": "Candidate Fingerprint",
+          "type": "string"
+        },
+        "cost_usd": {
+          "default": 0.0,
+          "title": "Cost Usd",
+          "type": "number"
+        },
+        "novelty": {
+          "$ref": "#/$defs/ObservationNoveltyV1"
+        },
+        "observation_digest": {
+          "title": "Observation Digest",
+          "type": "string"
+        },
+        "result": {
+          "title": "Result",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate_fingerprint",
+        "arm",
+        "result",
+        "observation_digest"
+      ],
+      "title": "SearchMemoryEntryV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/SearchMemoryEntryV1"
+      },
+      "title": "Entries",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "search_run_id": {
+      "format": "uuid",
+      "title": "Search Run Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "search_run_id"
+  ],
+  "title": "SearchMemoryV1",
+  "type": "object"
+}

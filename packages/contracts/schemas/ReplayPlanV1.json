@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "ReplayLevel": {
+      "enum": [
+        "LEVEL_0",
+        "LEVEL_1",
+        "LEVEL_2",
+        "LEVEL_3",
+        "LEVEL_4",
+        "LEVEL_5"
+      ],
+      "title": "ReplayLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "estimated_cost_usd": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Estimated Cost Usd"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "model_mode": {
+      "default": "USE_RECORDED",
+      "title": "Model Mode",
+      "type": "string"
+    },
+    "pinned_images": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Pinned Images",
+      "type": "object"
+    },
+    "scheduler_policy": {
+      "default": "ORIGINAL_POLICY",
+      "title": "Scheduler Policy",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_bundle_digest": {
+      "title": "Source Bundle Digest",
+      "type": "string"
+    },
+    "target_level": {
+      "$ref": "#/$defs/ReplayLevel"
+    }
+  },
+  "required": [
+    "source_bundle_digest",
+    "target_level"
+  ],
+  "title": "ReplayPlanV1",
+  "type": "object"
+}

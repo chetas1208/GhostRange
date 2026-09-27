@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "config_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Config Staleness",
+      "type": "number"
+    },
+    "data_schema_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Data Schema Staleness",
+      "type": "number"
+    },
+    "identity_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Identity Staleness",
+      "type": "number"
+    },
+    "network_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Network Staleness",
+      "type": "number"
+    },
+    "overall_semantic": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Overall Semantic",
+      "type": "number"
+    },
+    "resource_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Resource Staleness",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Service Staleness",
+      "type": "number"
+    },
+    "topology_staleness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Topology Staleness",
+      "type": "number"
+    },
+    "twin_revision_id": {
+      "format": "uuid",
+      "title": "Twin Revision Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "twin_revision_id"
+  ],
+  "title": "TwinStalenessV1",
+  "type": "object"
+}

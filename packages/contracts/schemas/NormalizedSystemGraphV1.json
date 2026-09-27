@@ -1,0 +1,292 @@
+{
+  "$defs": {
+    "GraphEdgeKind": {
+      "enum": [
+        "HOSTS",
+        "CONNECTS_TO",
+        "DEPENDS_ON",
+        "AUTHENTICATES_VIA",
+        "READS_FROM",
+        "WRITES_TO",
+        "EXPOSES",
+        "ROUTES_TO",
+        "MOUNTS",
+        "CONSUMES_SECRET",
+        "MEMBER_OF_NETWORK"
+      ],
+      "title": "GraphEdgeKind",
+      "type": "string"
+    },
+    "GraphNodeKind": {
+      "enum": [
+        "HOST",
+        "VM",
+        "CONTAINER",
+        "POD",
+        "SERVICE",
+        "DATABASE",
+        "QUEUE",
+        "CACHE",
+        "OBJECT_STORE",
+        "GATEWAY",
+        "LOAD_BALANCER",
+        "IDENTITY_PROVIDER",
+        "VOLUME",
+        "EXTERNAL_DEPENDENCY",
+        "NETWORK",
+        "SUBNET",
+        "SECRET_REFERENCE"
+      ],
+      "title": "GraphNodeKind",
+      "type": "string"
+    },
+    "NormalizedEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Attributes",
+          "type": "object"
+        },
+        "from_node_id": {
+          "format": "uuid",
+          "title": "From Node Id",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/GraphEdgeKind"
+        },
+        "provenance": {
+          "$ref": "#/$defs/SourceProvenanceV1"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_node_id": {
+          "format": "uuid",
+          "title": "To Node Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_node_id",
+        "to_node_id",
+        "kind",
+        "provenance"
+      ],
+      "title": "NormalizedEdgeV1",
+      "type": "object"
+    },
+    "NormalizedNodeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": true,
+          "title": "Attributes",
+          "type": "object"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/GraphNodeKind"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/SourceProvenanceV1"
+        },
+        "provider_metadata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provider Metadata",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "provenance"
+      ],
+      "title": "NormalizedNodeV1",
+      "type": "object"
+    },
+    "SourceConflictV1": {
+      "additionalProperties": false,
+      "properties": {
+        "conflict_id": {
+          "format": "uuid",
+          "title": "Conflict Id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "resolution_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolution Hint"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_a": {
+          "title": "Source A",
+          "type": "string"
+        },
+        "source_b": {
+          "title": "Source B",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "description",
+        "source_a",
+        "source_b"
+      ],
+      "title": "SourceConflictV1",
+      "type": "object"
+    },
+    "SourceProvenanceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "parser_id": {
+          "title": "Parser Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_construct": {
+          "title": "Source Construct",
+          "type": "string"
+        },
+        "source_file": {
+          "title": "Source File",
+          "type": "string"
+        },
+        "source_location": {
+          "title": "Source Location",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_file",
+        "source_construct",
+        "source_location",
+        "parser_id"
+      ],
+      "title": "SourceProvenanceV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/SourceConflictV1"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/NormalizedEdgeV1"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "graph_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Graph Hash"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/NormalizedNodeV1"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_model_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Source Model Ids",
+      "type": "array"
+    }
+  },
+  "title": "NormalizedSystemGraphV1",
+  "type": "object"
+}

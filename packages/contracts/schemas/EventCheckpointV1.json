@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "checkpoint_digest": {
+      "title": "Checkpoint Digest",
+      "type": "string"
+    },
+    "experiment_run_id": {
+      "format": "uuid",
+      "title": "Experiment Run Id",
+      "type": "string"
+    },
+    "latest_event_hash": {
+      "title": "Latest Event Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "signed": {
+      "default": false,
+      "title": "Signed",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "sequence",
+    "latest_event_hash",
+    "experiment_run_id",
+    "checkpoint_digest"
+  ],
+  "title": "EventCheckpointV1",
+  "type": "object"
+}

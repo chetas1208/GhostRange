@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "ObservationType": {
+      "enum": [
+        "FILE_STATE",
+        "PROCESS_STATE",
+        "NETWORK_TRAFFIC",
+        "LOG_LINE",
+        "COMMAND_RESULT",
+        "AGENT_ASSERTION"
+      ],
+      "title": "ObservationType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single discrete fact noticed during an ExecutionRecord.\n\n``raw_artifact_id`` points at the Artifact (if any) that materializes\nthe raw evidence for this observation (a log line, a pcap, a file\ndiff); an observation may also be a direct agent assertion with no\nbacking artifact, in which case it is None but ``summary`` still\ncarries the claim-relevant fact.",
+  "properties": {
+    "agent_id": {
+      "format": "uuid",
+      "title": "Agent Id",
+      "type": "string"
+    },
+    "execution_id": {
+      "description": "ExecutionRecordV1.id this observation came from",
+      "format": "uuid",
+      "title": "Execution Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observation_type": {
+      "$ref": "#/$defs/ObservationType"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "raw_artifact_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Artifact Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "execution_id",
+    "world_id",
+    "agent_id",
+    "observation_type",
+    "summary"
+  ],
+  "title": "ObservationV1",
+  "type": "object"
+}

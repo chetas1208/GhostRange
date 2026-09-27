@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "AbilityCategory": {
+      "description": "MITRE-tactic-shaped allowlist of *what kind* of action a\n``RangeOwnershipTokenV1`` authorizes, independent of *which* target.\n\nThis is the ``capabilities`` vocabulary named in\n``docs/security/EXECUTION_POLICY.md`` \u00a72 and the ``action_category``\nfield on ``ExecutionRequestV1`` (``policy.py``) \u2014 a fixed, closed\nvocabulary on purpose: a token's capability list is checked with\n``in``, never with free-text string matching, so there is nothing an\ninjected instruction could be \"close enough\" to.",
+      "enum": [
+        "RECON",
+        "EXPLOIT",
+        "PERSISTENCE",
+        "EXFIL_SIM",
+        "PROVISION",
+        "TEARDOWN"
+      ],
+      "title": "AbilityCategory",
+      "type": "string"
+    },
+    "TargetRef": {
+      "additionalProperties": false,
+      "description": "A single execution target, scoped to exactly one range.\n\nDeliberately NOT free text with no constraint: ``host_or_ip`` must be a\nplausible bare hostname or IPv4/IPv6 literal (no scheme, no path, no\nwhitespace, no shell/URL metacharacters) so this type can never itself\nbecome an injection vector even before the *semantic* check (\"is this\nactually in the range's registry\") runs in policy-check. The semantic\ncheck is the real security property (enforced by\n``packages/policy-check``, re-derived from its own registry on every\ncall) \u2014 this pattern constraint is defense-in-depth, not a substitute\nfor it.",
+      "properties": {
+        "host_or_ip": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "Host Or Ip",
+          "type": "string"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "range_id",
+        "host_or_ip"
+      ],
+      "title": "TargetRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Proof that a (world, range) pair is a real, currently-active,\nGhostRange-owned environment with a specific capability set \u2014 the\ncredential named throughout THREAT_MODEL.md (T5, T9, T10, T16) and\nspecified in EXECUTION_POLICY.md \u00a72.\n\nMinted exclusively by range-runtime at provisioning time (never by an\nagent, never on demand for a wider scope \u2014 there is no\n\"mint-a-token\" endpoint anywhere). ``target_set`` is always the real,\njust-provisioned member list, never aspirational. Signature custody and\nminting/verification logic live in ``packages/policy-check`` (this\nclass only defines the wire shape); ``issuer_signature`` here is\nopaque to this module by design.",
+  "properties": {
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/AbilityCategory"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "issuer_signature": {
+      "minLength": 1,
+      "title": "Issuer Signature",
+      "type": "string"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_set": {
+      "items": {
+        "$ref": "#/$defs/TargetRef"
+      },
+      "title": "Target Set",
+      "type": "array"
+    },
+    "token_id": {
+      "format": "uuid",
+      "title": "Token Id",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "range_id",
+    "expires_at",
+    "issuer_signature"
+  ],
+  "title": "RangeOwnershipTokenV1",
+  "type": "object"
+}

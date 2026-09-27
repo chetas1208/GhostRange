@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-cost"
+version = "0.1.0"
+description = "Provider-accurate cost accounting for GhostRange (USD micros, billing quanta, attribution)"
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "ghostrange-contracts",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_cost*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

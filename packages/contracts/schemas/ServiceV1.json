@@ -1,0 +1,64 @@
+{
+  "additionalProperties": false,
+  "description": "A network service exposed by an Asset.",
+  "properties": {
+    "asset_id": {
+      "format": "uuid",
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "known_cves": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Known Cves",
+      "type": "array"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "port": {
+      "maximum": 65535,
+      "minimum": 1,
+      "title": "Port",
+      "type": "integer"
+    },
+    "protocol": {
+      "description": "e.g. tcp, udp",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
+    }
+  },
+  "required": [
+    "asset_id",
+    "name",
+    "port",
+    "protocol"
+  ],
+  "title": "ServiceV1",
+  "type": "object"
+}

@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "ExperimentOperatorKind": {
+      "enum": [
+        "REPLAY_ATTACK",
+        "APPLY_CONTROLLED_CONFIG_VARIATION",
+        "CHANGE_SYNTHETIC_IDENTITY_STATE",
+        "CHANGE_STUB_RESPONSE",
+        "RESTART_RANGE_SERVICE",
+        "APPLY_REMEDIATION",
+        "RUN_REGRESSION",
+        "RUN_COUNTEREXAMPLE_SEARCH",
+        "COMPARE_WORLDS",
+        "COLLECT_OBSERVATION"
+      ],
+      "title": "ExperimentOperatorKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/ExperimentOperatorKind"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Asset Id"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "ExperimentOperatorV1",
+  "type": "object"
+}

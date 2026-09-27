@@ -1,0 +1,221 @@
+{
+  "$defs": {
+    "FidelityDimension": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "CONFIGURATION",
+        "VERSION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_CONTENT",
+        "RUNTIME_BEHAVIOR",
+        "RESOURCE",
+        "STORAGE",
+        "TIMING",
+        "DEPENDENCY",
+        "SECURITY_CONTROL"
+      ],
+      "title": "FidelityDimension",
+      "type": "string"
+    },
+    "FidelityDimensionScoreV1": {
+      "additionalProperties": false,
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/FidelityDimension"
+        },
+        "requirement": {
+          "$ref": "#/$defs/FidelityRequirementLevel"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "status": {
+          "$ref": "#/$defs/FidelityDimensionStatus"
+        }
+      },
+      "required": [
+        "dimension",
+        "requirement",
+        "status"
+      ],
+      "title": "FidelityDimensionScoreV1",
+      "type": "object"
+    },
+    "FidelityDimensionStatus": {
+      "enum": [
+        "PASS",
+        "PARTIAL",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_MEASURED"
+      ],
+      "title": "FidelityDimensionStatus",
+      "type": "string"
+    },
+    "FidelityRequirementLevel": {
+      "enum": [
+        "REQUIRED",
+        "IMPORTANT",
+        "OPTIONAL",
+        "IGNORED"
+      ],
+      "title": "FidelityRequirementLevel",
+      "type": "string"
+    },
+    "InvariantComparisonStatus": {
+      "enum": [
+        "MATCH",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MISMATCH",
+        "NOT_MEASURED",
+        "NOT_APPLICABLE"
+      ],
+      "title": "InvariantComparisonStatus",
+      "type": "string"
+    },
+    "InvariantComparisonV1": {
+      "additionalProperties": false,
+      "properties": {
+        "invariant_id": {
+          "format": "uuid",
+          "title": "Invariant Id",
+          "type": "string"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/InvariantComparisonStatus"
+        }
+      },
+      "required": [
+        "invariant_id",
+        "status"
+      ],
+      "title": "InvariantComparisonV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dimensions": {
+      "items": {
+        "$ref": "#/$defs/FidelityDimensionScoreV1"
+      },
+      "title": "Dimensions",
+      "type": "array"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Failure Reason"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "invariants": {
+      "items": {
+        "$ref": "#/$defs/InvariantComparisonV1"
+      },
+      "title": "Invariants",
+      "type": "array"
+    },
+    "objective_id": {
+      "format": "uuid",
+      "title": "Objective Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "substitutions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Substitutions",
+      "type": "array"
+    },
+    "unsupported_constructs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unsupported Constructs",
+      "type": "array"
+    },
+    "valid_for_investigation": {
+      "default": false,
+      "title": "Valid For Investigation",
+      "type": "boolean"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "objective_id"
+  ],
+  "title": "FidelityReportV1",
+  "type": "object"
+}

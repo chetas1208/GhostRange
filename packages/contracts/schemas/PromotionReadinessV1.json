@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "ReadinessDimensionStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "WARN",
+        "SKIP",
+        "NOT_APPLICABLE"
+      ],
+      "title": "ReadinessDimensionStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adversarial_status": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "approval_readiness": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "blockers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blockers",
+      "type": "array"
+    },
+    "change_equivalence": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "claim_validity": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "fidelity": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "observability_readiness": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "regression_status": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "residual_uncertainty": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "rollback_readiness": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_currency": {
+      "$ref": "#/$defs/ReadinessDimensionStatus",
+      "default": "SKIP"
+    }
+  },
+  "title": "PromotionReadinessV1",
+  "type": "object"
+}

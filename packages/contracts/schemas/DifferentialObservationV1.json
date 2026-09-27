@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "baseline_oracle_satisfied": {
+      "title": "Baseline Oracle Satisfied",
+      "type": "boolean"
+    },
+    "baseline_world_id": {
+      "format": "uuid",
+      "title": "Baseline World Id",
+      "type": "string"
+    },
+    "candidate_fingerprint": {
+      "title": "Candidate Fingerprint",
+      "type": "string"
+    },
+    "interpretation": {
+      "title": "Interpretation",
+      "type": "string"
+    },
+    "remediated_oracle_satisfied": {
+      "title": "Remediated Oracle Satisfied",
+      "type": "boolean"
+    },
+    "remediated_world_id": {
+      "format": "uuid",
+      "title": "Remediated World Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "candidate_fingerprint",
+    "baseline_world_id",
+    "remediated_world_id",
+    "baseline_oracle_satisfied",
+    "remediated_oracle_satisfied",
+    "interpretation"
+  ],
+  "title": "DifferentialObservationV1",
+  "type": "object"
+}

@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "affected_components": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Components",
+      "type": "array"
+    },
+    "claims_awaiting": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Claims Awaiting",
+      "type": "array"
+    },
+    "drift_set_id": {
+      "format": "uuid",
+      "title": "Drift Set Id",
+      "type": "string"
+    },
+    "fidelity_checks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Fidelity Checks",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "impact_graph_id": {
+      "format": "uuid",
+      "title": "Impact Graph Id",
+      "type": "string"
+    },
+    "incremental_plan_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Incremental Plan Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "unaffected_claim_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Unaffected Claim Ids",
+      "type": "array"
+    },
+    "verification_tests": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Verification Tests",
+      "type": "array"
+    }
+  },
+  "required": [
+    "drift_set_id",
+    "impact_graph_id"
+  ],
+  "title": "RevalidationPlanV1",
+  "type": "object"
+}

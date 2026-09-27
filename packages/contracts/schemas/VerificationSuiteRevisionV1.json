@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "VerificationTestSource": {
+      "enum": [
+        "KNOWN",
+        "COUNTEREXAMPLE",
+        "MANUAL",
+        "RESEARCH"
+      ],
+      "title": "VerificationTestSource",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "added_from": {
+      "$ref": "#/$defs/VerificationTestSource"
+    },
+    "counterexample_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Counterexample Id"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "suite_id": {
+      "format": "uuid",
+      "title": "Suite Id",
+      "type": "string"
+    },
+    "test_fingerprint": {
+      "title": "Test Fingerprint",
+      "type": "string"
+    }
+  },
+  "required": [
+    "suite_id",
+    "added_from",
+    "test_fingerprint"
+  ],
+  "title": "VerificationSuiteRevisionV1",
+  "type": "object"
+}

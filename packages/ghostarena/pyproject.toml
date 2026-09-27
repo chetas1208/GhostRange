@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-ghostarena"
+version = "0.1.0"
+description = "M19 GhostArena — independent evaluation substrate"
+requires-python = ">=3.11"
+dependencies = ["ghostrange-contracts", "ghostrange-ghostevolve"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_ghostarena*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "compute_usd_saved_estimate": {
+      "default": 0.0,
+      "title": "Compute Usd Saved Estimate",
+      "type": "number"
+    },
+    "contribution_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Contribution Id"
+    },
+    "decision_changed": {
+      "default": false,
+      "title": "Decision Changed",
+      "type": "boolean"
+    },
+    "experiments_reordered": {
+      "default": 0,
+      "title": "Experiments Reordered",
+      "type": "integer"
+    },
+    "local_validation_result": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Local Validation Result"
+    },
+    "node_id": {
+      "title": "Node Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "node_id"
+  ],
+  "title": "KnowledgeUtilityReportV1",
+  "type": "object"
+}

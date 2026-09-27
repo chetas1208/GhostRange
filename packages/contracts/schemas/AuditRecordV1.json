@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "ActorRef": {
+      "additionalProperties": false,
+      "description": "Who/what issued the request that produced an ``AuditRecordV1``.",
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/PolicyActorKind"
+        },
+        "tool_call_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Call Id"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "ActorRef",
+      "type": "object"
+    },
+    "PolicyActorKind": {
+      "description": "Who/what issued a request that reached the policy-check service \u2014\nthe ``ActorRef.kind`` field on ``AuditRecordV1`` (EXECUTION_POLICY.md\n\u00a78). Always one of these three; never free text.",
+      "enum": [
+        "AGENT",
+        "SERVICE",
+        "HUMAN"
+      ],
+      "title": "PolicyActorKind",
+      "type": "string"
+    },
+    "PolicyDenyReason": {
+      "description": "Fixed vocabulary of policy-check deny codes\n(``docs/security/EXECUTION_POLICY.md`` \u00a73.2). A ``PolicyDecisionV1``\ndenial's ``reason`` is always one of these, never free text, so\ndetection/alerting tooling (\"the agent is trying to escalate\") can\npattern-match reliably instead of parsing prose.",
+      "enum": [
+        "BAD_TOKEN_SIGNATURE",
+        "TOKEN_EXPIRED",
+        "TOKEN_SCOPE_MISMATCH",
+        "UNKNOWN_RANGE",
+        "TARGET_NOT_IN_RANGE",
+        "CAPABILITY_NOT_GRANTED",
+        "ABILITY_NOT_IN_CATALOG",
+        "QUOTA_EXCEEDED",
+        "HUMAN_APPROVAL_REQUIRED",
+        "OFF_RANGE_TARGET_ABSOLUTE_DENY",
+        "POLICY_SERVICE_UNAVAILABLE"
+      ],
+      "title": "PolicyDenyReason",
+      "type": "string"
+    },
+    "ProvenanceRef": {
+      "additionalProperties": false,
+      "description": "Code-level provenance for an ``AuditRecordV1``: which package/version\nissued the request and which DAG node it was for.",
+      "properties": {
+        "dag_node_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dag Node Id"
+        },
+        "package": {
+          "minLength": 1,
+          "title": "Package",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "package",
+        "version"
+      ],
+      "title": "ProvenanceRef",
+      "type": "object"
+    },
+    "TargetRef": {
+      "additionalProperties": false,
+      "description": "A single execution target, scoped to exactly one range.\n\nDeliberately NOT free text with no constraint: ``host_or_ip`` must be a\nplausible bare hostname or IPv4/IPv6 literal (no scheme, no path, no\nwhitespace, no shell/URL metacharacters) so this type can never itself\nbecome an injection vector even before the *semantic* check (\"is this\nactually in the range's registry\") runs in policy-check. The semantic\ncheck is the real security property (enforced by\n``packages/policy-check``, re-derived from its own registry on every\ncall) \u2014 this pattern constraint is defense-in-depth, not a substitute\nfor it.",
+      "properties": {
+        "host_or_ip": {
+          "maxLength": 253,
+          "minLength": 1,
+          "title": "Host Or Ip",
+          "type": "string"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "range_id",
+        "host_or_ip"
+      ],
+      "title": "TargetRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One immutable, hash-chained record of an authorize() decision\n(EXECUTION_POLICY.md \u00a78). ``prev_hash`` chains to the previous record's\n``signature`` \u2014 append-only by construction of the chain, not merely by\nstorage-layer convention (the storage-layer backstop, a DB role with no\nUPDATE/DELETE grant, is a deployment concern outside this shape).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/ActorRef"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "DENY"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "prev_hash": {
+      "minLength": 1,
+      "title": "Prev Hash",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ProvenanceRef"
+    },
+    "range_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Range Id"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PolicyDenyReason"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "request_hash": {
+      "minLength": 1,
+      "title": "Request Hash",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 0,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "signature": {
+      "minLength": 1,
+      "title": "Signature",
+      "type": "string"
+    },
+    "target_refs": {
+      "items": {
+        "$ref": "#/$defs/TargetRef"
+      },
+      "title": "Target Refs",
+      "type": "array"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "seq",
+    "prev_hash",
+    "actor",
+    "request_hash",
+    "decision",
+    "world_id",
+    "provenance",
+    "signature"
+  ],
+  "title": "AuditRecordV1",
+  "type": "object"
+}

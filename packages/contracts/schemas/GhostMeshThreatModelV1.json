@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "adversaries": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Adversaries",
+      "type": "array"
+    },
+    "coordinator_trust": {
+      "default": "HONEST_BUT_CURIOUS",
+      "title": "Coordinator Trust",
+      "type": "string"
+    },
+    "out_of_scope": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Out Of Scope",
+      "type": "array"
+    },
+    "participant_trust": {
+      "default": "BYZANTINE_POSSIBLE",
+      "title": "Participant Trust",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "GhostMeshThreatModelV1",
+  "type": "object"
+}

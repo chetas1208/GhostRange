@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "IncrementalAction": {
+      "enum": [
+        "NOOP",
+        "UPDATE_CONFIG",
+        "RESTART_SERVICE",
+        "REBUILD_CONTAINER",
+        "REPROVISION_COMPONENT",
+        "REBUILD_NETWORK",
+        "REBUILD_WORLD"
+      ],
+      "title": "IncrementalAction",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/IncrementalAction"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "affected_entity_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Entity Ids",
+      "type": "array"
+    },
+    "full_rebuild_required": {
+      "default": false,
+      "title": "Full Rebuild Required",
+      "type": "boolean"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "twin_revision_from": {
+      "format": "uuid",
+      "title": "Twin Revision From",
+      "type": "string"
+    },
+    "twin_revision_to": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Twin Revision To"
+    }
+  },
+  "required": [
+    "twin_revision_from"
+  ],
+  "title": "IncrementalCompilationPlanV1",
+  "type": "object"
+}

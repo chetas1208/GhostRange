@@ -1,0 +1,10 @@
+openapi: 3.0.0
+info:
+  title: Auth Service API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      responses:
+        "200":
+          description: OK

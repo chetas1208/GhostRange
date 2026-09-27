@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "AssetRole": {
+      "enum": [
+        "WORKSTATION",
+        "SERVER",
+        "DOMAIN_CONTROLLER",
+        "FIREWALL",
+        "DATABASE",
+        "LOAD_BALANCER",
+        "OTHER"
+      ],
+      "title": "AssetRole",
+      "type": "string"
+    },
+    "SecurityCriticality": {
+      "description": "How much damage compromise/misconfiguration of a thing would cause.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SecurityCriticality",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A provisioned host inside a World.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "criticality": {
+      "$ref": "#/$defs/SecurityCriticality",
+      "default": "MEDIUM"
+    },
+    "hostname": {
+      "title": "Hostname",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "ip_address": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ip Address"
+    },
+    "metadata": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Metadata",
+      "type": "object"
+    },
+    "network_id": {
+      "format": "uuid",
+      "title": "Network Id",
+      "type": "string"
+    },
+    "os_family": {
+      "title": "Os Family",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/AssetRole"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "network_id",
+    "hostname",
+    "os_family",
+    "role"
+  ],
+  "title": "AssetV1",
+  "type": "object"
+}

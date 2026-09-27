@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-policy-check"
+version = "0.1.0"
+description = "GhostRange's security-boundary enforcement point: authorize() and its supporting registry/signing/audit primitives (docs/security/EXECUTION_POLICY.md)."
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "ghostrange-contracts",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_policy_check*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

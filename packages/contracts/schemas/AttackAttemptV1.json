@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "AttackOutcome": {
+      "enum": [
+        "SUCCESS",
+        "FAILED",
+        "BLOCKED",
+        "INCONCLUSIVE"
+      ],
+      "title": "AttackOutcome",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "executed_at": {
+      "format": "date-time",
+      "title": "Executed At",
+      "type": "string"
+    },
+    "executed_by_agent_id": {
+      "format": "uuid",
+      "title": "Executed By Agent Id",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "outcome": {
+      "$ref": "#/$defs/AttackOutcome",
+      "default": "INCONCLUSIVE"
+    },
+    "remediation_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Remediation being attacked, if this is a post-fix re-attack",
+      "title": "Remediation Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "technique_id": {
+      "description": "MITRE ATT&CK technique id, e.g. T1059.001",
+      "title": "Technique Id",
+      "type": "string"
+    },
+    "technique_name": {
+      "title": "Technique Name",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "technique_id",
+    "technique_name",
+    "executed_by_agent_id"
+  ],
+  "title": "AttackAttemptV1",
+  "type": "object"
+}

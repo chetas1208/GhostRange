@@ -1,0 +1,51 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "endpoint": {
+      "title": "Endpoint",
+      "type": "string"
+    },
+    "method": {
+      "default": "GET",
+      "title": "Method",
+      "type": "string"
+    },
+    "rate_limit_per_minute": {
+      "default": 10,
+      "minimum": 1,
+      "title": "Rate Limit Per Minute",
+      "type": "integer"
+    },
+    "read_only": {
+      "default": true,
+      "title": "Read Only",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic_identity": {
+      "default": "ghostwatch-synthetic@internal",
+      "title": "Synthetic Identity",
+      "type": "string"
+    },
+    "transaction_id": {
+      "title": "Transaction Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "transaction_id",
+    "description",
+    "endpoint"
+  ],
+  "title": "SyntheticTransactionV1",
+  "type": "object"
+}

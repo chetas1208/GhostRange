@@ -1,0 +1,335 @@
+{
+  "$defs": {
+    "DerivationConfidence": {
+      "enum": [
+        "low",
+        "medium"
+      ],
+      "title": "DerivationConfidence",
+      "type": "string"
+    },
+    "DerivationProvenanceV1": {
+      "additionalProperties": false,
+      "description": "Which file + heuristic produced one derived fact.\n\nA derived fact with no provenance entry is treated as a bug in the\nscanner, not an acceptable edge case \u2014 see repo_scanner.py.",
+      "properties": {
+        "locator": {
+          "description": "Where inside the file, e.g. 'services.auth' or 'EXPOSE 8080'",
+          "title": "Locator",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "description": "Human-readable explanation for audit display",
+          "title": "Note",
+          "type": "string"
+        },
+        "rule": {
+          "description": "Heuristic name that produced this fact, e.g. 'compose_service_block'",
+          "title": "Rule",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/DerivationSourceKind"
+        },
+        "source_path": {
+          "description": "Path relative to repo root, e.g. 'docker-compose.yml'",
+          "title": "Source Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_kind",
+        "source_path",
+        "locator",
+        "rule"
+      ],
+      "title": "DerivationProvenanceV1",
+      "type": "object"
+    },
+    "DerivationSourceKind": {
+      "enum": [
+        "docker_compose",
+        "dockerfile",
+        "kubernetes_manifest",
+        "terraform",
+        "package_manifest",
+        "openapi_spec",
+        "env_template",
+        "directory_heuristic"
+      ],
+      "title": "DerivationSourceKind",
+      "type": "string"
+    },
+    "DerivedDependencyEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "from_service": {
+          "title": "From Service",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "provenance": {
+          "items": {
+            "$ref": "#/$defs/DerivationProvenanceV1"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "relationship": {
+          "default": "depends_on",
+          "title": "Relationship",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_service": {
+          "title": "To Service",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_service",
+        "to_service"
+      ],
+      "title": "DerivedDependencyEdgeV1",
+      "type": "object"
+    },
+    "DerivedServiceRole": {
+      "enum": [
+        "auth",
+        "api",
+        "gateway",
+        "database",
+        "cache",
+        "queue",
+        "frontend",
+        "worker",
+        "unknown"
+      ],
+      "title": "DerivedServiceRole",
+      "type": "string"
+    },
+    "DerivedServiceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "build_context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Build Context"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image"
+        },
+        "inferred_role": {
+          "$ref": "#/$defs/DerivedServiceRole",
+          "default": "unknown"
+        },
+        "is_external_interface": {
+          "default": false,
+          "title": "Is External Interface",
+          "type": "boolean"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "ports": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Ports",
+          "type": "array"
+        },
+        "provenance": {
+          "items": {
+            "$ref": "#/$defs/DerivationProvenanceV1"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "role_confidence": {
+          "$ref": "#/$defs/DerivationConfidence",
+          "default": "low"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DerivedServiceV1",
+      "type": "object"
+    },
+    "RepoScanSummaryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "data_stores_identified": {
+          "minimum": 0,
+          "title": "Data Stores Identified",
+          "type": "integer"
+        },
+        "external_interfaces_identified": {
+          "minimum": 0,
+          "title": "External Interfaces Identified",
+          "type": "integer"
+        },
+        "files_relevant": {
+          "minimum": 0,
+          "title": "Files Relevant",
+          "type": "integer"
+        },
+        "files_scanned": {
+          "minimum": 0,
+          "title": "Files Scanned",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "services_identified": {
+          "minimum": 0,
+          "title": "Services Identified",
+          "type": "integer"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "files_scanned",
+        "files_relevant",
+        "services_identified",
+        "data_stores_identified",
+        "external_interfaces_identified"
+      ],
+      "title": "RepoScanSummaryV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "branch": {
+      "title": "Branch",
+      "type": "string"
+    },
+    "commit_sha": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Commit Sha"
+    },
+    "confidence_disclaimer": {
+      "default": "Heuristic, best-effort derivation from repository structure only. Not verified against runtime behavior; treat every fact as a hypothesis, not ground truth.",
+      "title": "Confidence Disclaimer",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dependency_edges": {
+      "items": {
+        "$ref": "#/$defs/DerivedDependencyEdgeV1"
+      },
+      "title": "Dependency Edges",
+      "type": "array"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "repository_url": {
+      "title": "Repository Url",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "services": {
+      "items": {
+        "$ref": "#/$defs/DerivedServiceV1"
+      },
+      "title": "Services",
+      "type": "array"
+    },
+    "summary": {
+      "$ref": "#/$defs/RepoScanSummaryV1"
+    }
+  },
+  "required": [
+    "repository_url",
+    "branch",
+    "summary"
+  ],
+  "title": "DerivedSystemModelV1",
+  "type": "object"
+}

@@ -1,0 +1,73 @@
+{
+  "additionalProperties": false,
+  "description": "A bundle tying a Claim's Verification to the Observations and\nArtifacts that back it \u2014 the object surfaced to humans/UI as the\n\"proof\" behind a conclusion, and what ``evidence.created`` announces.",
+  "properties": {
+    "artifact_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Artifact Ids",
+      "type": "array"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "content_hash": {
+      "description": "SHA-256 hex digest summarizing this evidence bundle for provenance chaining",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "observation_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Observation Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "verification_id": {
+      "format": "uuid",
+      "title": "Verification Id",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "claim_id",
+    "verification_id",
+    "observation_ids",
+    "summary",
+    "content_hash"
+  ],
+  "title": "EvidenceV1",
+  "type": "object"
+}

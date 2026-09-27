@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "WorldStatus": {
+      "description": "Lifecycle of an individual World (a forked branch inside a Range).",
+      "enum": [
+        "REQUESTED",
+        "PROVISIONING",
+        "READY",
+        "EXECUTING",
+        "VERIFYING",
+        "DESTROYED",
+        "FAILED"
+      ],
+      "title": "WorldStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One node in the multiverse tree: a running (or terminated) branch.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "destroyed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Destroyed At"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Failure Reason"
+    },
+    "hypothesis_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hypothesis Id"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "label": {
+      "description": "Human-readable branch label, e.g. 'remediation-a'",
+      "title": "Label",
+      "type": "string"
+    },
+    "parent_world_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "None iff this is the root World of its Range",
+      "title": "Parent World Id"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/WorldStatus",
+      "default": "REQUESTED"
+    }
+  },
+  "required": [
+    "range_id",
+    "label"
+  ],
+  "title": "WorldV1",
+  "type": "object"
+}

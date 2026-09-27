@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "DirectorPolicyId": {
+      "enum": [
+        "FIXED_SCRIPT",
+        "RANDOM_SAFE",
+        "ROUND_ROBIN_UNCERTAINTY",
+        "GREEDY_INFORMATION",
+        "GREEDY_DECISION_VALUE",
+        "GHOSTDIRECTOR_V1",
+        "ORACLE_BENCHMARK"
+      ],
+      "title": "DirectorPolicyId",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "campaign_id": {
+      "format": "uuid",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/DirectorPolicyId"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "policy"
+  ],
+  "title": "DirectorTraceV1",
+  "type": "object"
+}

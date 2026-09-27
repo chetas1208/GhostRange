@@ -1,0 +1,89 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "compute_cost_usd": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Compute Cost Usd",
+      "type": "number"
+    },
+    "decision_relevance": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Decision Relevance",
+      "type": "number"
+    },
+    "expected_security_value": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Expected Security Value",
+      "type": "number"
+    },
+    "experiment_risk": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Experiment Risk",
+      "type": "number"
+    },
+    "hypothesis_discrimination": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Hypothesis Discrimination",
+      "type": "number"
+    },
+    "information_gain": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Information Gain",
+      "type": "number"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "proposal_id": {
+      "format": "uuid",
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "representativeness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Representativeness",
+      "type": "number"
+    },
+    "robustness": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Robustness",
+      "type": "number"
+    },
+    "runtime_sec": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Runtime Sec",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "proposal_id"
+  ],
+  "title": "ExperimentUtilityV1",
+  "type": "object"
+}

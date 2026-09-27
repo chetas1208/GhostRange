@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "VerificationResult": {
+      "enum": [
+        "PENDING",
+        "PASSED",
+        "FAILED",
+        "INCONCLUSIVE"
+      ],
+      "title": "VerificationResult",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "alternative_tests_passed": {
+      "title": "Alternative Tests Passed",
+      "type": "boolean"
+    },
+    "compute_cost_usd": {
+      "minimum": 0,
+      "title": "Compute Cost Usd",
+      "type": "number"
+    },
+    "confidence_explanation": {
+      "title": "Confidence Explanation",
+      "type": "string"
+    },
+    "evidence_count": {
+      "minimum": 0,
+      "title": "Evidence Count",
+      "type": "integer"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "model_cost_usd": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Model Cost Usd",
+      "type": "number"
+    },
+    "original_attack_blocked": {
+      "title": "Original Attack Blocked",
+      "type": "boolean"
+    },
+    "regressions_passed": {
+      "title": "Regressions Passed",
+      "type": "boolean"
+    },
+    "remediation_id": {
+      "format": "uuid",
+      "title": "Remediation Id",
+      "type": "string"
+    },
+    "runtime_seconds": {
+      "minimum": 0,
+      "title": "Runtime Seconds",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "unresolved_findings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unresolved Findings",
+      "type": "array"
+    },
+    "verification_status": {
+      "$ref": "#/$defs/VerificationResult"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "remediation_id",
+    "original_attack_blocked",
+    "regressions_passed",
+    "alternative_tests_passed",
+    "evidence_count",
+    "runtime_seconds",
+    "compute_cost_usd",
+    "verification_status",
+    "confidence_explanation"
+  ],
+  "title": "WorldEvaluationV1",
+  "type": "object"
+}

@@ -1,0 +1,37 @@
+{
+  "label": "SIMULATED_BENCHMARK",
+  "metrics": {
+    "false_causal_claim_rate_proxy": 0.0,
+    "unsafe_transport_rate": 0.0,
+    "not_identifiable_recognition_rate": 1.0,
+    "interventions_run": 3,
+    "observational_edges_proposed": 7,
+    "intervention_supported_edges": 2
+  },
+  "transport": {
+    "mesh_structural_C": true,
+    "causal_transport_C": "NOT_TRANSPORTABLE",
+    "negative_transfer_prevented": true
+  },
+  "baselines": {
+    "CORRELATION_HEURISTIC": {
+      "edges_from_obs": 7
+    },
+    "ACTIVE_GHOSTCAUSAL_V1": {
+      "label": "SIMULATED_SCM",
+      "interventions": {
+        "CONTROL": true,
+        "CACHE_INVALIDATED": false,
+        "ROUTE_CHANGED": true,
+        "REFRESH_DISABLED": false
+      },
+      "cache_blocks_bypass": true,
+      "route_does_not_block": true,
+      "counterfactual_prediction_match": true,
+      "transport_B": "PARTIALLY_TRANSPORTABLE",
+      "transport_C": "NOT_TRANSPORTABLE",
+      "structural_C_applicable": true,
+      "m14_rejects_C_transport": true
+    }
+  }
+}

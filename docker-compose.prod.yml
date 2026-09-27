@@ -1,0 +1,84 @@
+# GhostRange production stack for ghostrange-control (no local Postgres).
+# Managed PostgreSQL + Vultr Object Storage + Inference are external.
+
+name: ghostrange-prod
+
+services:
+  valkey:
+    image: valkey/valkey:7-alpine
+    restart: unless-stopped
+    command: ["valkey-server", "--save", "", "--appendonly", "no"]
+    networks: [ghostrange]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.api
+    image: ghostrange-api:${GHOSTRANGE_DEPLOY_SHA:-local}
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      REDIS_URL: redis://valkey:6379/0
+      GHOSTRANGE_TRUSTED_PROXY: "true"
+      GHOSTRANGE_REQUIRE_DURABLE: "true"
+    depends_on:
+      valkey:
+        condition: service_healthy
+    networks: [ghostrange]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.web
+      args:
+        VITE_DATA_SOURCE: live
+        VITE_BOOTSTRAP_M20: "true"
+        VITE_ENABLE_TOUR: "false"
+        VITE_API_BASE: ""
+    image: ghostrange-web:${GHOSTRANGE_DEPLOY_SHA:-local}
+    restart: unless-stopped
+    networks: [ghostrange]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  proxy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - web
+    networks: [ghostrange]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  ghostrange:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

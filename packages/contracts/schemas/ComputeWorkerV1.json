@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "ComputeProvider": {
+      "enum": [
+        "VULTR",
+        "LOCAL_MOCK"
+      ],
+      "title": "ComputeProvider",
+      "type": "string"
+    },
+    "ComputeWorkerStatus": {
+      "enum": [
+        "REQUESTED",
+        "PROVISIONING",
+        "READY",
+        "BUSY",
+        "RELEASED",
+        "FAILED"
+      ],
+      "title": "ComputeWorkerStatus",
+      "type": "string"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cost_per_hour_usd": {
+      "minimum": 0,
+      "title": "Cost Per Hour Usd",
+      "type": "number"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "provider": {
+      "$ref": "#/$defs/ComputeProvider",
+      "default": "VULTR"
+    },
+    "provider_instance_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Vultr instance id once provisioned; None until then",
+      "title": "Provider Instance Id"
+    },
+    "ready_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ready At"
+    },
+    "region": {
+      "title": "Region",
+      "type": "string"
+    },
+    "released_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Released At"
+    },
+    "resource_class": {
+      "$ref": "#/$defs/ResourceClass"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ComputeWorkerStatus",
+      "default": "REQUESTED"
+    },
+    "world_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "World this worker is currently bound to, if any",
+      "title": "World Id"
+    }
+  },
+  "required": [
+    "resource_class",
+    "region",
+    "cost_per_hour_usd"
+  ],
+  "title": "ComputeWorkerV1",
+  "type": "object"
+}

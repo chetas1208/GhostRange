@@ -1,0 +1,56 @@
+{
+  "$defs": {
+    "ConformanceStatus": {
+      "enum": [
+        "MATCH",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MATERIAL_DIFFERENCE",
+        "UNKNOWN",
+        "NOT_OBSERVABLE"
+      ],
+      "title": "ConformanceStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approved_artifact_digest": {
+      "title": "Approved Artifact Digest",
+      "type": "string"
+    },
+    "dimensions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ConformanceStatus"
+      },
+      "title": "Dimensions",
+      "type": "object"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "observed_artifact_digest": {
+      "title": "Observed Artifact Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ConformanceStatus",
+      "default": "UNKNOWN"
+    }
+  },
+  "required": [
+    "approved_artifact_digest",
+    "observed_artifact_digest"
+  ],
+  "title": "DeploymentConformanceReportV1",
+  "type": "object"
+}

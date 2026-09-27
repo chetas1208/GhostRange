@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "ChangeActionKind": {
+      "enum": [
+        "CONFIG",
+        "CONTAINER_IMAGE",
+        "PACKAGE_VERSION",
+        "INFRA_PARAMETER",
+        "NETWORK_POLICY",
+        "IDENTITY_POLICY",
+        "DATABASE_MIGRATION_REF"
+      ],
+      "title": "ChangeActionKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "after_summary": {
+      "default": "",
+      "title": "After Summary",
+      "type": "string"
+    },
+    "before_summary": {
+      "default": "",
+      "title": "Before Summary",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/ChangeActionKind"
+    },
+    "remediation_ref": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Remediation Ref"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "target_path": {
+      "title": "Target Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "target_path",
+    "description"
+  ],
+  "title": "ChangeActionV1",
+  "type": "object"
+}

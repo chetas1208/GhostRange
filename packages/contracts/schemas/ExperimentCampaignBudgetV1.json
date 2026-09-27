@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "max_compute_usd": {
+      "default": 50.0,
+      "minimum": 0,
+      "title": "Max Compute Usd",
+      "type": "number"
+    },
+    "max_experiments": {
+      "default": 20,
+      "minimum": 1,
+      "title": "Max Experiments",
+      "type": "integer"
+    },
+    "max_model_usd": {
+      "default": 10.0,
+      "minimum": 0,
+      "title": "Max Model Usd",
+      "type": "number"
+    },
+    "max_wall_time_sec": {
+      "default": 3600,
+      "exclusiveMinimum": 0,
+      "title": "Max Wall Time Sec",
+      "type": "number"
+    },
+    "max_worlds": {
+      "default": 10,
+      "minimum": 1,
+      "title": "Max Worlds",
+      "type": "integer"
+    },
+    "reserved_usd": {
+      "default": 0.0,
+      "title": "Reserved Usd",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "spent_usd": {
+      "default": 0.0,
+      "title": "Spent Usd",
+      "type": "number"
+    }
+  },
+  "title": "ExperimentCampaignBudgetV1",
+  "type": "object"
+}

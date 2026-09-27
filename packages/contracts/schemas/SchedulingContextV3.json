@@ -1,0 +1,981 @@
+{
+  "$defs": {
+    "CheckpointStrategy": {
+      "enum": [
+        "NONE",
+        "RESTARTABLE",
+        "STATEFUL"
+      ],
+      "title": "CheckpointStrategy",
+      "type": "string"
+    },
+    "ComputeCostModelV1": {
+      "additionalProperties": false,
+      "properties": {
+        "gpu_usd_per_hour": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Gpu Usd Per Hour",
+          "type": "object"
+        },
+        "model_version": {
+          "default": "compute-cost/v1",
+          "title": "Model Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "serverless_usd_per_1k_tokens": {
+          "default": 0.002,
+          "minimum": 0,
+          "title": "Serverless Usd Per 1K Tokens",
+          "type": "number"
+        },
+        "worker_usd_per_hour": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Worker Usd Per Hour",
+          "type": "object"
+        }
+      },
+      "title": "ComputeCostModelV1",
+      "type": "object"
+    },
+    "FragmentationMetricsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_fragmentation": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Cpu Fragmentation",
+          "type": "number"
+        },
+        "gpu_fragmentation": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Gpu Fragmentation",
+          "type": "number"
+        },
+        "placement_failure_rate": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Placement Failure Rate",
+          "type": "number"
+        },
+        "ram_fragmentation": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Ram Fragmentation",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "FragmentationMetricsV1",
+      "type": "object"
+    },
+    "QueueStateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "blocked_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Blocked Count",
+          "type": "integer"
+        },
+        "critical_ready_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Critical Ready Count",
+          "type": "integer"
+        },
+        "demand_by_resource_class": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Demand By Resource Class",
+          "type": "object"
+        },
+        "oldest_wait_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Oldest Wait Seconds",
+          "type": "number"
+        },
+        "queue_wait_seconds_p95": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Queue Wait Seconds P95",
+          "type": "number"
+        },
+        "ready_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ready Count",
+          "type": "integer"
+        },
+        "running_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Running Count",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "QueueStateV1",
+      "type": "object"
+    },
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    },
+    "ResourceProfileV1": {
+      "additionalProperties": false,
+      "description": "What a Task asks for, before the scheduler decides what it gets.\n\nCompare to ``SchedulerDecisionV1.target_resource_class`` (what it\nactually gets) and ``ComputeWorkerV1.resource_class`` (what got\nprovisioned) \u2014 three points where a mismatch is meaningful telemetry.",
+      "properties": {
+        "cpu_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Cpu Cores",
+          "type": "number"
+        },
+        "gpu_required": {
+          "default": false,
+          "title": "Gpu Required",
+          "type": "boolean"
+        },
+        "gpu_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Type"
+        },
+        "memory_gb": {
+          "exclusiveMinimum": 0,
+          "title": "Memory Gb",
+          "type": "number"
+        },
+        "preferred_resource_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResourceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cpu_cores",
+        "memory_gb"
+      ],
+      "title": "ResourceProfileV1",
+      "type": "object"
+    },
+    "RetryPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "backoff_seconds": {
+          "default": 5.0,
+          "minimum": 0,
+          "title": "Backoff Seconds",
+          "type": "number"
+        },
+        "max_retries": {
+          "default": 0,
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Max Retries",
+          "type": "integer"
+        },
+        "retry_on_reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retry On Reason Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "RetryPolicyV1",
+      "type": "object"
+    },
+    "RuntimeDistributionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "mean_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Mean Seconds",
+          "type": "number"
+        },
+        "p50_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "P50 Seconds",
+          "type": "number"
+        },
+        "p75_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "P75 Seconds",
+          "type": "number"
+        },
+        "p90_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "P90 Seconds",
+          "type": "number"
+        },
+        "p95_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "P95 Seconds",
+          "type": "number"
+        },
+        "p99_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "P99 Seconds",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "task_type": {
+          "$ref": "#/$defs/TaskType"
+        },
+        "variance_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Variance Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "task_type"
+      ],
+      "title": "RuntimeDistributionV1",
+      "type": "object"
+    },
+    "SchedulerPolicyId": {
+      "enum": [
+        "STATIC_SERIAL",
+        "STATIC_EQUAL_PARALLEL",
+        "FIXED_POOL",
+        "FIRST_FIT",
+        "COST_MIN",
+        "GHOSTSCHEDULER_V3",
+        "FIXED_POOL_SAFE"
+      ],
+      "title": "SchedulerPolicyId",
+      "type": "string"
+    },
+    "SchedulingObjectiveWeightsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "maximize_evidence_gain": {
+          "default": 0.6,
+          "title": "Maximize Evidence Gain",
+          "type": "number"
+        },
+        "maximize_utilization": {
+          "default": 0.2,
+          "title": "Maximize Utilization",
+          "type": "number"
+        },
+        "maximize_verification_coverage": {
+          "default": 1.0,
+          "title": "Maximize Verification Coverage",
+          "type": "number"
+        },
+        "minimize_compute_cost": {
+          "default": 0.5,
+          "title": "Minimize Compute Cost",
+          "type": "number"
+        },
+        "minimize_idle_compute": {
+          "default": 0.3,
+          "title": "Minimize Idle Compute",
+          "type": "number"
+        },
+        "minimize_time_to_verified": {
+          "default": 1.0,
+          "title": "Minimize Time To Verified",
+          "type": "number"
+        },
+        "minimize_wasted_speculation": {
+          "default": 0.4,
+          "title": "Minimize Wasted Speculation",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "SchedulingObjectiveWeightsV1",
+      "type": "object"
+    },
+    "SecurityCriticality": {
+      "description": "How much damage compromise/misconfiguration of a thing would cause.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SecurityCriticality",
+      "type": "string"
+    },
+    "SpeculationPolicyV1": {
+      "additionalProperties": false,
+      "description": "Governs whether/how this Task may be run speculatively (started\nbefore its full dependency chain is confirmed valuable) per the\nSpeculative Execution research track.",
+      "properties": {
+        "cancel_on_primary_success": {
+          "default": true,
+          "title": "Cancel On Primary Success",
+          "type": "boolean"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "max_speculative_branches": {
+          "default": 1,
+          "maximum": 16,
+          "minimum": 0,
+          "title": "Max Speculative Branches",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "SpeculationPolicyV1",
+      "type": "object"
+    },
+    "TaskLatencyModelV1": {
+      "additionalProperties": false,
+      "properties": {
+        "default_runtime_seconds": {
+          "default": 60.0,
+          "exclusiveMinimum": 0,
+          "title": "Default Runtime Seconds",
+          "type": "number"
+        },
+        "distributions": {
+          "items": {
+            "$ref": "#/$defs/RuntimeDistributionV1"
+          },
+          "title": "Distributions",
+          "type": "array"
+        },
+        "model_version": {
+          "default": "task-latency/v1",
+          "title": "Model Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "TaskLatencyModelV1",
+      "type": "object"
+    },
+    "TaskResourceProfileV2": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint_strategy": {
+          "$ref": "#/$defs/CheckpointStrategy",
+          "default": "RESTARTABLE"
+        },
+        "cold_start_sensitive": {
+          "default": false,
+          "title": "Cold Start Sensitive",
+          "type": "boolean"
+        },
+        "cpu_min": {
+          "exclusiveMinimum": 0,
+          "title": "Cpu Min",
+          "type": "number"
+        },
+        "cpu_preferred": {
+          "exclusiveMinimum": 0,
+          "title": "Cpu Preferred",
+          "type": "number"
+        },
+        "disk_intensity": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Disk Intensity",
+          "type": "number"
+        },
+        "expected_runtime_seconds": {
+          "minimum": 0,
+          "title": "Expected Runtime Seconds",
+          "type": "number"
+        },
+        "gpu_memory_gb": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Memory Gb"
+        },
+        "gpu_optional": {
+          "default": false,
+          "title": "Gpu Optional",
+          "type": "boolean"
+        },
+        "gpu_required": {
+          "default": false,
+          "title": "Gpu Required",
+          "type": "boolean"
+        },
+        "locality_constraints": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Locality Constraints",
+          "type": "object"
+        },
+        "model_inference": {
+          "default": false,
+          "title": "Model Inference",
+          "type": "boolean"
+        },
+        "network_intensity": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Network Intensity",
+          "type": "number"
+        },
+        "parallelizable": {
+          "default": true,
+          "title": "Parallelizable",
+          "type": "boolean"
+        },
+        "preemptible": {
+          "default": false,
+          "title": "Preemptible",
+          "type": "boolean"
+        },
+        "ram_min_gb": {
+          "exclusiveMinimum": 0,
+          "title": "Ram Min Gb",
+          "type": "number"
+        },
+        "ram_preferred_gb": {
+          "exclusiveMinimum": 0,
+          "title": "Ram Preferred Gb",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "speculatable": {
+          "default": false,
+          "title": "Speculatable",
+          "type": "boolean"
+        },
+        "task_id": {
+          "format": "uuid",
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_type": {
+          "$ref": "#/$defs/TaskType"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_type",
+        "cpu_min",
+        "cpu_preferred",
+        "ram_min_gb",
+        "ram_preferred_gb",
+        "expected_runtime_seconds"
+      ],
+      "title": "TaskResourceProfileV2",
+      "type": "object"
+    },
+    "TaskStatus": {
+      "enum": [
+        "QUEUED",
+        "SCHEDULED",
+        "RUNNING",
+        "SPECULATED",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ],
+      "title": "TaskStatus",
+      "type": "string"
+    },
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    },
+    "TaskV1": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "dependencies": {
+          "description": "Task ids that must complete before this one starts",
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "estimated_cost_usd": {
+          "minimum": 0,
+          "title": "Estimated Cost Usd",
+          "type": "number"
+        },
+        "estimated_duration_seconds": {
+          "minimum": 0,
+          "title": "Estimated Duration Seconds",
+          "type": "number"
+        },
+        "expected_evidence_gain": {
+          "description": "Scheduler's estimate of evidentiary value if run",
+          "minimum": 0,
+          "title": "Expected Evidence Gain",
+          "type": "number"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "priority": {
+          "default": 0,
+          "description": "Higher runs first, ties broken by scheduler",
+          "title": "Priority",
+          "type": "integer"
+        },
+        "resource_profile": {
+          "$ref": "#/$defs/ResourceProfileV1"
+        },
+        "retry_policy": {
+          "$ref": "#/$defs/RetryPolicyV1"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "security_criticality": {
+          "$ref": "#/$defs/SecurityCriticality",
+          "default": "MEDIUM"
+        },
+        "speculation_policy": {
+          "$ref": "#/$defs/SpeculationPolicyV1"
+        },
+        "status": {
+          "$ref": "#/$defs/TaskStatus",
+          "default": "QUEUED"
+        },
+        "task_type": {
+          "$ref": "#/$defs/TaskType"
+        },
+        "uncertainty": {
+          "description": "Scheduler's estimate of outcome uncertainty, 0=certain",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Uncertainty",
+          "type": "number"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        },
+        "world_id": {
+          "format": "uuid",
+          "title": "World Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "world_id",
+        "task_type",
+        "resource_profile",
+        "estimated_duration_seconds",
+        "estimated_cost_usd",
+        "uncertainty",
+        "expected_evidence_gain"
+      ],
+      "title": "TaskV1",
+      "type": "object"
+    },
+    "WorkerResourceProfileV2": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Cpu Cores",
+          "type": "number"
+        },
+        "current_task_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Current Task Ids",
+          "type": "array"
+        },
+        "estimated_hourly_cost_usd": {
+          "minimum": 0,
+          "title": "Estimated Hourly Cost Usd",
+          "type": "number"
+        },
+        "gpu_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Gpu Count",
+          "type": "integer"
+        },
+        "gpu_memory_gb": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Memory Gb"
+        },
+        "gpu_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Type"
+        },
+        "network_class": {
+          "default": "default",
+          "title": "Network Class",
+          "type": "string"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "ram_gb": {
+          "exclusiveMinimum": 0,
+          "title": "Ram Gb",
+          "type": "number"
+        },
+        "region": {
+          "default": "default",
+          "title": "Region",
+          "type": "string"
+        },
+        "remaining_min_lifetime_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Remaining Min Lifetime Seconds",
+          "type": "number"
+        },
+        "resource_class": {
+          "$ref": "#/$defs/ResourceClass"
+        },
+        "schema_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "startup_latency_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Startup Latency Seconds",
+          "type": "number"
+        },
+        "state": {
+          "description": "READY | BUSY | DRAINING | TERMINATING | TERMINATED",
+          "title": "State",
+          "type": "string"
+        },
+        "storage_class": {
+          "default": "default",
+          "title": "Storage Class",
+          "type": "string"
+        },
+        "utilization": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Utilization",
+          "type": "number"
+        },
+        "worker_id": {
+          "format": "uuid",
+          "title": "Worker Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "worker_id",
+        "provider",
+        "resource_class",
+        "cpu_cores",
+        "ram_gb",
+        "state",
+        "estimated_hourly_cost_usd"
+      ],
+      "title": "WorkerResourceProfileV2",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "branch_world_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Branch World Ids",
+      "type": "array"
+    },
+    "budget_hard_cap_usd": {
+      "exclusiveMinimum": 0,
+      "title": "Budget Hard Cap Usd",
+      "type": "number"
+    },
+    "budget_remaining_usd": {
+      "minimum": 0,
+      "title": "Budget Remaining Usd",
+      "type": "number"
+    },
+    "cost_model": {
+      "$ref": "#/$defs/ComputeCostModelV1"
+    },
+    "current_time": {
+      "format": "date-time",
+      "title": "Current Time",
+      "type": "string"
+    },
+    "dependency_edges": {
+      "description": "(from_task, to_task) must complete before to",
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "format": "uuid",
+            "type": "string"
+          },
+          {
+            "format": "uuid",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Dependency Edges",
+      "type": "array"
+    },
+    "evidence_gain_per_branch": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Evidence Gain Per Branch",
+      "type": "object"
+    },
+    "fragmentation": {
+      "$ref": "#/$defs/FragmentationMetricsV1"
+    },
+    "latency_model": {
+      "$ref": "#/$defs/TaskLatencyModelV1"
+    },
+    "mandatory_task_ids": {
+      "description": "Must run \u2014 scheduler cannot STOP or skip",
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Mandatory Task Ids",
+      "type": "array"
+    },
+    "model_call_stats": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Model Call Stats",
+      "type": "object"
+    },
+    "objective_weights": {
+      "$ref": "#/$defs/SchedulingObjectiveWeightsV1"
+    },
+    "policy_id": {
+      "$ref": "#/$defs/SchedulerPolicyId",
+      "default": "GHOSTSCHEDULER_V3"
+    },
+    "provider_startup_seconds": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Provider Startup Seconds",
+      "type": "object"
+    },
+    "queue_state": {
+      "$ref": "#/$defs/QueueStateV1"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "ready_task_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Ready Task Ids",
+      "type": "array"
+    },
+    "running_task_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Running Task Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "3",
+      "default": "3",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_profiles": {
+      "items": {
+        "$ref": "#/$defs/TaskResourceProfileV2"
+      },
+      "title": "Task Profiles",
+      "type": "array"
+    },
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/TaskV1"
+      },
+      "title": "Tasks",
+      "type": "array"
+    },
+    "workers": {
+      "items": {
+        "$ref": "#/$defs/WorkerResourceProfileV2"
+      },
+      "title": "Workers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "range_id",
+    "budget_remaining_usd",
+    "budget_hard_cap_usd"
+  ],
+  "title": "SchedulingContextV3",
+  "type": "object"
+}

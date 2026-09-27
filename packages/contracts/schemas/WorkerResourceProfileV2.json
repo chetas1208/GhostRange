@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cpu_cores": {
+      "exclusiveMinimum": 0,
+      "title": "Cpu Cores",
+      "type": "number"
+    },
+    "current_task_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Current Task Ids",
+      "type": "array"
+    },
+    "estimated_hourly_cost_usd": {
+      "minimum": 0,
+      "title": "Estimated Hourly Cost Usd",
+      "type": "number"
+    },
+    "gpu_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Gpu Count",
+      "type": "integer"
+    },
+    "gpu_memory_gb": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gpu Memory Gb"
+    },
+    "gpu_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Gpu Type"
+    },
+    "network_class": {
+      "default": "default",
+      "title": "Network Class",
+      "type": "string"
+    },
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "ram_gb": {
+      "exclusiveMinimum": 0,
+      "title": "Ram Gb",
+      "type": "number"
+    },
+    "region": {
+      "default": "default",
+      "title": "Region",
+      "type": "string"
+    },
+    "remaining_min_lifetime_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Remaining Min Lifetime Seconds",
+      "type": "number"
+    },
+    "resource_class": {
+      "$ref": "#/$defs/ResourceClass"
+    },
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "startup_latency_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Startup Latency Seconds",
+      "type": "number"
+    },
+    "state": {
+      "description": "READY | BUSY | DRAINING | TERMINATING | TERMINATED",
+      "title": "State",
+      "type": "string"
+    },
+    "storage_class": {
+      "default": "default",
+      "title": "Storage Class",
+      "type": "string"
+    },
+    "utilization": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Utilization",
+      "type": "number"
+    },
+    "worker_id": {
+      "format": "uuid",
+      "title": "Worker Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "worker_id",
+    "provider",
+    "resource_class",
+    "cpu_cores",
+    "ram_gb",
+    "state",
+    "estimated_hourly_cost_usd"
+  ],
+  "title": "WorkerResourceProfileV2",
+  "type": "object"
+}

@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "RangeLifecycleState": {
+      "description": "Authoritative Range state machine.\n\nThis reconciles the two views handed down from the product spec (a\nlinear happy-path list, and an implicit \"things can fail/stop early\"\nview) into one machine: FAILED is reachable from every non-terminal\nstate, STOPPING/DESTROYING form an explicit teardown path distinct from\na hard failure, and DESTROYED/FAILED are the only terminal states.\nSee ``RANGE_LIFECYCLE_TRANSITIONS`` in ``range.py`` for the transition\ntable this enum backs.",
+      "enum": [
+        "REQUESTED",
+        "PLANNING",
+        "PROVISIONING",
+        "BOOTING",
+        "READY",
+        "EXECUTING",
+        "VERIFYING",
+        "STOPPING",
+        "DESTROYING",
+        "DESTROYED",
+        "FAILED"
+      ],
+      "title": "RangeLifecycleState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Runtime record of a Range: the authoritative lifecycle state plus\npointers to the spec it was built from and the worlds forked inside it.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "destroyed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Destroyed At"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Failure Reason"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "root_world_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Root World Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "spec_id": {
+      "format": "uuid",
+      "title": "Spec Id",
+      "type": "string"
+    },
+    "spec_version": {
+      "default": "1",
+      "title": "Spec Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/RangeLifecycleState",
+      "default": "REQUESTED"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "world_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "World Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "spec_id"
+  ],
+  "title": "RangeV1",
+  "type": "object"
+}

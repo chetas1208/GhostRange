@@ -1,0 +1,57 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "budget_allocation_usd": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Budget Allocation Usd",
+      "type": "object"
+    },
+    "campaign_id": {
+      "format": "uuid",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "expected_aggregate_value": {
+      "default": 0.0,
+      "title": "Expected Aggregate Value",
+      "type": "number"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "parallel_groups": {
+      "items": {
+        "items": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Parallel Groups",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selected_proposal_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Selected Proposal Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "campaign_id"
+  ],
+  "title": "ExperimentPortfolioV1",
+  "type": "object"
+}

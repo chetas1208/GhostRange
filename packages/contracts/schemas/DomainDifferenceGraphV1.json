@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "differing_mechanisms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Differing Mechanisms",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "shared_mechanisms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Shared Mechanisms",
+      "type": "array"
+    },
+    "source_domain": {
+      "title": "Source Domain",
+      "type": "string"
+    },
+    "target_domain": {
+      "title": "Target Domain",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_domain",
+    "target_domain"
+  ],
+  "title": "DomainDifferenceGraphV1",
+  "type": "object"
+}

@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "SchedulerPolicyId": {
+      "enum": [
+        "STATIC_SERIAL",
+        "STATIC_EQUAL_PARALLEL",
+        "FIXED_POOL",
+        "FIRST_FIT",
+        "COST_MIN",
+        "GHOSTSCHEDULER_V3",
+        "FIXED_POOL_SAFE"
+      ],
+      "title": "SchedulerPolicyId",
+      "type": "string"
+    },
+    "SchedulerTraceEventV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "timestamp_ms": {
+          "title": "Timestamp Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "timestamp_ms",
+        "kind"
+      ],
+      "title": "SchedulerTraceEventV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/SchedulerTraceEventV1"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "policy_id": {
+      "$ref": "#/$defs/SchedulerPolicyId"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seed": {
+      "default": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "trace_id": {
+      "format": "uuid",
+      "title": "Trace Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range_id",
+    "policy_id"
+  ],
+  "title": "SchedulerTraceV1",
+  "type": "object"
+}

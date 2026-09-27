@@ -1,0 +1,52 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assumption_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Assumption Ids",
+      "type": "array"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "invariant_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Invariant Ids",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stable_entity_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stable Entity Ids",
+      "type": "array"
+    },
+    "verification_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Verification Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "claim_id"
+  ],
+  "title": "ClaimDependencyV1",
+  "type": "object"
+}

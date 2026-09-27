@@ -1,0 +1,68 @@
+{
+  "additionalProperties": false,
+  "description": "Immutable record of a World forking into a new child World.\n\n``fork_reason`` is free text for humans; if a caller wants a\nmachine-readable reason it should additionally reference a\n``SchedulerDecisionV1`` (e.g. via a ``BRANCH_LOW_VALUE``-style code) \u2014\nforks driven by the scheduler carry their decision id in\n``triggered_by_decision_id``.",
+  "properties": {
+    "child_world_id": {
+      "format": "uuid",
+      "title": "Child World Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "created_by": {
+      "description": "Agent id or 'scheduler' or a human identifier",
+      "title": "Created By",
+      "type": "string"
+    },
+    "fork_reason": {
+      "title": "Fork Reason",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "parent_world_id": {
+      "format": "uuid",
+      "title": "Parent World Id",
+      "type": "string"
+    },
+    "range_id": {
+      "format": "uuid",
+      "title": "Range Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "triggered_by_decision_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Triggered By Decision Id"
+    }
+  },
+  "required": [
+    "range_id",
+    "parent_world_id",
+    "child_world_id",
+    "fork_reason",
+    "created_by"
+  ],
+  "title": "WorldForkV1",
+  "type": "object"
+}

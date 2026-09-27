@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-events"
+version = "0.1.0"
+description = "Event name vocabulary and versioned Pydantic payload schemas for GhostRange's pub-sub bus."
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "ghostrange-contracts",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
+# The event persistence layer (packages/events/ghostrange_events/store/):
+# durable Postgres event_log + Redis/Valkey pub-sub, per ADR-011. Kept as an
+# extra, not a core dependency, so anything that only needs the event
+# *schemas* (payload classes + registry) doesn't have to pull in a Postgres
+# driver and a Redis client.
+store = [
+    "psycopg[binary]>=3.1",
+    "psycopg-pool>=3.1",
+    "redis>=5",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_events*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "store: requires a live Postgres + Redis/Valkey (see docker-compose.dev.yml at repo root); skipped automatically if unreachable",
+]

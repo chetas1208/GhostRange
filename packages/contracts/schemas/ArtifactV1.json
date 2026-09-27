@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "ArtifactType": {
+      "enum": [
+        "LOG",
+        "PCAP",
+        "SCREENSHOT",
+        "MEMORY_DUMP",
+        "FILE",
+        "COMMAND_OUTPUT",
+        "REPORT"
+      ],
+      "title": "ArtifactType",
+      "type": "string"
+    },
+    "HashAlgorithm": {
+      "enum": [
+        "SHA256"
+      ],
+      "title": "HashAlgorithm",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A concrete, content-addressed piece of evidence data.\n\n``content_hash`` is the hex digest of the artifact's bytes under\n``hash_algorithm`` (SHA-256 by default) and is what makes provenance\ntamper-evident: two Artifacts with the same hash are the same bytes,\nfull stop, regardless of which World or execution produced them.",
+  "properties": {
+    "artifact_type": {
+      "$ref": "#/$defs/ArtifactType"
+    },
+    "content_hash": {
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "hash_algorithm": {
+      "$ref": "#/$defs/HashAlgorithm",
+      "default": "SHA256"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "produced_by_execution_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Produced By Execution Id"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "size_bytes": {
+      "minimum": 0,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "storage_uri": {
+      "description": "e.g. vultr-object-storage://bucket/key",
+      "title": "Storage Uri",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "artifact_type",
+    "storage_uri",
+    "content_hash",
+    "size_bytes"
+  ],
+  "title": "ArtifactV1",
+  "type": "object"
+}

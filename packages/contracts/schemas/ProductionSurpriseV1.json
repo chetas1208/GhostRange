@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "detected_at": {
+      "format": "date-time",
+      "title": "Detected At",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "production_observation": {
+      "title": "Production Observation",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "severity": {
+      "default": "MEDIUM",
+      "title": "Severity",
+      "type": "string"
+    },
+    "twin_expectation": {
+      "title": "Twin Expectation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "description",
+    "twin_expectation",
+    "production_observation"
+  ],
+  "title": "ProductionSurpriseV1",
+  "type": "object"
+}

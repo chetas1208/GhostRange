@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "contribution_id": {
+      "format": "uuid",
+      "title": "Contribution Id",
+      "type": "string"
+    },
+    "reason": {
+      "default": "",
+      "title": "Reason",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "wasted_compute_usd": {
+      "default": 0.0,
+      "title": "Wasted Compute Usd",
+      "type": "number"
+    },
+    "wasted_experiments": {
+      "default": 0,
+      "title": "Wasted Experiments",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contribution_id"
+  ],
+  "title": "NegativeTransferV1",
+  "type": "object"
+}

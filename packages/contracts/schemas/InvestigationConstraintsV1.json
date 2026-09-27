@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "live_production_actions": {
+      "default": false,
+      "title": "Live Production Actions",
+      "type": "boolean"
+    },
+    "max_cost_usd": {
+      "default": 1.0,
+      "minimum": 0,
+      "title": "Max Cost Usd",
+      "type": "number"
+    },
+    "max_workers": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Max Workers",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "title": "InvestigationConstraintsV1",
+  "type": "object"
+}

@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "ClaimValidityStatus": {
+      "enum": [
+        "CURRENT",
+        "POTENTIALLY_STALE",
+        "STALE",
+        "INVALIDATED",
+        "REVALIDATING",
+        "SUPERSEDED"
+      ],
+      "title": "ClaimValidityStatus",
+      "type": "string"
+    },
+    "InvalidationReasonCode": {
+      "enum": [
+        "SOURCE_PROPERTY_CHANGED",
+        "REQUIRED_FIDELITY_DRIFT",
+        "BEHAVIORAL_INVARIANT_BROKEN",
+        "DEPENDENCY_CHANGED",
+        "VERIFICATION_SUITE_CHANGED",
+        "COMPILER_VERSION_CHANGED",
+        "UNKNOWN_IMPACT",
+        "SOURCE_REVISION_SUPERSEDED",
+        "FULL_REBUILD_REQUIRED"
+      ],
+      "title": "InvalidationReasonCode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "explanation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Explanation"
+    },
+    "reason_codes": {
+      "items": {
+        "$ref": "#/$defs/InvalidationReasonCode"
+      },
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_revision_id": {
+      "format": "uuid",
+      "title": "Source Revision Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ClaimValidityStatus",
+      "default": "CURRENT"
+    },
+    "twin_revision_id": {
+      "format": "uuid",
+      "title": "Twin Revision Id",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "twin_revision_id",
+    "source_revision_id"
+  ],
+  "title": "ClaimValidityV1",
+  "type": "object"
+}

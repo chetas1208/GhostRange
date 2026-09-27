@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "AdversarialBudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "confirmation_runs": {
+          "default": 2,
+          "minimum": 1,
+          "title": "Confirmation Runs",
+          "type": "integer"
+        },
+        "max_attempts": {
+          "default": 500,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_compute_cost_usd": {
+          "default": 25.0,
+          "minimum": 0,
+          "title": "Max Compute Cost Usd",
+          "type": "number"
+        },
+        "max_model_cost_usd": {
+          "default": 5.0,
+          "minimum": 0,
+          "title": "Max Model Cost Usd",
+          "type": "number"
+        },
+        "max_mutation_depth": {
+          "default": 6,
+          "minimum": 1,
+          "title": "Max Mutation Depth",
+          "type": "integer"
+        },
+        "max_parallel_searches": {
+          "default": 4,
+          "minimum": 1,
+          "title": "Max Parallel Searches",
+          "type": "integer"
+        },
+        "max_remediation_revisions": {
+          "default": 5,
+          "minimum": 0,
+          "title": "Max Remediation Revisions",
+          "type": "integer"
+        },
+        "max_sequence_length": {
+          "default": 8,
+          "minimum": 1,
+          "title": "Max Sequence Length",
+          "type": "integer"
+        },
+        "max_wall_time_sec": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "title": "Max Wall Time Sec",
+          "type": "number"
+        },
+        "max_worlds": {
+          "default": 8,
+          "minimum": 1,
+          "title": "Max Worlds",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "AdversarialBudgetV1",
+      "type": "object"
+    },
+    "FalsificationConditionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "format": "uuid",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "machine_check": {
+          "description": "Stable predicate id, e.g. unauthenticated_admin_access",
+          "title": "Machine Check",
+          "type": "string"
+        },
+        "required_observations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Observations",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "description",
+        "machine_check"
+      ],
+      "title": "FalsificationConditionV1",
+      "type": "object"
+    },
+    "OracleKind": {
+      "enum": [
+        "HTTP_RESPONSE",
+        "AUTHORIZATION_DECISION",
+        "SERVICE_LOG",
+        "COMPOSITE"
+      ],
+      "title": "OracleKind",
+      "type": "string"
+    },
+    "SearchArmKind": {
+      "enum": [
+        "HEADER_MUTATION",
+        "IDENTITY_STATE",
+        "SEQUENCE_MUTATION",
+        "TIMING",
+        "PATH_VARIATION",
+        "DEPENDENCY_VARIATION",
+        "PARAMETER_MUTATION"
+      ],
+      "title": "SearchArmKind",
+      "type": "string"
+    },
+    "SearchPolicyId": {
+      "enum": [
+        "UNIFORM_RANDOM",
+        "ROUND_ROBIN",
+        "STATIC_PRIORITY",
+        "NOVELTY_GREEDY",
+        "GHOSTSCHEDULER_SEARCH",
+        "UCB"
+      ],
+      "title": "SearchPolicyId",
+      "type": "string"
+    },
+    "SearchStopReason": {
+      "enum": [
+        "COUNTEREXAMPLE_CONFIRMED",
+        "BUDGET_EXHAUSTED",
+        "COVERAGE_REACHED",
+        "LOW_NOVELTY",
+        "STRATEGIES_EXHAUSTED",
+        "OPERATOR_STOP"
+      ],
+      "title": "SearchStopReason",
+      "type": "string"
+    },
+    "SecurityOracleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "falsification_condition_id": {
+          "format": "uuid",
+          "title": "Falsification Condition Id",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/OracleKind"
+        },
+        "rules": {
+          "additionalProperties": true,
+          "title": "Rules",
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "falsification_condition_id"
+      ],
+      "title": "SecurityOracleV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "authorized_asset_ids": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Authorized Asset Ids",
+      "type": "array"
+    },
+    "baseline_world_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Baseline World Id"
+    },
+    "budget": {
+      "$ref": "#/$defs/AdversarialBudgetV1"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "enabled_arms": {
+      "items": {
+        "$ref": "#/$defs/SearchArmKind"
+      },
+      "title": "Enabled Arms",
+      "type": "array"
+    },
+    "entry_points": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Entry Points",
+      "type": "array"
+    },
+    "falsification_condition": {
+      "$ref": "#/$defs/FalsificationConditionV1"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "oracle": {
+      "$ref": "#/$defs/SecurityOracleV1"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "search_objective": {
+      "title": "Search Objective",
+      "type": "string"
+    },
+    "search_policy": {
+      "$ref": "#/$defs/SearchPolicyId",
+      "default": "GHOSTSCHEDULER_SEARCH"
+    },
+    "stop_conditions": {
+      "items": {
+        "$ref": "#/$defs/SearchStopReason"
+      },
+      "title": "Stop Conditions",
+      "type": "array"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "world_id",
+    "falsification_condition",
+    "search_objective",
+    "authorized_asset_ids",
+    "oracle"
+  ],
+  "title": "AdversarialSearchPlanV1",
+  "type": "object"
+}

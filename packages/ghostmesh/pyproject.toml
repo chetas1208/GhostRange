@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-ghostmesh"
+version = "0.1.0"
+description = "M13 GhostMesh: privacy-preserving federated defensive knowledge"
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "ghostrange-contracts",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+ghostrange-ghostmesh = "ghostrange_ghostmesh.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_ghostmesh*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,724 @@
+{
+  "$defs": {
+    "ClaimValidityStatus": {
+      "enum": [
+        "CURRENT",
+        "POTENTIALLY_STALE",
+        "STALE",
+        "INVALIDATED",
+        "REVALIDATING",
+        "SUPERSEDED"
+      ],
+      "title": "ClaimValidityStatus",
+      "type": "string"
+    },
+    "ClaimValidityV1": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "format": "uuid",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "explanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Explanation"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/InvalidationReasonCode"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_revision_id": {
+          "format": "uuid",
+          "title": "Source Revision Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ClaimValidityStatus",
+          "default": "CURRENT"
+        },
+        "twin_revision_id": {
+          "format": "uuid",
+          "title": "Twin Revision Id",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "twin_revision_id",
+        "source_revision_id"
+      ],
+      "title": "ClaimValidityV1",
+      "type": "object"
+    },
+    "DriftChangeType": {
+      "enum": [
+        "ADD",
+        "REMOVE",
+        "MODIFY",
+        "MOVE",
+        "RENAME",
+        "UNKNOWN"
+      ],
+      "title": "DriftChangeType",
+      "type": "string"
+    },
+    "DriftEventV1": {
+      "additionalProperties": false,
+      "properties": {
+        "change_type": {
+          "$ref": "#/$defs/DriftChangeType"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "detected_at": {
+          "format": "date-time",
+          "title": "Detected At",
+          "type": "string"
+        },
+        "entity_name": {
+          "title": "Entity Name",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "new_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New Fingerprint"
+        },
+        "old_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Old Fingerprint"
+        },
+        "property_path": {
+          "title": "Property Path",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "",
+          "title": "Provenance",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "semantic_category": {
+          "$ref": "#/$defs/SemanticDriftCategory",
+          "default": "UNKNOWN"
+        },
+        "source_revision_from": {
+          "format": "uuid",
+          "title": "Source Revision From",
+          "type": "string"
+        },
+        "source_revision_to": {
+          "format": "uuid",
+          "title": "Source Revision To",
+          "type": "string"
+        },
+        "stable_entity_id": {
+          "title": "Stable Entity Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_revision_from",
+        "source_revision_to",
+        "stable_entity_id",
+        "entity_name",
+        "property_path",
+        "change_type"
+      ],
+      "title": "DriftEventV1",
+      "type": "object"
+    },
+    "DriftSetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/DriftEventV1"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "formatting_only": {
+          "default": false,
+          "title": "Formatting Only",
+          "type": "boolean"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_revision_from": {
+          "format": "uuid",
+          "title": "Source Revision From",
+          "type": "string"
+        },
+        "source_revision_to": {
+          "format": "uuid",
+          "title": "Source Revision To",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_revision_from",
+        "source_revision_to"
+      ],
+      "title": "DriftSetV1",
+      "type": "object"
+    },
+    "ImpactEdgeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edge_kind": {
+          "title": "Edge Kind",
+          "type": "string"
+        },
+        "from_entity_id": {
+          "title": "From Entity Id",
+          "type": "string"
+        },
+        "propagated_categories": {
+          "items": {
+            "$ref": "#/$defs/SemanticDriftCategory"
+          },
+          "title": "Propagated Categories",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "to_entity_id": {
+          "title": "To Entity Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_entity_id",
+        "to_entity_id",
+        "edge_kind"
+      ],
+      "title": "ImpactEdgeV1",
+      "type": "object"
+    },
+    "ImpactGraphV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_claim_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Affected Claim Ids",
+          "type": "array"
+        },
+        "drift_set_id": {
+          "format": "uuid",
+          "title": "Drift Set Id",
+          "type": "string"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/ImpactEdgeV1"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/ImpactRecordV1"
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drift_set_id"
+      ],
+      "title": "ImpactGraphV1",
+      "type": "object"
+    },
+    "ImpactLevel": {
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+        "UNKNOWN"
+      ],
+      "title": "ImpactLevel",
+      "type": "string"
+    },
+    "ImpactRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "categories": {
+          "items": {
+            "$ref": "#/$defs/SemanticDriftCategory"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "entity_id": {
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_name": {
+          "title": "Entity Name",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/ImpactLevel"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_name",
+        "level"
+      ],
+      "title": "ImpactRecordV1",
+      "type": "object"
+    },
+    "IncrementalAction": {
+      "enum": [
+        "NOOP",
+        "UPDATE_CONFIG",
+        "RESTART_SERVICE",
+        "REBUILD_CONTAINER",
+        "REPROVISION_COMPONENT",
+        "REBUILD_NETWORK",
+        "REBUILD_WORLD"
+      ],
+      "title": "IncrementalAction",
+      "type": "string"
+    },
+    "IncrementalCompilationPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/IncrementalAction"
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "affected_entity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Entity Ids",
+          "type": "array"
+        },
+        "full_rebuild_required": {
+          "default": false,
+          "title": "Full Rebuild Required",
+          "type": "boolean"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "twin_revision_from": {
+          "format": "uuid",
+          "title": "Twin Revision From",
+          "type": "string"
+        },
+        "twin_revision_to": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Twin Revision To"
+        }
+      },
+      "required": [
+        "twin_revision_from"
+      ],
+      "title": "IncrementalCompilationPlanV1",
+      "type": "object"
+    },
+    "InvalidationReasonCode": {
+      "enum": [
+        "SOURCE_PROPERTY_CHANGED",
+        "REQUIRED_FIDELITY_DRIFT",
+        "BEHAVIORAL_INVARIANT_BROKEN",
+        "DEPENDENCY_CHANGED",
+        "VERIFICATION_SUITE_CHANGED",
+        "COMPILER_VERSION_CHANGED",
+        "UNKNOWN_IMPACT",
+        "SOURCE_REVISION_SUPERSEDED",
+        "FULL_REBUILD_REQUIRED"
+      ],
+      "title": "InvalidationReasonCode",
+      "type": "string"
+    },
+    "RevalidationPlanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_components": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Components",
+          "type": "array"
+        },
+        "claims_awaiting": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Claims Awaiting",
+          "type": "array"
+        },
+        "drift_set_id": {
+          "format": "uuid",
+          "title": "Drift Set Id",
+          "type": "string"
+        },
+        "fidelity_checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fidelity Checks",
+          "type": "array"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "impact_graph_id": {
+          "format": "uuid",
+          "title": "Impact Graph Id",
+          "type": "string"
+        },
+        "incremental_plan_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incremental Plan Id"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "unaffected_claim_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Unaffected Claim Ids",
+          "type": "array"
+        },
+        "verification_tests": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Verification Tests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "drift_set_id",
+        "impact_graph_id"
+      ],
+      "title": "RevalidationPlanV1",
+      "type": "object"
+    },
+    "SemanticDriftCategory": {
+      "enum": [
+        "TOPOLOGY",
+        "NETWORK",
+        "SERVICE",
+        "VERSION",
+        "CONFIGURATION",
+        "IDENTITY",
+        "DATA_SCHEMA",
+        "DATA_POLICY",
+        "RESOURCE",
+        "STORAGE",
+        "DEPENDENCY",
+        "SECURITY_CONTROL",
+        "EXTERNAL_DEPENDENCY",
+        "UNKNOWN"
+      ],
+      "title": "SemanticDriftCategory",
+      "type": "string"
+    },
+    "SyncDecision": {
+      "enum": [
+        "IGNORE",
+        "RECORD_ONLY",
+        "INVALIDATE",
+        "INCREMENTAL_SYNC",
+        "FULL_SYNC"
+      ],
+      "title": "SyncDecision",
+      "type": "string"
+    },
+    "TwinStalenessV1": {
+      "additionalProperties": false,
+      "properties": {
+        "config_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Config Staleness",
+          "type": "number"
+        },
+        "data_schema_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Data Schema Staleness",
+          "type": "number"
+        },
+        "identity_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Identity Staleness",
+          "type": "number"
+        },
+        "network_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Network Staleness",
+          "type": "number"
+        },
+        "overall_semantic": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Overall Semantic",
+          "type": "number"
+        },
+        "resource_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Resource Staleness",
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "service_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Service Staleness",
+          "type": "number"
+        },
+        "topology_staleness": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Topology Staleness",
+          "type": "number"
+        },
+        "twin_revision_id": {
+          "format": "uuid",
+          "title": "Twin Revision Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "twin_revision_id"
+      ],
+      "title": "TwinStalenessV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Bundle output of one drift\u2192impact\u2192sync decision pass.",
+  "properties": {
+    "claim_updates": {
+      "items": {
+        "$ref": "#/$defs/ClaimValidityV1"
+      },
+      "title": "Claim Updates",
+      "type": "array"
+    },
+    "drift": {
+      "$ref": "#/$defs/DriftSetV1"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "impact": {
+      "$ref": "#/$defs/ImpactGraphV1"
+    },
+    "incremental": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/IncrementalCompilationPlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "revalidation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RevalidationPlanV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "staleness": {
+      "$ref": "#/$defs/TwinStalenessV1"
+    },
+    "sync_decision": {
+      "$ref": "#/$defs/SyncDecision"
+    }
+  },
+  "required": [
+    "drift",
+    "impact",
+    "staleness",
+    "sync_decision"
+  ],
+  "title": "LivingTwinAnalysisV1",
+  "type": "object"
+}

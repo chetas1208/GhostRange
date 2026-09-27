@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostrange-range-runtime"
+version = "0.1.0"
+description = "The Range/World lifecycle state machine: drives a RangeSpecV1 through REQUESTED..DESTROYED, durably, against a pluggable compute provider (vultr-control), emitting events on every transition."
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.7,<3",
+    "ghostrange-contracts",
+    "ghostrange-events",
+    "ghostrange-vultr-control",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ghostrange_range_runtime*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

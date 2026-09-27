@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "change_summary": {
+      "title": "Change Summary",
+      "type": "string"
+    },
+    "child_label": {
+      "description": "e.g. Fix B.1",
+      "title": "Child Label",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "parent_remediation_id": {
+      "format": "uuid",
+      "title": "Parent Remediation Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "triggered_by_counterexample_id": {
+      "format": "uuid",
+      "title": "Triggered By Counterexample Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parent_remediation_id",
+    "child_label",
+    "triggered_by_counterexample_id",
+    "change_summary"
+  ],
+  "title": "RemediationRevisionV1",
+  "type": "object"
+}

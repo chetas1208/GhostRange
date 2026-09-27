@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "expected_fingerprint": {
+      "title": "Expected Fingerprint",
+      "type": "string"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "property_path": {
+      "title": "Property Path",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claim_id",
+    "property_path",
+    "expected_fingerprint"
+  ],
+  "title": "AssumptionV1",
+  "type": "object"
+}

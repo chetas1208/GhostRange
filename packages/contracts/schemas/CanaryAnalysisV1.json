@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "CanaryAnalysisOutcome": {
+      "enum": [
+        "ADVANCE",
+        "ADVANCE_RECOMMENDED",
+        "HOLD",
+        "ABORT_RECOMMENDED",
+        "ROLLBACK_RECOMMENDED",
+        "HUMAN_REVIEW_REQUIRED"
+      ],
+      "title": "CanaryAnalysisOutcome",
+      "type": "string"
+    },
+    "GateEvaluationStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_DATA",
+        "ERROR"
+      ],
+      "title": "GateEvaluationStatus",
+      "type": "string"
+    },
+    "RolloutStageKind": {
+      "enum": [
+        "PRE_DEPLOY",
+        "INITIAL_CANARY",
+        "CANARY_10",
+        "CANARY_25",
+        "CANARY_50",
+        "FULL",
+        "HOLD",
+        "ROLLBACK",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "RolloutStageKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "analyzed_at": {
+      "format": "date-time",
+      "title": "Analyzed At",
+      "type": "string"
+    },
+    "gate_results": {
+      "additionalProperties": {
+        "$ref": "#/$defs/GateEvaluationStatus"
+      },
+      "title": "Gate Results",
+      "type": "object"
+    },
+    "outcome": {
+      "$ref": "#/$defs/CanaryAnalysisOutcome"
+    },
+    "rationale_codes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rationale Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "stage": {
+      "$ref": "#/$defs/RolloutStageKind"
+    }
+  },
+  "required": [
+    "stage",
+    "outcome"
+  ],
+  "title": "CanaryAnalysisV1",
+  "type": "object"
+}

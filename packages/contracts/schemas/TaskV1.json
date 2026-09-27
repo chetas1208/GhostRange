@@ -1,0 +1,271 @@
+{
+  "$defs": {
+    "ResourceClass": {
+      "description": "Coarse compute sizing classes GhostScheduler allocates against.\n\nShared between ``ResourceProfileV1`` (what a task asks for) and\n``SchedulerDecisionV1.target_resource_class`` (what got allocated),\nand mirrored by ``ComputeWorkerV1.resource_class`` for the actual\nprovisioned worker.",
+      "enum": [
+        "CPU_SMALL",
+        "CPU_MEDIUM",
+        "CPU_LARGE",
+        "GPU_SMALL",
+        "GPU_LARGE"
+      ],
+      "title": "ResourceClass",
+      "type": "string"
+    },
+    "ResourceProfileV1": {
+      "additionalProperties": false,
+      "description": "What a Task asks for, before the scheduler decides what it gets.\n\nCompare to ``SchedulerDecisionV1.target_resource_class`` (what it\nactually gets) and ``ComputeWorkerV1.resource_class`` (what got\nprovisioned) \u2014 three points where a mismatch is meaningful telemetry.",
+      "properties": {
+        "cpu_cores": {
+          "exclusiveMinimum": 0,
+          "title": "Cpu Cores",
+          "type": "number"
+        },
+        "gpu_required": {
+          "default": false,
+          "title": "Gpu Required",
+          "type": "boolean"
+        },
+        "gpu_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Type"
+        },
+        "memory_gb": {
+          "exclusiveMinimum": 0,
+          "title": "Memory Gb",
+          "type": "number"
+        },
+        "preferred_resource_class": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResourceClass"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cpu_cores",
+        "memory_gb"
+      ],
+      "title": "ResourceProfileV1",
+      "type": "object"
+    },
+    "RetryPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "backoff_seconds": {
+          "default": 5.0,
+          "minimum": 0,
+          "title": "Backoff Seconds",
+          "type": "number"
+        },
+        "max_retries": {
+          "default": 0,
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Max Retries",
+          "type": "integer"
+        },
+        "retry_on_reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retry On Reason Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "RetryPolicyV1",
+      "type": "object"
+    },
+    "SecurityCriticality": {
+      "description": "How much damage compromise/misconfiguration of a thing would cause.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SecurityCriticality",
+      "type": "string"
+    },
+    "SpeculationPolicyV1": {
+      "additionalProperties": false,
+      "description": "Governs whether/how this Task may be run speculatively (started\nbefore its full dependency chain is confirmed valuable) per the\nSpeculative Execution research track.",
+      "properties": {
+        "cancel_on_primary_success": {
+          "default": true,
+          "title": "Cancel On Primary Success",
+          "type": "boolean"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "max_speculative_branches": {
+          "default": 1,
+          "maximum": 16,
+          "minimum": 0,
+          "title": "Max Speculative Branches",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "SpeculationPolicyV1",
+      "type": "object"
+    },
+    "TaskStatus": {
+      "enum": [
+        "QUEUED",
+        "SCHEDULED",
+        "RUNNING",
+        "SPECULATED",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ],
+      "title": "TaskStatus",
+      "type": "string"
+    },
+    "TaskType": {
+      "enum": [
+        "INVESTIGATE",
+        "REMEDIATE",
+        "ATTACK",
+        "VERIFY",
+        "PROVISION",
+        "TEARDOWN",
+        "ANALYZE"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dependencies": {
+      "description": "Task ids that must complete before this one starts",
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "estimated_cost_usd": {
+      "minimum": 0,
+      "title": "Estimated Cost Usd",
+      "type": "number"
+    },
+    "estimated_duration_seconds": {
+      "minimum": 0,
+      "title": "Estimated Duration Seconds",
+      "type": "number"
+    },
+    "expected_evidence_gain": {
+      "description": "Scheduler's estimate of evidentiary value if run",
+      "minimum": 0,
+      "title": "Expected Evidence Gain",
+      "type": "number"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "priority": {
+      "default": 0,
+      "description": "Higher runs first, ties broken by scheduler",
+      "title": "Priority",
+      "type": "integer"
+    },
+    "resource_profile": {
+      "$ref": "#/$defs/ResourceProfileV1"
+    },
+    "retry_policy": {
+      "$ref": "#/$defs/RetryPolicyV1"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "security_criticality": {
+      "$ref": "#/$defs/SecurityCriticality",
+      "default": "MEDIUM"
+    },
+    "speculation_policy": {
+      "$ref": "#/$defs/SpeculationPolicyV1"
+    },
+    "status": {
+      "$ref": "#/$defs/TaskStatus",
+      "default": "QUEUED"
+    },
+    "task_type": {
+      "$ref": "#/$defs/TaskType"
+    },
+    "uncertainty": {
+      "description": "Scheduler's estimate of outcome uncertainty, 0=certain",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Uncertainty",
+      "type": "number"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "world_id": {
+      "format": "uuid",
+      "title": "World Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "world_id",
+    "task_type",
+    "resource_profile",
+    "estimated_duration_seconds",
+    "estimated_cost_usd",
+    "uncertainty",
+    "expected_evidence_gain"
+  ],
+  "title": "TaskV1",
+  "type": "object"
+}

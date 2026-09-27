@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "RemoteKnowledgeStatus": {
+      "enum": [
+        "UNSEEN",
+        "ELIGIBLE",
+        "LOCALLY_TESTING",
+        "LOCALLY_SUPPORTED",
+        "LOCALLY_REJECTED",
+        "STALE",
+        "REVOKED",
+        "QUARANTINED"
+      ],
+      "title": "RemoteKnowledgeStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contribution_digest": {
+      "title": "Contribution Digest",
+      "type": "string"
+    },
+    "local_decision": {
+      "$ref": "#/$defs/RemoteKnowledgeStatus"
+    },
+    "policy_digest": {
+      "title": "Policy Digest",
+      "type": "string"
+    },
+    "receipt_id": {
+      "format": "uuid",
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "received_at": {
+      "format": "date-time",
+      "title": "Received At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verifying_node_id": {
+      "title": "Verifying Node Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contribution_digest",
+    "verifying_node_id",
+    "policy_digest",
+    "local_decision"
+  ],
+  "title": "MeshReceiptV1",
+  "type": "object"
+}

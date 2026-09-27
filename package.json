@@ -1,0 +1,36 @@
+{
+  "name": "ghostrange",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "packages/ui-3d"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "preview": "npm run preview -w apps/web",
+    "build": "npm run build -w apps/web",
+    "typecheck": "npm run typecheck -w packages/ui-3d && npm run typecheck -w apps/web",
+    "test": "npm run test -w apps/web",
+    "build:fixture-m1": "VITE_FIXTURE=m1 npm run build -w apps/web",
+    "screenshots": "node scripts/capture-ui-snapshots.mjs",
+    "screenshots:m20": "node scripts/capture-m20-ui.mjs",
+    "screenshots:m20:update": "npx playwright test tests/e2e/ui-final/visual-core.spec.ts --project=chromium --update-snapshots",
+    "test:e2e:ui-final": "bash scripts/m20-ui-e2e.sh",
+    "test:e2e:tour": "npx playwright test tests/e2e/tour/tour.spec.ts --project=chromium",
+    "test:e2e:tactical": "npx playwright test tests/e2e/tactical/tactical.spec.ts --project=chromium",
+    "test:visual:ui-final": "bash scripts/m20-ui-visual-regression.sh",
+    "screenshots:docker": "bash scripts/capture-m2-screenshots-docker.sh",
+    "screenshots:fork": "VITE_FIXTURE=m1 bash scripts/capture-m2-screenshots-docker.sh",
+    "test:backend": "bash scripts/run-mock-m2-e2e.sh",
+    "demo": "make demo",
+    "golden-path": "make golden-path",
+    "api": "bash -lc 'source .venv/bin/activate && ghostrange-api'"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "playwright": "1.63.0"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "MeshProtocolMessageKind": {
+      "enum": [
+        "CONTRIBUTION",
+        "AGGREGATE",
+        "REVOCATION",
+        "SCHEMA",
+        "RECEIPT",
+        "MEMBERSHIP",
+        "HEARTBEAT"
+      ],
+      "title": "MeshProtocolMessageKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "federation_id": {
+      "title": "Federation Id",
+      "type": "string"
+    },
+    "message_id": {
+      "title": "Message Id",
+      "type": "string"
+    },
+    "message_kind": {
+      "$ref": "#/$defs/MeshProtocolMessageKind"
+    },
+    "payload_digest": {
+      "title": "Payload Digest",
+      "type": "string"
+    },
+    "protocol_version": {
+      "default": "GhostMeshProtocolV1",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sender_node_id": {
+      "title": "Sender Node Id",
+      "type": "string"
+    },
+    "sent_at": {
+      "format": "date-time",
+      "title": "Sent At",
+      "type": "string"
+    },
+    "signature": {
+      "default": "",
+      "title": "Signature",
+      "type": "string"
+    }
+  },
+  "required": [
+    "message_kind",
+    "federation_id",
+    "sender_node_id",
+    "message_id",
+    "payload_digest"
+  ],
+  "title": "GhostMeshProtocolEnvelopeV1",
+  "type": "object"
+}

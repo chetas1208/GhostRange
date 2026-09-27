@@ -1,0 +1,611 @@
+{
+  "$defs": {
+    "ApprovedRollbackTargetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_digest": {
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "config_fingerprint": {
+          "default": "",
+          "title": "Config Fingerprint",
+          "type": "string"
+        },
+        "immutable": {
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "revision",
+        "artifact_digest"
+      ],
+      "title": "ApprovedRollbackTargetV1",
+      "type": "object"
+    },
+    "CanaryAnalysisOutcome": {
+      "enum": [
+        "ADVANCE",
+        "ADVANCE_RECOMMENDED",
+        "HOLD",
+        "ABORT_RECOMMENDED",
+        "ROLLBACK_RECOMMENDED",
+        "HUMAN_REVIEW_REQUIRED"
+      ],
+      "title": "CanaryAnalysisOutcome",
+      "type": "string"
+    },
+    "CanaryAnalysisV1": {
+      "additionalProperties": false,
+      "properties": {
+        "analyzed_at": {
+          "format": "date-time",
+          "title": "Analyzed At",
+          "type": "string"
+        },
+        "gate_results": {
+          "additionalProperties": {
+            "$ref": "#/$defs/GateEvaluationStatus"
+          },
+          "title": "Gate Results",
+          "type": "object"
+        },
+        "outcome": {
+          "$ref": "#/$defs/CanaryAnalysisOutcome"
+        },
+        "rationale_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "stage": {
+          "$ref": "#/$defs/RolloutStageKind"
+        }
+      },
+      "required": [
+        "stage",
+        "outcome"
+      ],
+      "title": "CanaryAnalysisV1",
+      "type": "object"
+    },
+    "ConformanceStatus": {
+      "enum": [
+        "MATCH",
+        "FUNCTIONALLY_EQUIVALENT",
+        "MATERIAL_DIFFERENCE",
+        "UNKNOWN",
+        "NOT_OBSERVABLE"
+      ],
+      "title": "ConformanceStatus",
+      "type": "string"
+    },
+    "DeploymentAuthorityMode": {
+      "enum": [
+        "OBSERVE_ONLY",
+        "RECOMMEND",
+        "PREAUTHORIZED_PAUSE",
+        "PREAUTHORIZED_ROLLBACK"
+      ],
+      "title": "DeploymentAuthorityMode",
+      "type": "string"
+    },
+    "DeploymentConformanceReportV1": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_artifact_digest": {
+          "title": "Approved Artifact Digest",
+          "type": "string"
+        },
+        "dimensions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ConformanceStatus"
+          },
+          "title": "Dimensions",
+          "type": "object"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "observed_artifact_digest": {
+          "title": "Observed Artifact Digest",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ConformanceStatus",
+          "default": "UNKNOWN"
+        }
+      },
+      "required": [
+        "approved_artifact_digest",
+        "observed_artifact_digest"
+      ],
+      "title": "DeploymentConformanceReportV1",
+      "type": "object"
+    },
+    "DeploymentExecutionStatus": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "PAUSED",
+        "ROLLING_BACK",
+        "COMPLETED",
+        "FAILED",
+        "ABORTED"
+      ],
+      "title": "DeploymentExecutionStatus",
+      "type": "string"
+    },
+    "DeploymentExecutionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_decision_id": {
+          "format": "uuid",
+          "title": "Approval Decision Id",
+          "type": "string"
+        },
+        "approved_change_hash": {
+          "title": "Approved Change Hash",
+          "type": "string"
+        },
+        "approved_rollback_hash": {
+          "default": "",
+          "title": "Approved Rollback Hash",
+          "type": "string"
+        },
+        "approved_source_revision": {
+          "default": "",
+          "title": "Approved Source Revision",
+          "type": "string"
+        },
+        "approved_strategy_hash": {
+          "default": "",
+          "title": "Approved Strategy Hash",
+          "type": "string"
+        },
+        "authority_mode": {
+          "$ref": "#/$defs/DeploymentAuthorityMode",
+          "default": "OBSERVE_ONLY"
+        },
+        "correlation_id": {
+          "default": "",
+          "title": "Correlation Id",
+          "type": "string"
+        },
+        "current_exposure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExposureV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "current_stage": {
+          "$ref": "#/$defs/RolloutStageKind",
+          "default": "PRE_DEPLOY"
+        },
+        "environment_reference": {
+          "default": "SIMULATED_ROLLOUT",
+          "title": "Environment Reference",
+          "type": "string"
+        },
+        "executor": {
+          "default": "mock",
+          "title": "Executor",
+          "type": "string"
+        },
+        "executor_execution_id": {
+          "default": "",
+          "title": "Executor Execution Id",
+          "type": "string"
+        },
+        "executor_revision_id": {
+          "default": "",
+          "title": "Executor Revision Id",
+          "type": "string"
+        },
+        "executor_type": {
+          "default": "mock",
+          "title": "Executor Type",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "observed_artifact_versions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observed Artifact Versions",
+          "type": "array"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "promotion_candidate_id": {
+          "format": "uuid",
+          "title": "Promotion Candidate Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DeploymentExecutionStatus",
+          "default": "PENDING"
+        }
+      },
+      "required": [
+        "promotion_candidate_id",
+        "approval_decision_id",
+        "approved_change_hash"
+      ],
+      "title": "DeploymentExecutionV1",
+      "type": "object"
+    },
+    "ExposureKind": {
+      "enum": [
+        "PERCENTAGE",
+        "REPLICA_FRACTION",
+        "COHORT",
+        "REGION",
+        "FEATURE_FLAG",
+        "CUSTOM"
+      ],
+      "title": "ExposureKind",
+      "type": "string"
+    },
+    "ExposureV1": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ExposureKind",
+          "default": "PERCENTAGE"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "value": {
+          "default": "0",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "title": "ExposureV1",
+      "type": "object"
+    },
+    "GateEvaluationStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_DATA",
+        "ERROR"
+      ],
+      "title": "GateEvaluationStatus",
+      "type": "string"
+    },
+    "GhostWatchCampaignState": {
+      "enum": [
+        "WAITING_FOR_EXTERNAL_DEPLOYMENT",
+        "OBSERVING",
+        "VALIDATING_CONFORMANCE",
+        "CANARY_ANALYSIS",
+        "HOLD",
+        "ADVANCE_RECOMMENDED",
+        "PAUSE_RECOMMENDED",
+        "ROLLBACK_RECOMMENDED",
+        "ROLLBACK_REQUESTED",
+        "ROLLBACK_VERIFYING",
+        "COMPLETED",
+        "FAILED",
+        "CRITICAL",
+        "SUPERSEDED"
+      ],
+      "title": "GhostWatchCampaignState",
+      "type": "string"
+    },
+    "RollbackExecutionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "authorized": {
+          "title": "Authorized",
+          "type": "boolean"
+        },
+        "executor_response": {
+          "default": "",
+          "title": "Executor Response",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "observed_digest_after": {
+          "default": "",
+          "title": "Observed Digest After",
+          "type": "string"
+        },
+        "result": {
+          "default": "PENDING",
+          "title": "Result",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/ApprovedRollbackTargetV1"
+        },
+        "trigger_id": {
+          "title": "Trigger Id",
+          "type": "string"
+        },
+        "verified": {
+          "default": false,
+          "title": "Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trigger_id",
+        "authorized",
+        "target"
+      ],
+      "title": "RollbackExecutionV1",
+      "type": "object"
+    },
+    "RolloutStageKind": {
+      "enum": [
+        "PRE_DEPLOY",
+        "INITIAL_CANARY",
+        "CANARY_10",
+        "CANARY_25",
+        "CANARY_50",
+        "FULL",
+        "HOLD",
+        "ROLLBACK",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "RolloutStageKind",
+      "type": "string"
+    },
+    "TwinPredictionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_artifact_digest": {
+          "title": "Expected Artifact Digest",
+          "type": "string"
+        },
+        "expected_behavior_summary": {
+          "title": "Expected Behavior Summary",
+          "type": "string"
+        },
+        "note": {
+          "default": "Immutable \u2014 do not rewrite after rollout observation",
+          "title": "Note",
+          "type": "string"
+        },
+        "promotion_candidate_id": {
+          "format": "uuid",
+          "title": "Promotion Candidate Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "promotion_candidate_id",
+        "expected_artifact_digest",
+        "expected_behavior_summary"
+      ],
+      "title": "TwinPredictionV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approval_decision_id": {
+      "format": "uuid",
+      "title": "Approval Decision Id",
+      "type": "string"
+    },
+    "approved_artifact_digest": {
+      "default": "",
+      "title": "Approved Artifact Digest",
+      "type": "string"
+    },
+    "conformance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DeploymentConformanceReportV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "control_disabled": {
+      "default": false,
+      "title": "Control Disabled",
+      "type": "boolean"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "current_analysis": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CanaryAnalysisV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "event_sequence": {
+      "default": 0,
+      "title": "Event Sequence",
+      "type": "integer"
+    },
+    "evidence_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "execution": {
+      "$ref": "#/$defs/DeploymentExecutionV1"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "policy_version": {
+      "default": "ghostwatch-v1",
+      "title": "Policy Version",
+      "type": "string"
+    },
+    "promotion_candidate_id": {
+      "format": "uuid",
+      "title": "Promotion Candidate Id",
+      "type": "string"
+    },
+    "rollback_state": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RollbackExecutionV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "rollback_target": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ApprovedRollbackTargetV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/GhostWatchCampaignState",
+      "default": "WAITING_FOR_EXTERNAL_DEPLOYMENT"
+    },
+    "twin_prediction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TwinPredictionV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "promotion_candidate_id",
+    "approval_decision_id",
+    "execution"
+  ],
+  "title": "GhostWatchCampaignV1",
+  "type": "object"
+}

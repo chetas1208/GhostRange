@@ -1,0 +1,371 @@
+{
+  "$defs": {
+    "AdversarialBudgetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "confirmation_runs": {
+          "default": 2,
+          "minimum": 1,
+          "title": "Confirmation Runs",
+          "type": "integer"
+        },
+        "max_attempts": {
+          "default": 500,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_compute_cost_usd": {
+          "default": 25.0,
+          "minimum": 0,
+          "title": "Max Compute Cost Usd",
+          "type": "number"
+        },
+        "max_model_cost_usd": {
+          "default": 5.0,
+          "minimum": 0,
+          "title": "Max Model Cost Usd",
+          "type": "number"
+        },
+        "max_mutation_depth": {
+          "default": 6,
+          "minimum": 1,
+          "title": "Max Mutation Depth",
+          "type": "integer"
+        },
+        "max_parallel_searches": {
+          "default": 4,
+          "minimum": 1,
+          "title": "Max Parallel Searches",
+          "type": "integer"
+        },
+        "max_remediation_revisions": {
+          "default": 5,
+          "minimum": 0,
+          "title": "Max Remediation Revisions",
+          "type": "integer"
+        },
+        "max_sequence_length": {
+          "default": 8,
+          "minimum": 1,
+          "title": "Max Sequence Length",
+          "type": "integer"
+        },
+        "max_wall_time_sec": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "title": "Max Wall Time Sec",
+          "type": "number"
+        },
+        "max_worlds": {
+          "default": 8,
+          "minimum": 1,
+          "title": "Max Worlds",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "AdversarialBudgetV1",
+      "type": "object"
+    },
+    "AdversarialClaimPhase": {
+      "description": "UI-safe compact state \u2014 never 'SECURE'.",
+      "enum": [
+        "UNTESTED",
+        "SEARCHING",
+        "COUNTEREXAMPLE_FOUND",
+        "SURVIVED_BUDGET",
+        "INCONCLUSIVE",
+        "PROVISIONALLY_VERIFIED",
+        "ADVERSARIAL_TESTING",
+        "HARDENED_VERIFIED"
+      ],
+      "title": "AdversarialClaimPhase",
+      "type": "string"
+    },
+    "CounterexampleReproducibility": {
+      "enum": [
+        "UNCONFIRMED",
+        "CONFIRMED",
+        "REJECTED_FALSE_POSITIVE"
+      ],
+      "title": "CounterexampleReproducibility",
+      "type": "string"
+    },
+    "CounterexampleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "action_sequence": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "minItems": 1,
+          "title": "Action Sequence",
+          "type": "array"
+        },
+        "artifact_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Artifact Ids",
+          "type": "array"
+        },
+        "claim_contradiction": {
+          "title": "Claim Contradiction",
+          "type": "string"
+        },
+        "claim_id": {
+          "format": "uuid",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "discovered_by": {
+          "$ref": "#/$defs/SearchArmKind"
+        },
+        "evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "minimality": {
+          "$ref": "#/$defs/MinimalityLevel",
+          "default": "NOT_MINIMIZED"
+        },
+        "minimized_complexity": {
+          "default": 0,
+          "title": "Minimized Complexity",
+          "type": "integer"
+        },
+        "observations": {
+          "additionalProperties": true,
+          "title": "Observations",
+          "type": "object"
+        },
+        "original_complexity": {
+          "default": 0,
+          "title": "Original Complexity",
+          "type": "integer"
+        },
+        "preconditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "reproducibility": {
+          "$ref": "#/$defs/CounterexampleReproducibility",
+          "default": "UNCONFIRMED"
+        },
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "search_budget_snapshot": {
+          "$ref": "#/$defs/AdversarialBudgetV1"
+        },
+        "search_run_id": {
+          "format": "uuid",
+          "title": "Search Run Id",
+          "type": "string"
+        },
+        "search_strategy": {
+          "$ref": "#/$defs/SearchPolicyId"
+        },
+        "violated_invariant": {
+          "title": "Violated Invariant",
+          "type": "string"
+        },
+        "world_id": {
+          "format": "uuid",
+          "title": "World Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "world_id",
+        "search_run_id",
+        "action_sequence",
+        "violated_invariant",
+        "claim_contradiction",
+        "discovered_by",
+        "search_strategy",
+        "search_budget_snapshot"
+      ],
+      "title": "CounterexampleV1",
+      "type": "object"
+    },
+    "MinimalityLevel": {
+      "enum": [
+        "NOT_MINIMIZED",
+        "LOCALLY_MINIMIZED"
+      ],
+      "title": "MinimalityLevel",
+      "type": "string"
+    },
+    "SearchArmKind": {
+      "enum": [
+        "HEADER_MUTATION",
+        "IDENTITY_STATE",
+        "SEQUENCE_MUTATION",
+        "TIMING",
+        "PATH_VARIATION",
+        "DEPENDENCY_VARIATION",
+        "PARAMETER_MUTATION"
+      ],
+      "title": "SearchArmKind",
+      "type": "string"
+    },
+    "SearchPolicyId": {
+      "enum": [
+        "UNIFORM_RANDOM",
+        "ROUND_ROBIN",
+        "STATIC_PRIORITY",
+        "NOVELTY_GREEDY",
+        "GHOSTSCHEDULER_SEARCH",
+        "UCB"
+      ],
+      "title": "SearchPolicyId",
+      "type": "string"
+    },
+    "SearchStopReason": {
+      "enum": [
+        "COUNTEREXAMPLE_CONFIRMED",
+        "BUDGET_EXHAUSTED",
+        "COVERAGE_REACHED",
+        "LOW_NOVELTY",
+        "STRATEGIES_EXHAUSTED",
+        "OPERATOR_STOP"
+      ],
+      "title": "SearchStopReason",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempts": {
+      "default": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "budget": {
+      "$ref": "#/$defs/AdversarialBudgetV1"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "cost_usd": {
+      "default": 0.0,
+      "title": "Cost Usd",
+      "type": "number"
+    },
+    "counterexamples": {
+      "items": {
+        "$ref": "#/$defs/CounterexampleV1"
+      },
+      "title": "Counterexamples",
+      "type": "array"
+    },
+    "coverage_summary": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Coverage Summary",
+      "type": "object"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "phase": {
+      "$ref": "#/$defs/AdversarialClaimPhase"
+    },
+    "runtime_sec": {
+      "default": 0.0,
+      "title": "Runtime Sec",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "search_policy": {
+      "$ref": "#/$defs/SearchPolicyId"
+    },
+    "search_run_id": {
+      "format": "uuid",
+      "title": "Search Run Id",
+      "type": "string"
+    },
+    "stop_reason": {
+      "$ref": "#/$defs/SearchStopReason"
+    },
+    "summary_statement": {
+      "default": "",
+      "title": "Summary Statement",
+      "type": "string"
+    },
+    "unconfirmed_findings": {
+      "default": 0,
+      "title": "Unconfirmed Findings",
+      "type": "integer"
+    },
+    "worlds_used": {
+      "default": 0,
+      "title": "Worlds Used",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "claim_id",
+    "search_run_id",
+    "phase",
+    "budget",
+    "search_policy",
+    "stop_reason"
+  ],
+  "title": "AdversarialVerificationReportV1",
+  "type": "object"
+}

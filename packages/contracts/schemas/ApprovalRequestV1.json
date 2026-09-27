@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "change_candidate_hash": {
+      "title": "Change Candidate Hash",
+      "type": "string"
+    },
+    "change_candidate_id": {
+      "format": "uuid",
+      "title": "Change Candidate Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
+    },
+    "id": {
+      "format": "uuid",
+      "title": "Id",
+      "type": "string"
+    },
+    "required_approvals": {
+      "default": 1,
+      "title": "Required Approvals",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    }
+  },
+  "required": [
+    "change_candidate_id",
+    "change_candidate_hash",
+    "summary"
+  ],
+  "title": "ApprovalRequestV1",
+  "type": "object"
+}
