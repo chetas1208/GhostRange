@@ -20,7 +20,7 @@ from ghostrange_contracts.ghostrange_m20 import (
 )
 from ghostrange_ghostarena.engine import GhostArenaEngine
 
-from .golden_path import GoldenPathOrchestrator, GoldenPathResult
+from .golden_path import GoldenPathOrchestrator, GoldenPathResult, GoldenScenarioId
 
 
 LiveOutcome = Literal["not_attempted", "blocked", "completed", "failed"]
@@ -51,8 +51,14 @@ class M20CampaignOrchestrator:
         deploy_sha: str = "unknown",
         ghostshield_mode: str = "SHADOW",
         inference_model: str = "",
+        scenario: GoldenScenarioId = "tenant_escalation",
     ) -> None:
-        self._gp = GoldenPathOrchestrator(repo_root=repo_root, compose_path=compose_path, live=live)
+        self._gp = GoldenPathOrchestrator(
+            repo_root=repo_root,
+            compose_path=compose_path,
+            live=live,
+            scenario=scenario,
+        )
         self._live = live
         self._deploy_sha = deploy_sha
         self._ghostshield_mode = ghostshield_mode
@@ -257,6 +263,7 @@ def m20_response_payload(result: M20CampaignResult) -> dict[str, Any]:
         "campaign": result.campaign.model_dump(mode="json"),
         "investigation_id": str(result.golden.investigation_id),
         "range_id": str(result.golden.range_id),
+        "scenario": result.golden.scenario,
         "phases": result.golden.phases,
         "benchmark": result.golden.benchmark.to_json(),
         "report": result.report.model_dump(mode="json"),

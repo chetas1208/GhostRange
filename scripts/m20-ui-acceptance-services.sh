@@ -11,8 +11,20 @@ export PLAYWRIGHT_BASE_URL="http://127.0.0.1:${WEB_PORT}"
 echo "$PLAYWRIGHT_BASE_URL" > /tmp/ghostrange-ui-web.url
 
 for port in "$WEB_PORT" "$API_PORT"; do
-  pid=$(lsof -ti tcp:"$port" 2>/dev/null | head -1 || true)
-  if [ -n "$pid" ]; then kill "$pid" 2>/dev/null || true; fi
+  # Resolve owners through ss first: some rootless/container hosts expose the
+  # PID there but make fuser return no result. Every discovery command is
+  # bounded because broken lsof implementations can hang indefinitely.
+  pids=""
+  if command -v ss >/dev/null 2>&1; then
+    pids=$(timeout 3s ss -H -ltnp "( sport = :${port} )" 2>/dev/null \
+      | sed -n 's/.*pid=\([0-9][0-9]*\).*/\1/p' | sort -u || true)
+  fi
+  for pid in $pids; do
+    kill "$pid" 2>/dev/null || true
+  done
+  if [ -z "$pids" ] && command -v fuser >/dev/null 2>&1; then
+    timeout 3s fuser -k -TERM "${port}/tcp" >/dev/null 2>&1 || true
+  fi
 done
 sleep 0.5
 

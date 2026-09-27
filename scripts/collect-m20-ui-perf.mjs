@@ -16,7 +16,9 @@ const client = await page.context().newCDPSession(page);
 await client.send('Performance.enable');
 
 await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-await page.keyboard.press('Control+KeyK');
+const explore = page.getByRole('button', { name: /Explore on my own/i });
+if (await explore.count()) await explore.click();
+await page.keyboard.press('Control+k');
 await page.getByTestId('start-m20-campaign').click();
 await page.waitForFunction(
   () => {

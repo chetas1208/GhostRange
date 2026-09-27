@@ -61,9 +61,15 @@ export async function waitForTestHook(page: Page) {
   );
 }
 
+export async function dismissWelcome(page: Page) {
+  const explore = page.getByRole('button', { name: /Explore on my own/i });
+  if (await explore.count()) await explore.click();
+}
+
 export async function startM20Campaign(page: Page) {
   await waitForTestHook(page);
-  await page.keyboard.press('Control+KeyK');
+  await dismissWelcome(page);
+  await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Command surface' }).waitFor({ state: 'visible' });
   await page.getByTestId('start-m20-campaign').click();
   await waitTestState(

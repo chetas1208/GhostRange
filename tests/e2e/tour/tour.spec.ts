@@ -16,7 +16,11 @@ test.describe('GhostRange product tour', () => {
     await page.reload();
     await page.getByRole('button', { name: /4-minute tour/i }).click();
     await expect(page.locator('.tour-input-panel')).toBeVisible();
-    await expect(page.getByText('CONTROLLED REPLAY')).toBeVisible();
+    await expect(page.getByText('CONTROLLED REPLAY', { exact: true })).toBeVisible();
+    for (let i = 0; i < 4; i += 1) {
+      await page.getByRole('button', { name: 'Next', exact: true }).click();
+    }
+    await expect(page.getByTestId('tour-build')).toBeVisible();
     await page.getByTestId('tour-build').click();
     await expect(page.locator('.tour-callout')).toBeVisible({ timeout: 30_000 });
     await page.getByRole('button', { name: 'Skip tour' }).click();
@@ -24,7 +28,7 @@ test.describe('GhostRange product tour', () => {
 
   test('keyboard opens command tour action', async ({ page }) => {
     await page.goto('/');
-    await page.keyboard.press('Control+KeyK');
+    await page.keyboard.press('Control+k');
     await expect(page.getByTestId('cmd-tour-guided')).toBeVisible();
   });
 });

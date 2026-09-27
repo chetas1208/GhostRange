@@ -16,6 +16,8 @@ async def test_golden_path_with_promotion():
         r = await client.post("/v1/golden-path/runs?with_promotion=true")
     assert r.status_code == 200
     body = r.json()
+    assert body["scenario"] == "tenant_escalation"
+    assert body["benchmark"]["scheduler_backlog"] == 0
     assert body.get("bundle_digest")
     promo = body.get("promotion")
     assert promo

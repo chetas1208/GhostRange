@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { startM20Campaign } from './helpers';
+import { dismissWelcome, startM20Campaign } from './helpers';
 
 test('keyboard: CommandSurface, Escape, mode tabs', async ({ page }) => {
   await page.goto('/');
-  await page.keyboard.press('Control+KeyK');
+  await dismissWelcome(page);
+  await page.keyboard.press('Control+k');
   await expect(page.getByRole('dialog', { name: 'Command surface' })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog', { name: 'Command surface' })).toHaveCount(0);

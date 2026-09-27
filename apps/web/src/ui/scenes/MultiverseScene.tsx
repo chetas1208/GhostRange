@@ -238,10 +238,16 @@ export function MultiverseScene() {
   const worlds = Object.values(worldsRecord).filter((w) => !w.destroyed || w.status === 'DESTROYING');
   const roots = worlds.filter((w) => !w.parent_world_id);
 
+  // useTourStore must run before the early return below (mirrors
+  // ExecutionScene's ordering) — this component stays mounted across mode
+  // switches, so calling a hook only on the 'multiverse' branch varies the
+  // hook count render-to-render and throws "Rendered fewer hooks than
+  // expected" the moment the user switches tabs.
+  const tourOn = useTourStore((s) => s.isTourSession && s.status === 'RUNNING');
+
   if (mode !== 'multiverse') return null;
 
   const stale = connection === 'DISCONNECTED';
-  const tourOn = useTourStore((s) => s.isTourSession && s.status === 'RUNNING');
 
   return (
     <group>

@@ -20,7 +20,7 @@ from .health_routes import router as health_router
 from .ops_routes import router as ops_router
 from .ghostgate_bridge import prepare_promotion_after_golden
 from .ghostgate_service import gate as ghostgate
-from .golden_path import GoldenPathOrchestrator, assert_live_allowed
+from .golden_path import GoldenPathOrchestrator, GoldenScenarioId, assert_live_allowed
 from .multiverse_fork import emit_fork_events, fork_remediation_worlds
 from .orchestrator import M2OneWorldOrchestrator
 from .scheduler_routes import router as scheduler_router
@@ -250,12 +250,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "ok": True,
             "live_provider": settings.live_provider,
             "live_enabled": settings.live_enabled,
-            "golden_path": "ghostrange-auth-platform-v2",
+            "golden_path": "ghostrange-tenant-escalation-v1",
         }
 
     @app.post("/v1/golden-path/runs")
     async def start_golden_path(
-        request: Request, range_id: str | None = None, with_promotion: bool = False
+        request: Request,
+        range_id: str | None = None,
+        with_promotion: bool = False,
+        scenario: GoldenScenarioId = "tenant_escalation",
     ):
         """M10 unified pipeline (mock by default). Optional M11 GhostGate promotion package."""
         if settings.live_enabled:
@@ -267,6 +270,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         gp = GoldenPathOrchestrator(
             repo_root=settings.repo_root,
             live=settings.live_enabled and settings.live_provider == "vultr",
+            scenario=scenario,
         )
         gateway = request.app.state.gateway
         result = await gp.run_async(gateway, rid)
@@ -277,6 +281,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "investigation_id": str(result.investigation_id),
             "campaign_id": str(result.campaign_id),
             "range_id": str(result.range_id),
+            "scenario": result.scenario,
             "phases": result.phases,
             "benchmark": result.benchmark.to_json(),
             "bundle_digest": result.bundle_digest,

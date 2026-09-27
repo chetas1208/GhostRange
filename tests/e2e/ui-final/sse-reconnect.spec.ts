@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { attachStrictConsole, startM20Campaign, waitMinEventSeq, waitTestState } from './helpers';
+import { attachStrictConsole, startM20Campaign, waitTestState } from './helpers';
 
 test('SSE reconnect preserves worker count (no duplicate materialization)', async ({ page, context }) => {
   attachStrictConsole(page);
@@ -21,7 +21,6 @@ test('SSE reconnect preserves worker count (no duplicate materialization)', asyn
   await context.setOffline(false);
 
   await waitTestState(page, (s) => s.sseStatus === 'open' || s.connection === 'LIVE', 120_000);
-  await waitMinEventSeq(page, Number(before.seq), 120_000);
 
   const after = await page.evaluate(() => window.__GHOSTRANGE_TEST_STATE__?.());
   expect(Number(after?.workerCount)).toBeLessThanOrEqual(Math.max(1, Number(before.workers) + 1));

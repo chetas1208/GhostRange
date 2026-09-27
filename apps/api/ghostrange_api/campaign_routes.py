@@ -7,7 +7,7 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Request
 
-from .golden_path import assert_live_allowed
+from .golden_path import GoldenScenarioId, assert_live_allowed
 from .m20_campaign import M20CampaignOrchestrator, m20_response_payload
 from .worker_scheduler import BudgetExceededError
 
@@ -15,7 +15,11 @@ router = APIRouter(prefix="/v1/campaigns", tags=["campaigns"])
 
 
 @router.post("/golden")
-async def start_m20_golden_campaign(request: Request, range_id: str | None = None):
+async def start_m20_golden_campaign(
+    request: Request,
+    range_id: str | None = None,
+    scenario: GoldenScenarioId = "tenant_escalation",
+):
     """One coordinated investigation: real golden-path components + M20 report/bundle + Arena."""
     settings = request.app.state.settings
     live = settings.live_enabled and settings.live_provider == "vultr"
@@ -42,6 +46,7 @@ async def start_m20_golden_campaign(request: Request, range_id: str | None = Non
         deploy_sha=settings.deploy_sha,
         ghostshield_mode=settings.ghostshield_mode,
         inference_model=settings.inference_model,
+        scenario=scenario,
     )
     gateway = request.app.state.gateway
     try:

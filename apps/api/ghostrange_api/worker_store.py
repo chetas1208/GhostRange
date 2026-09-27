@@ -293,18 +293,90 @@ class WorkerStore:
 
     async def fail_task(self, worker_id: uuid.UUID, task_id: uuid.UUID, reason: str) -> None:
         async with self._pool.connection() as conn:
+            async with conn.transaction():
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """
+                        UPDATE worker_tasks SET status = 'FAILED', failure_reason = %(r)s
+                        WHERE task_id = %(tid)s AND worker_id = %(wid)s
+                        """,
+                        {"r": reason, "tid": task_id, "wid": worker_id},
+                    )
+                    await cur.execute(
+                        """
+                        UPDATE worker_leases SET status = 'RELEASED'
+                        WHERE task_id = %(tid)s AND worker_id = %(wid)s AND status = 'ACTIVE'
+                        """,
+                        {"tid": task_id, "wid": worker_id},
+                    )
+                    await cur.execute(
+                        "UPDATE worker_instances SET status = %(s)s, failure_reason = %(r)s WHERE worker_id = %(wid)s",
+                        {"s": WorkerLifecycle.TASK_FAILED.value, "r": reason, "wid": worker_id},
+                    )
+
+    async def fail_open_tasks_for_run(self, run_id: uuid.UUID, *, reason: str) -> int:
+        """Close every non-terminal task before a worker run is torn down.
+
+        A provisioning or network failure can happen after the task row is inserted but
+        before the worker leases it. Leaving that row ``PENDING`` creates a durable
+        backlog that can be picked up by a later worker or make health checks report a
+        false active run. Teardown owns this reconciliation step, and the transaction
+        releases any associated leases before marking the task failed.
+        """
+        async with self._pool.connection() as conn:
+            async with conn.transaction():
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """
+                        SELECT COUNT(*)
+                        FROM worker_tasks
+                        WHERE run_id = %(run_id)s
+                          AND status NOT IN ('COMPLETED', 'FAILED', 'CANCELLED')
+                        """,
+                        {"run_id": run_id},
+                    )
+                    row = await cur.fetchone()
+                    open_count = int(row[0]) if row else 0
+                    if open_count == 0:
+                        return 0
+                    await cur.execute(
+                        """
+                        UPDATE worker_leases
+                        SET status = 'RELEASED'
+                        WHERE task_id IN (
+                            SELECT task_id FROM worker_tasks
+                            WHERE run_id = %(run_id)s
+                              AND status NOT IN ('COMPLETED', 'FAILED', 'CANCELLED')
+                        )
+                          AND status = 'ACTIVE'
+                        """,
+                        {"run_id": run_id},
+                    )
+                    await cur.execute(
+                        """
+                        UPDATE worker_tasks
+                        SET status = 'FAILED', failure_reason = %(reason)s
+                        WHERE run_id = %(run_id)s
+                          AND status NOT IN ('COMPLETED', 'FAILED', 'CANCELLED')
+                        """,
+                        {"run_id": run_id, "reason": reason},
+                    )
+        return open_count
+
+    async def count_open_tasks(self, run_id: uuid.UUID) -> int:
+        async with self._pool.connection() as conn:
             async with conn.cursor() as cur:
                 await cur.execute(
                     """
-                    UPDATE worker_tasks SET status = 'FAILED', failure_reason = %(r)s
-                    WHERE task_id = %(tid)s AND worker_id = %(wid)s
+                    SELECT COUNT(*)
+                    FROM worker_tasks
+                    WHERE run_id = %(run_id)s
+                      AND status NOT IN ('COMPLETED', 'FAILED', 'CANCELLED')
                     """,
-                    {"r": reason, "tid": task_id, "wid": worker_id},
+                    {"run_id": run_id},
                 )
-                await cur.execute(
-                    "UPDATE worker_instances SET status = %(s)s, failure_reason = %(r)s WHERE worker_id = %(wid)s",
-                    {"s": WorkerLifecycle.TASK_FAILED.value, "r": reason, "wid": worker_id},
-                )
+                row = await cur.fetchone()
+        return int(row[0]) if row else 0
 
     # Terminal states for the records a lease can safely be reconciled
     # against — see release_stale_lease().

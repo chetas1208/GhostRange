@@ -17,6 +17,33 @@ GhostRange is not a generic pentesting agent, a vulnerability scanner, a SIEM, o
 ![GhostRange Multiverse UI](docs/images/multiverse-ui.png)
 *Multiverse tactical UI, illustrative multi-world state. The real infrastructure proof recorded so far (see the status table above) is a single real Vultr Compute worker end-to-end, not the 20-world count shown here — this image shows the UI's intended scale, not a claim about what has run live.*
 
+## System architecture at a glance
+
+The control plane plans and verifies work; the disposable execution plane performs only scoped experiments. Dashed boundaries and links mark isolated or optional paths, including the currently opt-in NetBird worker overlay.
+
+```mermaid
+flowchart LR
+    subgraph CONTROL["Control plane"]
+        API["GhostRange API"] --> DIRECTOR["GhostDirector"]
+        DIRECTOR --> SCHEDULER["GhostScheduler"]
+        SCHEDULER --> SHIELD["GhostShield policy gate"]
+        API --> EVIDENCE[("Ledger + evidence")]
+    end
+
+    subgraph EXECUTION["Disposable execution plane"]
+        TWIN["Digital twin"] --> WORKER["Ephemeral worker"]
+        WORKER --> EXPERIMENT["Scoped experiment"]
+    end
+
+    SHIELD -. "authorized provisioning" .-> TWIN
+    WORKER -. "optional NetBird overlay" .-> WORKER_MESH["Private worker mesh"]
+    EXPERIMENT -. "results + artifacts" .-> EVIDENCE
+    API -. "human approval boundary" .-> PRODUCTION["Production"]
+
+    style CONTROL stroke:#718096,stroke-width:2px,stroke-dasharray:7 5
+    style EXECUTION stroke:#718096,stroke-width:2px,stroke-dasharray:7 5
+```
+
 ## Table of contents
 
 - [The problem](#the-problem)
@@ -24,6 +51,7 @@ GhostRange is not a generic pentesting agent, a vulnerability scanner, a SIEM, o
 - [The core idea](#the-core-idea)
 - [How GhostRange works](#how-ghostranges-works)
 - [Inputs and outputs](#inputs-and-outputs)
+- [System architecture at a glance](#system-architecture-at-a-glance)
 - [Architecture](#architecture)
 - [The three interfaces](#the-three-interfaces)
 - [Subsystems](#subsystems)
@@ -87,9 +115,9 @@ flowchart LR
     S[Compose range input] --> RC[Range compiler]
     RC --> T[Living-twin / range representation]
     T --> D[GhostDirector simulator]
-    D --> H[Three auth-incident hypotheses]
+    D --> H[Three cross-service hypotheses: billing / gateway / identity]
     H --> P[GhostScheduler V3 plan]
-    P --> V[In-process adversarial verification]
+    P --> V[Adversarial verification: shallow fix falsified, deep fix survives]
     V --> L[GhostLedger seal + verification]
     L --> A[GhostArena simulated release report]
     A --> R[Campaign report + evidence bundle]
@@ -355,6 +383,10 @@ Run the deterministic mock campaign:
 ```bash
 curl -X POST http://127.0.0.1:8000/v1/campaigns/golden | jq .
 ```
+
+The default golden case is the tenant-escalation billing export incident. The original
+auth incident remains selectable with `?scenario=auth_incident`; both paths expose the
+GhostScheduler workload and require `benchmark.scheduler_backlog == 0` for a clean run.
 
 The legacy endpoint remains available:
 

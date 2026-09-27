@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { attachStrictConsole, setMode, startM20Campaign, waitMinEventSeq, waitTestState } from './helpers';
+import { attachStrictConsole, setMode, startM20Campaign, waitTestState } from './helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -53,8 +53,15 @@ test.describe('M20 golden path (live SSE)', () => {
     attachStrictConsole(page);
     await page.goto('/');
     await startM20Campaign(page);
-    const seqBefore = await page.evaluate(() => window.__GHOSTRANGE_TEST_STATE__?.().lastEventSeq ?? 0);
-    await waitMinEventSeq(page, Number(seqBefore) + 5, 240_000);
+    // The campaign POST is synchronous in the mock path, so the snapshot can
+    // already contain the terminal event sequence before EventSource opens.
+    // Assert durable sequence plus an open stream instead of waiting for
+    // additional events that this completed campaign will never emit.
+    await waitTestState(
+      page,
+      (s) => s.sseStatus === 'open' && Number(s.lastEventSeq) > 5,
+      240_000,
+    );
     const st = await page.evaluate(() => window.__GHOSTRANGE_TEST_STATE__?.());
     expect(st?.sseStatus).toBe('open');
     expect(Number(st?.lastEventSeq)).toBeGreaterThan(5);

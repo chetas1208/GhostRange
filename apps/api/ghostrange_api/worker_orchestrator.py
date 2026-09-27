@@ -104,6 +104,9 @@ class RealWorkerOrchestrator:
                     peer_hostname=peer_hostname,
                 )
             task = await self._store.wait_task_completed(run_id, timeout_s=180.0)
+            backlog_count = await self._store.count_open_tasks(run_id)
+            if backlog_count:
+                raise RuntimeError(f"worker run {run_id} left {backlog_count} open tasks")
             worker = await self._store.get_worker(worker_id)
             run = await self._store.get_run(run_id)
             payload = task.get("payload") or {}
@@ -137,8 +140,16 @@ class RealWorkerOrchestrator:
                 "worker_status": worker["status"] if worker else None,
                 "run_status": run["status"] if run else None,
                 "task_completed": True,
+                "backlog_count": backlog_count,
             }
         finally:
+            # Reconcile task rows before infrastructure teardown. This closes the
+            # failure window where a VM dies after task creation but before lease or
+            # completion, so every run exits with zero pending work.
+            await self._store.fail_open_tasks_for_run(
+                run_id,
+                reason="worker orchestrator teardown",
+            )
             if handle is not None:
                 await self._store.set_run_status(run_id, WorkerLifecycle.TERMINATING.value)
                 # terminate_worker() -> destroy_compute() already confirms deletion via a

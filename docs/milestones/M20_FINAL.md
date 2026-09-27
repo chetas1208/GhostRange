@@ -71,11 +71,39 @@ Evidence-grounded cyber digital-twin investigation: compile authorized input, hy
 
 ## Golden campaign (mock, verified)
 
-- **Input:** `ranges/.../docker-compose.yml` (machine-readable).
-- **Hypotheses:** 3 (middleware, identity cache, gateway routing); hidden true mechanism `session_refresh_cache`.
+Default scenario (as of this update) is **tenant_escalation** — a cross-tenant billing-export
+exposure investigation, replacing the original single-mechanism auth-cache scenario as the
+`POST /v1/campaigns/golden` default. The original scenario (`scenario="auth_incident"`) is kept
+fully intact, independently tested, and selectable — see
+`apps/api/ghostrange_api/golden_path.py`.
+
+- **Input:** `ranges/.../docker-compose.yml` (machine-readable; same authorized compose input,
+  now logically representing a multi-service billing platform).
+- **Hypotheses:** 3, each pointing at a *different* service — billing-service (missing
+  tenant-scope check / IDOR), api-gateway (unverified JWT role claim from a migration-window
+  issuer), identity-service (stale RBAC role cache after a tenant-admin demotion). Hidden true
+  mechanism, only reachable via GhostDirector's surprise path: `internal_role_header_trust` —
+  config drift left an internal-only `X-Internal-Role` header trusted on external traffic.
+  See `packages/ghostdirector/ghostrange_director/scenarios/tenant_escalation.py`.
+- **Remediation comparison (M8 adversarial verifier):** two real candidates, not one —
+  `packages/adversarial-verifier/ghostrange_adversarial/scenarios/billing_export_lab.py`. Fix A
+  (strips the header everyone found first) is **falsified**: mutation search rediscovers
+  privileged cross-tenant access via a second, independent legacy header
+  (`X-Debug-Auth: bypass`) the shallow fix's author never knew about. Fix B (removes all
+  header-based trust; enforces session-scoped tenant access) **survives** the same search.
+  The run also exercises `interpret_differential` (compares the two candidates' worlds),
+  `propose_revision` (Fix A's counterexample -> "Fix B.1"), and
+  `promote_counterexample_to_regression` (the discovered bypass becomes a regression case) —
+  none of which the original golden path called.
 - **Workers:** 0 in mock path; `owned_workers: []`.
+- **Worker orchestration:** selected Director experiments become a dependency-aware
+  GhostScheduler workload; ready tasks are placed onto planned worker slots and the
+  verified mock run reports `scheduler_backlog=0`. Worker teardown also reconciles any
+  non-terminal task rows to prevent pending-task backlogs after failures.
 - **Arena:** QUALIFIED (sim).
 - **Cost:** $0 mock.
+- Original scenario (still available): 3 hypotheses (middleware, identity cache, gateway
+  routing); hidden true mechanism `session_refresh_cache`.
 
 ## Live campaign
 

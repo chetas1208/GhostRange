@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 import time
 import uuid
@@ -22,9 +23,15 @@ from pathlib import Path
 from typing import Any, Literal
 
 from ghostrange_contracts._base import utc_now
+from ghostrange_contracts.enums import ResourceClass, SecurityCriticality, TaskType
 from ghostrange_contracts.ghostdirector_m9 import DirectorPolicyId, ExperimentCampaignBudgetV1
 from ghostrange_contracts.ghostledger_m7 import BundleMode
-from ghostrange_contracts.scheduler_v3 import SchedulingContextV3
+from ghostrange_contracts.scheduler_v3 import (
+    SchedulingContextV3,
+    TaskResourceProfileV2,
+    WorkerResourceProfileV2,
+)
+from ghostrange_contracts.task import ResourceProfileV1, TaskV1
 
 from ghostrange_contracts.adversarial_m8 import AdversarialVerificationReportV1
 
@@ -61,6 +68,12 @@ class GoldenPathBenchmark:
     compile_ms: int = 0
     director_ms: int = 0
     scheduler_ms: int = 0
+    scheduler_task_count: int = 0
+    scheduler_ready_count: int = 0
+    scheduler_actions: int = 0
+    scheduler_backlog: int = 0
+    worker_slots_planned: int = 0
+    worker_tasks_placed: int = 0
     adversarial_ms: int = 0
     ledger_ms: int = 0
     total_ms: int = 0
@@ -89,6 +102,7 @@ class GoldenPathResult:
     remediation_id: uuid.UUID | None = None
     source_revision_id: uuid.UUID | None = None
     twin_revision_id: uuid.UUID | None = None
+    scenario: GoldenScenarioId = "tenant_escalation"
     # tenant_escalation only: the shallow-fix candidate's own search report, kept alongside
     # `adversarial_report` (which holds the *shipped* candidate's report — the deep fix) so
     # both halves of the remediation comparison survive the run. None for auth_incident.
@@ -128,6 +142,7 @@ class GoldenPathOrchestrator:
             campaign_id=campaign_id,
             range_id=range_id,
             benchmark=bench,
+            scenario=self.scenario,
         )
 
         # 1 — Compile authorized source
@@ -163,26 +178,42 @@ class GoldenPathOrchestrator:
         bench.director_decisions = len(campaign.decisions)
         result.phases.append(f"director:stop={campaign.stop_reason}")
 
-        if campaign.decisions and campaign.proposals:
-            last_decision = campaign.decisions[-1]
-            props = {p.id: p for p in campaign.proposals}
-            selected = [props[pid] for pid in last_decision.selected_ids if pid in props]
-            if selected:
-                from ghostrange_contracts.ghostdirector_m9 import ExperimentPortfolioV1
+        selected = self._selected_proposals(campaign)
+        if selected:
+            from ghostrange_contracts.ghostdirector_m9 import ExperimentPortfolioV1
 
-                portfolio = ExperimentPortfolioV1(
-                    campaign_id=campaign_id,
-                    selected_proposal_ids=last_decision.selected_ids,
-                )
-                dag = build_execution_dag(campaign_id, portfolio, campaign.proposals)
-                result.phases.append(f"director_dag:nodes={len(dag.nodes)}")
+            portfolio = ExperimentPortfolioV1(
+                campaign_id=campaign_id,
+                selected_proposal_ids=[p.id for p in selected],
+            )
+            dag = build_execution_dag(campaign_id, portfolio, selected)
+            result.phases.append(f"director_dag:nodes={len(dag.nodes)}")
 
-        # 3 — GhostScheduler V3 (plan only — HOW would run; no bypass)
+        # 3 — GhostScheduler V3 (plan the actual Director workload; no bypass)
         t = time.perf_counter()
-        sched_note = self._scheduler_plan(range_id)
+        sched_note, sched_metrics = self._scheduler_plan(range_id, selected)
         bench.scheduler_ms = int((time.perf_counter() - t) * 1000)
-        bench.scheduler_decisions = 1
+        bench.scheduler_decisions = sched_metrics["action_count"]
+        bench.scheduler_task_count = sched_metrics["task_count"]
+        bench.scheduler_ready_count = sched_metrics["ready_count"]
+        bench.scheduler_actions = sched_metrics["action_count"]
+        bench.scheduler_backlog = sched_metrics["backlog"]
+        bench.worker_slots_planned = sched_metrics["worker_slots"]
+        bench.worker_tasks_placed = sched_metrics["placed_tasks"]
         result.phases.append(f"scheduler:{sched_note}")
+        if bench.scheduler_backlog:
+            result.errors.append(
+                "scheduler_backlog:"
+                f"{bench.scheduler_backlog} ready tasks received no scheduling decision"
+            )
+        result.phases.append(
+            "worker_orchestration:"
+            f"tasks={bench.scheduler_task_count}:"
+            f"ready={bench.scheduler_ready_count}:"
+            f"placed={bench.worker_tasks_placed}:"
+            f"workers={bench.worker_slots_planned}:"
+            f"backlog={bench.scheduler_backlog}"
+        )
 
         # 4 — Adversarial verification (M8): try to break the fix.
         t = time.perf_counter()
@@ -343,22 +374,120 @@ class GoldenPathOrchestrator:
         except Exception as exc:
             return False, f"compile_error:{exc.__class__.__name__}"
 
-    def _scheduler_plan(self, range_id: uuid.UUID) -> str:
+    @staticmethod
+    def _selected_proposals(campaign) -> list:
+        """Return the unique Director selections in execution order.
+
+        A campaign can make several decisions over multiple rounds. Feeding only the
+        final decision to GhostScheduler silently drops work from earlier rounds; feeding
+        every generated candidate creates a speculative backlog. The selected set is the
+        contract between Director and Scheduler.
+        """
+        by_id = {p.id: p for p in campaign.proposals}
+        selected = []
+        seen: set[uuid.UUID] = set()
+        for decision in campaign.decisions:
+            for proposal_id in decision.selected_ids:
+                if proposal_id in seen:
+                    continue
+                proposal = by_id.get(proposal_id)
+                if proposal is not None:
+                    selected.append(proposal)
+                    seen.add(proposal_id)
+        return selected
+
+    def _scheduler_plan(self, range_id: uuid.UUID, proposals: list) -> tuple[str, dict[str, int]]:
         try:
             from ghostrange_scheduler.v3.plan import plan
 
+            tasks: list[TaskV1] = []
+            profiles: list[TaskResourceProfileV2] = []
+            selected_ids = {p.id for p in proposals}
+            for proposal in proposals:
+                dependencies = [dep for dep in proposal.depends_on_experiment_ids if dep in selected_ids]
+                task = TaskV1(
+                    id=proposal.id,
+                    world_id=range_id,
+                    task_type=TaskType.INVESTIGATE,
+                    dependencies=dependencies,
+                    resource_profile=ResourceProfileV1(cpu_cores=1, memory_gb=1),
+                    estimated_duration_seconds=max(1.0, proposal.estimated_runtime_sec),
+                    estimated_cost_usd=proposal.estimated_cost_usd,
+                    priority=100 - len(tasks),
+                    security_criticality=SecurityCriticality.HIGH,
+                    uncertainty=0.5,
+                    expected_evidence_gain=0.8,
+                )
+                tasks.append(task)
+                profiles.append(
+                    TaskResourceProfileV2(
+                        task_id=task.id,
+                        task_type=task.task_type,
+                        cpu_min=1,
+                        cpu_preferred=1,
+                        ram_min_gb=1,
+                        ram_preferred_gb=1,
+                        expected_runtime_seconds=task.estimated_duration_seconds,
+                        parallelizable=proposal.parallelizable,
+                    )
+                )
+
+            ready = [task.id for task in tasks if not task.dependencies]
+            try:
+                worker_cap = max(1, int(os.environ.get("MAX_ACTIVE_COMPUTE_WORKERS", "1")))
+            except ValueError:
+                worker_cap = 1
+            worker_count = min(worker_cap, min(3, len(ready) or len(tasks))) if tasks else 0
+            workers = [
+                WorkerResourceProfileV2(
+                    worker_id=uuid.uuid5(range_id, f"golden-worker-{index}"),
+                    provider="mock" if not self.live else "vultr",
+                    resource_class=ResourceClass.CPU_SMALL,
+                    cpu_cores=2,
+                    ram_gb=4,
+                    state="READY",
+                    estimated_hourly_cost_usd=0.05,
+                )
+                for index in range(worker_count)
+            ]
             ctx = SchedulingContextV3(
                 range_id=range_id,
-                tasks=[],
-                workers=[],
-                dependency_edges=[],
-                budget_remaining_usd=25.0,
+                tasks=tasks,
+                task_profiles=profiles,
+                workers=workers,
+                ready_task_ids=ready,
+                dependency_edges=[(dependency, task.id) for task in tasks for dependency in task.dependencies],
+                budget_remaining_usd=max(25.0, sum(task.estimated_cost_usd for task in tasks) + 1.0),
                 budget_hard_cap_usd=50.0,
+                mandatory_task_ids=[task.id for task in tasks],
             )
             p = plan(ctx)
-            return f"actions={len(p.actions)}"
+            placed = sum(1 for action in p.actions if action.action.value in ("PLACE_TASK", "ROUTE_INFERENCE"))
+            actionable = sum(
+                1
+                for action in p.actions
+                if action.action.value in ("PLACE_TASK", "ROUTE_INFERENCE", "DEFER_TASK")
+            )
+            metrics = {
+                "task_count": len(tasks),
+                "ready_count": len(ready),
+                "action_count": len(p.actions),
+                # Backlog means ready work that received no scheduling decision. Tasks
+                # blocked on a declared dependency are not backlog; they are not ready.
+                "backlog": max(0, len(ready) - actionable),
+                "worker_slots": worker_count,
+                "placed_tasks": placed,
+            }
+            return f"actions={len(p.actions)}", metrics
         except Exception as exc:
-            return f"fallback:{exc.__class__.__name__}"
+            return f"fallback:{exc.__class__.__name__}", {
+                "task_count": len(proposals),
+                "ready_count": 0,
+                "action_count": 0,
+                "backlog": len(proposals),
+                "worker_slots": 0,
+                "placed_tasks": 0,
+            }
 
 
 def assert_live_allowed() -> None:

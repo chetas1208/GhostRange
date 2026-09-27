@@ -16,7 +16,7 @@
     "screenshots:m20": "node scripts/capture-m20-ui.mjs",
     "screenshots:m20:update": "npx playwright test tests/e2e/ui-final/visual-core.spec.ts --project=chromium --update-snapshots",
     "test:e2e:ui-final": "bash scripts/m20-ui-e2e.sh",
-    "test:e2e:tour": "npx playwright test tests/e2e/tour/tour.spec.ts --project=chromium",
+    "test:e2e:tour": "npx playwright test -c playwright.tour.config.ts",
     "test:e2e:tactical": "npx playwright test tests/e2e/tactical/tactical.spec.ts --project=chromium",
     "test:visual:ui-final": "bash scripts/m20-ui-visual-regression.sh",
     "screenshots:docker": "bash scripts/capture-m2-screenshots-docker.sh",

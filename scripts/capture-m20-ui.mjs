@@ -59,7 +59,9 @@ async function snap(page, filename, meta) {
 }
 
 async function startM20(page) {
-  await page.keyboard.press('Control+KeyK');
+  const explore = page.getByRole('button', { name: /Explore on my own/i });
+  if (await explore.count()) await explore.click();
+  await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Command surface' }).waitFor({ state: 'visible' });
   await page.getByTestId('start-m20-campaign').click();
   await waitState(page, (s) => s.connection === 'LIVE' && Number(s.lastEventSeq) >= 2);

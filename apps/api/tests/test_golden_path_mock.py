@@ -11,11 +11,24 @@ from ghostrange_api.main import create_app
 def test_golden_path_orchestrator_mock():
     root = Settings.from_env().repo_root
     result = GoldenPathOrchestrator(repo_root=root, live=False).run()
+    assert result.scenario == "tenant_escalation"
     assert result.benchmark.bundle_verified is True
     assert "director:" in " ".join(result.phases)
     assert "adversarial:" in " ".join(result.phases)
     assert "ledger:verified=True" in " ".join(result.phases)
+    assert result.benchmark.scheduler_task_count > 0
+    assert result.benchmark.scheduler_backlog == 0
+    assert result.benchmark.worker_tasks_placed == result.benchmark.scheduler_ready_count
+    assert "worker_orchestration:" in " ".join(result.phases)
     assert result.benchmark.live_mode == "mock"
+
+
+def test_original_auth_incident_remains_selectable():
+    root = Settings.from_env().repo_root
+    result = GoldenPathOrchestrator(repo_root=root, live=False, scenario="auth_incident").run()
+    assert result.scenario == "auth_incident"
+    assert result.benchmark.bundle_verified is True
+    assert result.benchmark.scheduler_backlog == 0
 
 
 @pytest.mark.asyncio
@@ -27,6 +40,8 @@ async def test_golden_path_api_endpoint():
         assert resp.status_code == 200
         body = resp.json()
         assert body["benchmark"]["bundle_verified"] is True
+        assert body["scenario"] == "tenant_escalation"
+        assert body["benchmark"]["scheduler_backlog"] == 0
         assert len(body["phases"]) >= 4
         rid = body["range_id"]
         snap = await client.get(f"/v1/ranges/{rid}/snapshot")
