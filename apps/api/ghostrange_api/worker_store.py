@@ -555,10 +555,13 @@ class WorkerStore:
     async def set_run_status(self, run_id: uuid.UUID, status: str, **fields: Any) -> None:
         async with self._pool.connection() as conn:
             async with conn.cursor() as cur:
-                await cur.execute(
-                    "UPDATE scheduler_worker_runs SET status = %(s)s WHERE run_id = %(id)s",
-                    {"s": status, "id": run_id},
-                )
+                params = {"s": status, "id": run_id, **fields}
+                terminal = status in {WorkerLifecycle.TERMINATED.value, "terminated", "failed"}
+                statement = "UPDATE scheduler_worker_runs SET status = %(s)s"
+                if terminal:
+                    statement += ", terminated_at = COALESCE(terminated_at, now())"
+                statement += " WHERE run_id = %(id)s"
+                await cur.execute(statement, params)
 
     async def attach_provider_id(self, worker_id: uuid.UUID, provider_instance_id: str, provider: str) -> None:
         async with self._pool.connection() as conn:
