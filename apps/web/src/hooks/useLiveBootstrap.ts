@@ -16,12 +16,14 @@ export function useLiveBootstrap(enabled = false) {
 
     const RANGE_ID = resolveRangeId() || streamRangeId || '';
     if (!RANGE_ID) {
+      // No campaign yet is the normal empty state, not an error: the
+      // EmptyChamberHint ("Press ⌘/Ctrl+K to create a range") guides the user.
       useGhostStore.setState({
         dataSource: 'live',
         streamConnected: false,
         live: false,
-        streamError: 'Live mode requires VITE_RANGE_ID or ⌘K Start M20 campaign',
-        sseStatus: 'failed',
+        streamError: null,
+        sseStatus: 'idle',
       });
       return;
     }

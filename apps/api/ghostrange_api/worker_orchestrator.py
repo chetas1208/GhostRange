@@ -98,7 +98,7 @@ class RealWorkerOrchestrator:
             await self._store.set_run_status(run_id, WorkerLifecycle.PROVISIONING.value)
             handle = await asyncio.to_thread(provider.wait_ready, handle, timeout_s=300.0)
 
-            await self._store.wait_worker_registered(worker_id, timeout_s=120.0)
+            await self._store.wait_worker_registered(worker_id, timeout_s=480.0)  # cloud-init apt update + pip on a 1-CPU VM routinely exceeds 120s
             if live:
                 await ensure_worker_mesh_ready(
                     settings=self._settings,
@@ -169,11 +169,26 @@ class RealWorkerOrchestrator:
                         revoke_worker_peer(self._settings, self._netbird_client, peer_hostname)
             await self._store.set_run_status(run_id, WorkerLifecycle.TERMINATED.value)
             await self._store.mark_worker_terminated(worker_id)
-            owned = await asyncio.to_thread(provider.list_all_ghostrange_workers)
+            # Real bug fixed here 2026-09-27: this used to fail if ANY worker
+            # anywhere in the account was still present (after excluding this
+            # one), not just whether THIS worker's own teardown succeeded.
+            # With unrelated pre-existing orphans in the account (a separate,
+            # real problem tracked by the orphan-reaper), every otherwise-
+            # successful worker lifecycle would report "teardown incomplete"
+            # for itself even though its own VM was genuinely gone. Check
+            # membership of this worker's own id only - the account-wide
+            # orphan count is a campaign/fan-out-level concern (see
+            # live_worker_fanout.py's caller), not something that should turn
+            # an individual successful worker into a reported failure.
             if handle is not None:
-                owned = [w for w in owned if w.provider_compute_id != handle.provider_compute_id]
-            if owned:
-                raise RuntimeError(f"teardown incomplete: {len(owned)} owned workers remain")
+                owned_ids = {
+                    w.provider_compute_id
+                    for w in await asyncio.to_thread(provider.list_all_ghostrange_workers)
+                }
+                if handle.provider_compute_id in owned_ids:
+                    raise RuntimeError(
+                        f"teardown incomplete: worker {handle.provider_compute_id} still owned"
+                    )
 
     async def _mock_worker_agent(self, control_url: str, bootstrap_token: str) -> None:
         from ghostrange_worker.runtime import WorkerRuntime
